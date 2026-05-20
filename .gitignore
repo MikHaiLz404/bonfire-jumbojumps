@@ -1,0 +1,42 @@
+# Unity
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+*.unitypackage*
+*.asset
+*.mat
+*.prefab
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Pp]rojectSettings/
+
+# macOS
+.DS_Store
+*.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Logs
+*.log
+logs/
+
+# Vercel
+.vercel
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Misc
+*.bak
+*.tmp
+*.temp
