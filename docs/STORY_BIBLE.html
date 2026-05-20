@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story Bible — Lantern & Legend</title>
+<style>
+  :root {
+    --primary: #e67e22;
+    --primary-dark: #d35400;
+    --secondary: #2c3e50;
+    --accent: #f39c12;
+    --bg-light: #fef9e7;
+    --bg-card: #ffffff;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --border: #ecf0f1;
+    --magic: #9b59b6;
+    --spirit: #1abc9c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--bg-light) 0%, #fdebd0 100%);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  header {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(135deg, var(--secondary) 0%, #1a252f 100%);
+    color: white;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(243,156,18,0.15) 0%, transparent 50%);
+    animation: glow 8s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+
+  header .subtitle {
+    color: var(--accent);
+    font-size: 1.2rem;
+  }
+
+  header p {
+    opacity: 0.9;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .lantern-icon { font-size: 3rem; }
+
+  nav {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 1rem;
+    z-index: 100;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    justify-content: center;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  nav a:hover { background: var(--primary); color: white; }
+
+  section {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+
+  section h2 {
+    color: var(--secondary);
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  section h2 .icon { font-size: 1.5rem; }
+
+  h3 {
+    color: var(--secondary);
+    font-size: 1.1rem;
+    margin: 1.5rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  h3::before { content: '▶'; color: var(--accent); font-size: 0.7rem; }
+
+  h4 {
+    color: var(--primary);
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem;
+  }
+
+  p { margin: 0.5rem 0; color: var(--text-light); }
+
+  .world-rules {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e8e8e8 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .world-rule {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .world-rule:last-child { border-bottom: none; }
+
+  .world-rule .num {
+    background: var(--magic);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .world-rule strong { color: var(--secondary); }
+  .world-rule p { margin: 0; }
+
+  .area-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 2px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .area-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+  }
+
+  .area-card.area-1::before { background: linear-gradient(90deg, #e67e22, #f39c12); }
+  .area-card.area-2::before { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+  .area-card.area-3::before { background: linear-gradient(90deg, var(--magic), #9b59b6); }
+
+  .area-card h3 {
+    margin-top: 0;
+    color: var(--secondary);
+    font-size: 1.2rem;
+  }
+
+  .area-card .thai-title {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .area-card .vibe {
+    color: var(--magic);
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  .area-card .magic {
+    background: linear-gradient(135deg, #f5eef8 0%, #fff 100%);
+    padding: 0.75rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--magic);
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+  }
+
+  .chain-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+  }
+
+  .chain-tag {
+    background: var(--secondary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+  }
+
+  .character-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border-left: 4px solid var(--primary);
+  }
+
+  .character-card .role-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--secondary);
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .character-card h3 { margin-top: 0; }
+  .character-card .age { color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .character-card .appearance {
+    background: #f8f9fa;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+  }
+
+  .character-card .arc {
+    background: #fef9e7;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+  }
+
+  .chapter-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 2px solid var(--border);
+  }
+
+  .chapter-card h3 {
+    margin-top: 0;
+    color: var(--secondary);
+  }
+
+  .chapter-card .thai-ch {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .chapter-card .state {
+    background: #e8f8f0;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--success);
+  }
+
+  .chapter-card .events {
+    margin: 0.75rem 0;
+    padding-left: 1rem;
+  }
+
+  .chapter-card .events li {
+    margin: 0.4rem 0;
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+
+  .chapter-card .unlock {
+    background: #f5eef8;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--magic);
+  }
+
+  .chapter-card .cliffhanger {
+    background: linear-gradient(135deg, #fdf2f2 0%, #fff 100%);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0.75rem 0;
+    border: 1px solid #e74c3c;
+  }
+
+  .chapter-card .cliffhanger strong {
+    color: #e74c3c;
+  }
+
+  .art-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .art-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    border: 1px solid var(--border);
+  }
+
+  .art-card h4 { color: var(--secondary); font-size: 0.95rem; }
+  .art-card p { font-size: 0.85rem; color: var(--text-light); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+
+  th {
+    background: var(--secondary);
+    color: white;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:nth-child(even) { background: #f8f9fa; }
+
+  .tone-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .tone-box {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    border: 2px solid var(--border);
+  }
+
+  .tone-box h4 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .tone-box ul {
+    list-style: none;
+    font-size: 0.9rem;
+  }
+
+  .tone-box li {
+    padding: 0.3rem 0;
+    color: var(--text-light);
+  }
+
+  .tone-box.do li::before { content: '✓ '; color: var(--success); font-weight: bold; }
+  .tone-box.dont li::before { content: '✗ '; color: #e74c3c; font-weight: bold; }
+
+  /* ===== CHARACTER AVATARS ===== */
+  .char-showcase {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    justify-content: center;
+  }
+
+  .char-avatar-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    width: 140px;
+    border: 2px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .char-avatar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+
+  .char-avatar-card.protagonist {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, #fff9e6, white);
+  }
+
+  .char-avatar-card .avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  .char-avatar-card .role-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .char-avatar-card h4 {
+    color: var(--secondary);
+    font-size: 1rem;
+  }
+
+  .char-avatar-card .thai-name {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  /* ===== CHAPTER CARDS ===== */
+  .chapter-visual {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .chapter-card-visual {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 2px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chapter-card-visual::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+  }
+
+  .chapter-card-visual.ch5::before {
+    background: linear-gradient(90deg, var(--success), #2ecc71);
+  }
+
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .chapter-num {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .chapter-card-visual.ch5 .chapter-num {
+    background: var(--success);
+  }
+
+  .chapter-title h3 {
+    color: var(--secondary);
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .chapter-title .thai {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .chapter-unlock {
+    background: #f8f9fa;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin: 0.75rem 0;
+    font-size: 0.85rem;
+  }
+
+  .chapter-unlock strong {
+    color: var(--secondary);
+  }
+
+  .chapter-cliff {
+    background: linear-gradient(135deg, #fdf2f2, white);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #e74c3c;
+  }
+
+  .chapter-cliff strong {
+    color: #e74c3c;
+  }
+
+  /* ===== AREA HERO CARDS ===== */
+  .area-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .area-hero-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--border);
+  }
+
+  .area-hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+  }
+
+  .area-hero-card.area-1::before { background: linear-gradient(90deg, #e67e22, #f39c12); }
+  .area-hero-card.area-2::before { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+  .area-hero-card.area-3::before { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+
+  .area-hero-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  .area-hero-card h3 {
+    color: var(--secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  .area-hero-card .thai-title {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .area-hero-card .vibe {
+    font-style: italic;
+    color: var(--magic);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f5eef8;
+    border-radius: 8px;
+  }
+
+  .area-hero-card .chains-label {
+    font-weight: 600;
+    color: var(--secondary);
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .chain-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .chain-tag-visual {
+    background: var(--secondary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+  }
+
+  /* ===== TONE MATRIX ===== */
+  .tone-matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .tone-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 2px solid;
+  }
+
+  .tone-panel.do { border-color: var(--success); }
+  .tone-panel.dont { border-color: #e74c3c; }
+
+  .tone-panel h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tone-panel.do h4 { color: var(--success); }
+  .tone-panel.dont h4 { color: #e74c3c; }
+
+  .tone-panel ul {
+    list-style: none;
+  }
+
+  .tone-panel li {
+    padding: 0.5rem 0;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tone-panel.do li::before { content: '✓'; color: var(--success); font-weight: bold; }
+  .tone-panel.dont li::before { content: '✗'; color: #e74c3c; font-weight: bold; }
+
+  /* ===== WORLD RULE CARDS ===== */
+  .world-rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .world-rule-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    gap: 1rem;
+    border: 1px solid var(--border);
+  }
+
+  .world-rule-card .num-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--magic);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .world-rule-card h4 {
+    color: var(--secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  .world-rule-card p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    header h1 { font-size: 1.8rem; }
+    section { padding: 1.25rem; }
+    .tone-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="lantern-icon">🏮</div>
+  <h1>Story Bible — "Lantern & Legend"</h1>
+  <p class="subtitle">Bonfire Gathering Narrative Framework</p>
+  <p>MVP (5-7 chapters) • Last Updated: 2026-05-20</p>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#world">1. World</a></li>
+    <li><a href="#characters">2. Characters</a></li>
+    <li><a href="#narrative">3. Narrative</a></li>
+    <li><a href="#dialogue">4. Dialogue</a></li>
+    <li><a href="#art">5. Art</a></li>
+    <li><a href="#tone">6. Tone</a></li>
+  </ul>
+</nav>
+
+<!-- SECTION 1: WORLD -->
+<section id="world">
+  <h2><span class="icon">🌍</span> 1. Setting & World</h2>
+
+  <h3>1.1 World Overview</h3>
+  <p style="font-size:1.05rem;color:var(--text);margin:1rem 0;">
+    <strong>Setting:</strong> หมู่บ้านริมทะเลทางตอนใต้ของไทย — A small coastal village with light magical elements woven into everyday life.
+  </p>
+
+  <!-- WORLD RULES GRID -->
+  <div class="world-rules-grid">
+    <div class="world-rule-card">
+      <span class="num-badge">1</span>
+      <div>
+        <h4>Magic is natural</h4>
+        <p>Not a separate fantasy world, but magical elements exist within the real village.</p>
+      </div>
+    </div>
+    <div class="world-rule-card">
+      <span class="num-badge">2</span>
+      <div>
+        <h4>Spirits are neighbors</h4>
+        <p>Not scary, not otherworldly. The spirits are part of the community.</p>
+      </div>
+    </div>
+    <div class="world-rule-card">
+      <span class="num-badge">3</span>
+      <div>
+        <h4>Craft carries memory</h4>
+        <p>Old things have stories. Fabric, pottery, plants — all carry energy.</p>
+      </div>
+    </div>
+    <div class="world-rule-card">
+      <span class="num-badge">4</span>
+      <div>
+        <h4>Community is everything</h4>
+        <p>The village survives because people help each other, living and dead.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>1.3 Locations</h3>
+
+  <!-- AREA HERO CARDS -->
+  <div class="area-hero">
+    <div class="area-hero-card area-1">
+      <div class="area-hero-icon">🏪</div>
+      <h3>The Old Fabric Shop</h3>
+      <p class="thai-title">ร้านผ้าโบราณ</p>
+      <p class="vibe">"Warm amber light, dust motes floating, fabric draped everywhere. Cozy but slightly mysterious."</p>
+      <p>A centuries-old shop filled with bolts of fabric from around the world.</p>
+      <div class="chains-label">Items (Chains):</div>
+      <div class="chain-tags">
+        <span class="chain-tag-visual">ผ้าคราม T1-3</span>
+        <span class="chain-tag-visual">ผ้าฝ้าย T1-3</span>
+        <span class="chain-tag-visual">ผ้าไหม T4-6</span>
+        <span class="chain-tag-visual">ดอกไม้ปัก T4-6</span>
+        <span class="chain-tag-visual">ลายฉลุ T7-10</span>
+      </div>
+    </div>
+    <div class="area-hero-card area-2">
+      <div class="area-hero-icon">🌿</div>
+      <h3>The Canal Garden</h3>
+      <p class="thai-title">สวนริมคลอง</p>
+      <p class="vibe">"Green and fresh, morning mist, the sound of water. Peaceful and grounding."</p>
+      <p>A lush garden along a calm canal. Morning glories climb bamboo trellises.</p>
+      <div class="chains-label">Items (Chains):</div>
+      <div class="chain-tags">
+        <span class="chain-tag-visual">ดอกมะลิ T1-3</span>
+        <span class="chain-tag-visual">ดอกกระถิน T1-3</span>
+        <span class="chain-tag-visual">ใบไผ่ T4-6</span>
+        <span class="chain-tag-visual">ผลไม้ T4-6</span>
+        <span class="chain-tag-visual">ธูปชูชก T7-10</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="area-card area-1">
+    <p class="thai-title">Area 1: ร้านผ้าโบราณ</p>
+    <h3>The Old Fabric Shop</h3>
+    <p class="vibe">"Warm amber light, dust motes floating, fabric draped everywhere. Cozy but slightly mysterious."</p>
+    <p>A centuries-old shop filled with bolts of fabric from around the world. Each piece has a story — a wedding dress from one generation, a temple robe from another. The shop smells of jasmine and old paper.</p>
+    <div class="magic">
+      <strong>Magic element:</strong> The fabric seems to fold itself sometimes. The loom works without anyone touching it after midnight.
+    </div>
+    <div>
+      <strong>Items (Chains):</strong>
+      <div class="chain-list">
+        <span class="chain-tag">ผ้าคราม (Indigo fabric) — Tiers 1-3</span>
+        <span class="chain-tag">ผ้าฝ้าย (Cotton fabric) — Tiers 1-3</span>
+        <span class="chain-tag">ผ้าไหม (Silk) — Tiers 4-6</span>
+        <span class="chain-tag">ดอกไม้ปัก (Embroidered flowers) — Tiers 4-6</span>
+        <span class="chain-tag">ลายฉลุ (Cut-work patterns) — Tiers 7-10</span>
+      </div>
+    </div>
+    <p><strong>Character:</strong> คุณป้ามะลิ (Aunt Mali)</p>
+  </div>
+
+  <div class="area-card area-2">
+    <p class="thai-title">Area 2: สวนริมคลอง</p>
+    <h3>The Canal Garden</h3>
+    <p class="vibe">"Green and fresh, morning mist, the sound of water. Peaceful and grounding."</p>
+    <p>A lush garden along a calm canal. Morning glories climb bamboo trellises, lotus flowers float in the water, and a small temple sits under a banyan tree. Butterflies and dragonflies everywhere.</p>
+    <div class="magic">
+      <strong>Magic element:</strong> The plants grow faster than they should. Sometimes a dragonfly lands and you hear a whisper.
+    </div>
+    <div>
+      <strong>Items (Chains):</strong>
+      <div class="chain-list">
+        <span class="chain-tag">ดอกมะลิ (Jasmine flowers) — Tiers 1-3</span>
+        <span class="chain-tag">ดอกกระถิน (Acacia flowers) — Tiers 1-3</span>
+        <span class="chain-tag">ใบไผ่ (Bamboo leaves) — Tiers 4-6</span>
+        <span class="chain-tag">ผลไม้ (Tropical fruits) — Tiers 4-6</span>
+        <span class="chain-tag">ธูปชูชก (Incense sticks) — Tiers 7-10</span>
+      </div>
+    </div>
+    <p><strong>Character:</strong> พี่แดง (Daeng)</p>
+  </div>
+
+  <div class="area-card area-3">
+    <p class="thai-title">Area 3: บ้านของผีเล็ก</p>
+    <h3>The Friendly Spirits' Home</h3>
+    <p class="vibe">"Warm candlelight, soft shadows, friendly presence. Like being welcomed into someone's home where you can't quite see the host."</p>
+    <p>An old wooden house where a family of small spirits live. Not abandoned — the spirits keep it clean, polish the brass, tend the small altar. The house smells of incense and watermelon.</p>
+    <div class="magic">
+      <strong>Magic element:</strong> Small things move when you're not looking. Offerings disappear. You feel watched — but kindly.
+    </div>
+    <div>
+      <strong>Items (Chains):</strong>
+      <div class="chain-list">
+        <span class="chain-tag">ถ่าน (Charcoal) — Tiers 1-3</span>
+        <span class="chain-tag">เทียน (Candles) — Tiers 1-3</span>
+        <span class="chain-tag">ธูป (Incense) — Tiers 4-6</span>
+        <span class="chain-tag">กระถาง (Pottery) — Tiers 4-6</span>
+        <span class="chain-tag">ภาชนะเก่า (Antique dishes) — Tiers 7-10</span>
+      </div>
+    </div>
+    <p><strong>Character:</strong> ผีเอื้อ (Spirits)</p>
+  </div>
+</section>
+
+<!-- SECTION 2: CHARACTERS -->
+<section id="characters">
+  <h2><span class="icon">👥</span> 2. Characters</h2>
+
+  <h3>Protagonist</h3>
+
+  <!-- CHARACTER SHOWCASE -->
+  <div class="char-showcase">
+    <div class="char-avatar-card protagonist">
+      <div class="avatar" style="background:linear-gradient(135deg,#e67e22,#f39c12);">👩</div>
+      <span class="role-badge" style="background:var(--primary);color:white;">PROTAGONIST</span>
+      <h4>Mali</h4>
+      <p class="thai-name">มะลิ</p>
+      <p style="font-size:0.8rem;color:var(--text-light);margin-top:0.5rem;">Mid-20s, designer</p>
+    </div>
+    <div class="char-avatar-card">
+      <div class="avatar" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);">👵</div>
+      <span class="role-badge" style="background:var(--accent);color:var(--secondary);">AREA 1</span>
+      <h4>Aunt Mali</h4>
+      <p class="thai-name">คุณป้ามะลิ</p>
+      <p style="font-size:0.8rem;color:var(--text-light);margin-top:0.5rem;">Early 70s</p>
+    </div>
+    <div class="char-avatar-card">
+      <div class="avatar" style="background:linear-gradient(135deg,#27ae60,#2ecc71);">👨</div>
+      <span class="role-badge" style="background:var(--info);color:white;">AREA 2</span>
+      <h4>Daeng</h4>
+      <p class="thai-name">พี่แดง</p>
+      <p style="font-size:0.8rem;color:var(--text-light);margin-top:0.5rem;">Early 30s</p>
+    </div>
+    <div class="char-avatar-card">
+      <div class="avatar" style="background:linear-gradient(135deg,#3498db,#2980b9);">👧</div>
+      <span class="role-badge" style="background:#e74c3c;color:white;">VILLAGE</span>
+      <h4>Pin</h4>
+      <p class="thai-name">น้องปิ่น</p>
+      <p style="font-size:0.8rem;color:var(--text-light);margin-top:0.5rem;">8-10 years</p>
+    </div>
+    <div class="char-avatar-card">
+      <div class="avatar" style="background:linear-gradient(135deg,#f39c12,#e67e22);">👴</div>
+      <span class="role-badge" style="background:#95a5a6;color:white;">ELDER</span>
+      <h4>Uncle Somchai</h4>
+      <p class="thai-name">ลุงสมหมาย</p>
+      <p style="font-size:0.8rem;color:var(--text-light);margin-top:0.5rem;">Late 60s</p>
+    </div>
+    <div class="char-avatar-card">
+      <div class="avatar" style="background:linear-gradient(135deg,#1abc9c,#16a085);">👩‍🦰</div>
+      <span class="role-badge" style="background:var(--magic);color:white;">MARKET</span>
+      <h4>Nai Vilai</h4>
+      <p class="thai-name">คุณนายวิไล</p>
+      <p style="font-size:0.8rem;color:var(--text-light);margin-top:0.5rem;">Late 40s</p>
+    </div>
+    <div class="char-avatar-card">
+      <div class="avatar" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);">✨</div>
+      <span class="role-badge" style="background:var(--magic);color:white;">SPIRITS</span>
+      <h4>Phi Eua</h4>
+      <p class="thai-name">ผีเอื้อ</p>
+      <p style="font-size:0.8rem;color:var(--text-light);margin-top:0.5rem;">Very old</p>
+    </div>
+  </div>
+
+  <div class="character-card" style="border-color:var(--primary);background:linear-gradient(135deg,#fff9e6,white);">
+    <span class="role-badge">PROTAGONIST</span>
+    <h3>มะลิ (Mali)</h3>
+    <p class="age">Young woman, mid-20s</p>
+    <p>A young woman who studied design in Bangkok and worked there for a couple of years. Now she's back in her home village — called back by her aunt's letter that said simply: "The shop needs you."</p>
+
+    <div class="appearance">
+      <strong>Appearance:</strong> Medium height, warm brown skin, hair in a practical ponytail (sometimes messy), wears casual clothes — t-shirt, jeans, comfortable sandals. Has a designer's eye — notices details, color, texture. Carries a small sketchbook.
+    </div>
+
+    <div class="appearance">
+      <strong>Personality:</strong> Observant and curious, warm but slightly guarded (just returned, adjusting), hardworking, follows through, has a dry sense of humor. Initially confused about why she's really back, eventually discovers her own answer.
+    </div>
+
+    <div class="arc">
+      <strong>Arc (MVP):</strong>
+      <ul style="margin:0.5rem 0 0 1.5rem;">
+        <li>Ch1: Return and reconnect</li>
+        <li>Ch2: Discover the shop's secrets</li>
+        <li>Ch3: Make the village her own</li>
+        <li>Ch4: Embrace her role</li>
+        <li>Ch5: Choose to stay (for now) and help the village</li>
+      </ul>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.75rem;">
+      <div style="background:#f8f9fa;padding:0.75rem;border-radius:8px;">
+        <strong>What she wants (stated):</strong> To help Aunt Mali with the shop
+      </div>
+      <div style="background:#f8f9fa;padding:0.75rem;border-radius:8px;">
+        <strong>What she wants (unstated):</strong> To find her place, to understand why she left, to decide if she belongs here or in the city
+      </div>
+    </div>
+  </div>
+
+  <h3>Supporting Cast</h3>
+
+  <div class="character-card">
+    <span class="role-badge">AREA 1</span>
+    <h3>คุณป้ามะลิ (Aunt Mali)</h3>
+    <p class="age">Early 70s</p>
+    <p><strong>Role:</strong> Owner of the Old Fabric Shop, Mali's aunt who raised her. Kind but secretive. Knows more than she tells. Has a gentle humor. Treats everyone — living and not — with equal respect.</p>
+    <div class="arc">
+      <strong>Arc:</strong> Has kept the shop running for decades, knows about the spirits, has been waiting for the right moment to call Mali back — but won't say why.
+    </div>
+    <p><strong>What she's hiding:</strong> Why she really called Mali back. The shop's connection to something older. Her own history with the spirits.</p>
+  </div>
+
+  <div class="character-card">
+    <span class="role-badge">AREA 2</span>
+    <h3>พี่แดง (Daeng)</h3>
+    <p class="age">Early 30s</p>
+    <p><strong>Role:</strong> Tailor, works at the shop. Hardworking, nature-loving, quiet but present. Good with his hands. Notices things others miss.</p>
+    <div class="appearance">
+      <strong>Appearance:</strong> Taller than Mali, lean build, short dark hair, wears white shirts (easy to keep clean while working), has ink stains on his fingers from sketching designs. No-nonsense but gentle.
+    </div>
+    <div class="arc">
+      <strong>Arc:</strong> Has worked at the shop since he was young. Has his own relationship with the spirits. Sees Mali as both a friend and a complication.
+    </div>
+    <p><strong>Relationship to Mali:</strong> Friend from childhood, now coworker. There's an unspoken history — they were close as kids, then grew apart when she left for Bangkok.</p>
+  </div>
+
+  <div class="character-card">
+    <span class="role-badge">VILLAGE</span>
+    <h3>น้องปิ่น (Pin)</h3>
+    <p class="age">8-10 years old</p>
+    <p><strong>Role:</strong> Village child, follows Aunt Mali everywhere. Curious, fearless, believes in everything. Aspiring spirit expert. Tells everyone about the ghosts she sees (everyone thinks she has a good imagination).</p>
+    <div class="appearance">
+      <strong>Appearance:</strong> Small, messy hair (always seems to be running somewhere), big eyes, bright face, wears shorts and t-shirts, bare feet. Always has some small treasure in her pockets.
+    </div>
+    <div class="arc">
+      <strong>Arc:</strong> Has actually been seeing spirits since she was tiny. She's not scared because Aunt Mali taught her they're just neighbors. Her "imaginary friend" is ผีเอื้อ.
+    </div>
+    <p><strong>Relationship to Mali:</strong> Thinks Mali is the coolest because she came from "the city." Wants to show her all the spirit spots.</p>
+  </div>
+
+  <div class="character-card">
+    <span class="role-badge">ELDER</span>
+    <h3>ลุงสมหมาย (Uncle Somchai)</h3>
+    <p class="age">Late 60s</p>
+    <p><strong>Role:</strong> Bird seller, village elder. Superstitious, believes in fortune-telling and auspicious days. But genuinely kind underneath. Tells the same stories over and over. Has a pet parrot that mimics him.</p>
+    <div class="appearance">
+      <strong>Appearance:</strong> Tall and stooped, wears a worn hat, has birds in cages on his cart, walks with a stick, laughs a lot.
+    </div>
+    <div class="arc">
+      <strong>Arc:</strong> Has been predicting fortunes for decades. His predictions are usually wrong but somehow people still believe him. Secretly knows more about the village's history than he lets on.
+    </div>
+    <p><strong>What he believes:</strong> That the shop is protected by something old. That Mali's return was predicted. That the spirits chose her.</p>
+  </div>
+
+  <div class="character-card">
+    <span class="role-badge">MARKET</span>
+    <h3>คุณนายวิไล (Nai Vilai)</h3>
+    <p class="age">Late 40s</p>
+    <p><strong>Role:</strong> Market vendor, gossip center. Talkative, well-meaning, always knows everyone's business. Sells vegetables and knows what everyone is eating for dinner. Can be trusted with secrets (but not with time).</p>
+    <div class="appearance">
+      <strong>Appearance:</strong> Round and warm, colorful market clothes, always moving — stirring, arranging, gesturing, has a voice that carries.
+    </div>
+    <div class="arc">
+      <strong>Arc:</strong> The village's information network. She doesn't create drama — she just knows about it first. Her gossip has saved the village more than once.
+    </div>
+    <p><strong>What she knows:</strong> Everyone's business, including things Aunt Mali has told her in confidence. She knows why Mali was really called back — but promised not to tell.</p>
+  </div>
+
+  <div class="character-card" style="border-color:var(--magic);background:linear-gradient(135deg,#f5eef8,white);">
+    <span class="role-badge" style="background:var(--magic);color:white;">SPIRITS</span>
+    <h3>ผีเอื้อ (Phi Eua) — The Friendly Spirits</h3>
+    <p class="age">Very old (no one knows how old)</p>
+    <p><strong>Role:</strong> House guardians, inhabitants of Area 3. Shy but helpful. Polite to a fault. Can't say no to a request. Kind in a quiet way. Have their own hierarchy and customs. Love watermelon.</p>
+    <div class="appearance">
+      <strong>Appearance:</strong> Small (about half Mali's height), translucent, soft glow, simple clothes — like old photographs, wings that fold away when not in use, big eyes, gentle faces.
+    </div>
+    <div class="arc">
+      <strong>Arc:</strong> They were here before the house was built. They've been protecting the village in small ways — moving things, warning people in dreams, keeping the bad spirits out. They've been watching Mali since she was born.
+    </div>
+    <p><strong>What they want:</strong> To help, but they can't directly intervene in human affairs. They can only guide. Their main job: protect the village, and the shop, and now — Mali.</p>
+  </div>
+</section>
+
+<!-- SECTION 3: NARRATIVE -->
+<section id="narrative">
+  <h2><span class="icon">📖</span> 3. Narrative Structure</h2>
+
+  <h3>3.1 Chapter Breakdown</h3>
+
+  <!-- CHAPTER VISUAL CARDS -->
+  <div class="chapter-visual">
+    <div class="chapter-card-visual">
+      <div class="chapter-header">
+        <div class="chapter-num">1</div>
+        <div class="chapter-title">
+          <h3>Coming Home</h3>
+          <span class="thai">กลับมาบ้าน</span>
+        </div>
+      </div>
+      <div class="chapter-unlock">
+        <strong>Unlocks:</strong> Area 1, 3 chains, NPC Orders
+      </div>
+      <div class="chapter-cliff">
+        <strong>⚡ Cliffhanger:</strong> Mali finds a hidden letter — "If she's the one the shop chose, she'll understand." Who wrote this?
+      </div>
+    </div>
+
+    <div class="chapter-card-visual">
+      <div class="chapter-header">
+        <div class="chapter-num">2</div>
+        <div class="chapter-title">
+          <h3>Secret of Old Fabric</h3>
+          <span class="thai">ความลับของผ้าเก่า</span>
+        </div>
+      </div>
+      <div class="chapter-unlock">
+        <strong>Unlocks:</strong> Area 1 expanded, 2 more chains, daily orders
+      </div>
+      <div class="chapter-cliff">
+        <strong>⚡ Cliffhanger:</strong> Aunt Mali: "It's time." Mali: "Time for what?"
+      </div>
+    </div>
+
+    <div class="chapter-card-visual">
+      <div class="chapter-header">
+        <div class="chapter-num">3</div>
+        <div class="chapter-title">
+          <h3>What the Canal Says</h3>
+          <span class="thai">สิ่งที่คลองเล่า</span>
+        </div>
+      </div>
+      <div class="chapter-unlock">
+        <strong>Unlocks:</strong> Area 2, 5 chains, weekly events
+      </div>
+      <div class="chapter-cliff">
+        <strong>⚡ Cliffhanger:</strong> Pin: "The canal is glowing. Something is coming."
+      </div>
+    </div>
+
+    <div class="chapter-card-visual">
+      <div class="chapter-header">
+        <div class="chapter-num">4</div>
+        <div class="chapter-title">
+          <h3>Spirits Help Out</h3>
+          <span class="thai">ผีช่วยงาน</span>
+        </div>
+      </div>
+      <div class="chapter-unlock">
+        <strong>Unlocks:</strong> Area 3, 7 chains, storage expansion
+      </div>
+      <div class="chapter-cliff">
+        <strong>⚡ Cliffhanger:</strong> Aunt Mali offers to teach Mali "everything" — Mali needs time to think.
+      </div>
+    </div>
+
+    <div class="chapter-card-visual ch5">
+      <div class="chapter-header">
+        <div class="chapter-num">5</div>
+        <div class="chapter-title">
+          <h3>The Festival</h3>
+          <span class="thai">งานรื่นเริง</span>
+        </div>
+      </div>
+      <div class="chapter-unlock">
+        <strong>Unlocks:</strong> All areas, 10 chains — MVP Complete!
+      </div>
+      <div class="chapter-cliff" style="border-color:var(--success);background:#e8f8f0;">
+        <strong>🎉 Ending:</strong> Mali: "Teach me." — She chooses to stay.
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter-card">
+    <h3>Chapter 1: กลับมาบ้าน</h3>
+    <p class="thai-ch">Coming Home</p>
+    <div class="state">
+      <strong>Opening state:</strong> Mali receives a letter from Aunt Mali asking her to come home. The letter says "The shop needs you" but nothing more. Mali, who left the village for Bangkok years ago, isn't sure what to expect. But she goes.
+    </div>
+    <div>
+      <strong>Events:</strong>
+      <ul class="events">
+        <li>Mali arrives at the village, finds it changed and unchanged</li>
+        <li>She meets คุณนายวิไล at the market (gossip intro)</li>
+        <li>She goes to the shop, is surprised by its condition — beautiful but tired</li>
+        <li>Aunt Mali is happy to see her but doesn't explain much</li>
+        <li>She meets พี่แดง again (childhood friend reunion)</li>
+        <li>She meets น้องปิ่น (who immediately declares her spirit expertise)</li>
+      </ul>
+    </div>
+    <div class="unlock">
+      <strong>New game elements unlocked:</strong>
+      <ul style="margin:0.5rem 0 0 1.5rem;font-size:0.9rem;">
+        <li>Area 1 (ร้านผ้าโบราณ)</li>
+        <li>3 chains (ผ้าคราม, ผ้าฝ้าย, ดอกมะลิ)</li>
+        <li>NPC Orders system</li>
+      </ul>
+    </div>
+    <div class="cliffhanger">
+      <strong>⚡ Cliffhanger ending:</strong> Mali finds a letter hidden in the shop — not addressed to her, but from someone years ago. "If she's the one the shop chose, she'll understand." Who wrote this? What does the shop "choose"?
+    </div>
+  </div>
+
+  <div class="chapter-card">
+    <h3>Chapter 2: ความลับของผ้าเก่า</h3>
+    <p class="thai-ch">The Secret of Old Fabric</p>
+    <div class="state">
+      <strong>Opening state:</strong> Mali is settling into village life, helping at the shop. She's noticed small things — fabric folding itself, the loom working at odd hours. She's trying not to be weird about it.
+    </div>
+    <div>
+      <strong>Events:</strong>
+      <ul class="events">
+        <li>Mali starts taking orders from villagers</li>
+        <li>She notices patterns in what people ask for — specific fabrics for specific reasons</li>
+        <li>น้องปิ่น shows her where the spirit house is (Area 3) — "that's where ผีเอื้อ lives"</li>
+        <li>Mali meets the spirits for the first time (brief, they hide)</li>
+        <li>Aunt Mali tells a story about the shop's founding (but leaves out the ending)</li>
+        <li>Mali finds old photographs of her mother at the shop — her mother never mentioned this</li>
+      </ul>
+    </div>
+    <div class="unlock">
+      <strong>New game elements unlocked:</strong>
+      <ul style="margin:0.5rem 0 0 1.5rem;font-size:0.9rem;">
+        <li>Area 1 expanded (more decoration slots)</li>
+        <li>2 additional chains (ผ้าไหม, ดอกไม้ปัก)</li>
+        <li>Daily orders unlocked</li>
+      </ul>
+    </div>
+    <div class="cliffhanger">
+      <strong>⚡ Cliffhanger ending:</strong> Mali finds a piece of fabric hidden behind the old photographs. It's embroidered with the same symbol that was on the letter she found. When she shows Aunt Mali, her aunt's reaction is — not surprise, but something like relief. "It's time," Aunt Mali says. "Time for what?" Mali asks. Aunt Mali doesn't answer.
+    </div>
+  </div>
+
+  <div class="chapter-card">
+    <h3>Chapter 3: สิ่งที่คลองเล่า</h3>
+    <p class="thai-ch">What the Canal Says</p>
+    <div class="state">
+      <strong>Opening state:</strong> Mali has been at the shop for a few weeks. She and Aunt Mali are working together on a big order — someone in the city wants traditional wedding fabric, and the shop was chosen. Mali is excited and nervous.
+    </div>
+    <div>
+      <strong>Events:</strong>
+      <ul class="events">
+        <li>Mali works on the wedding order with พี่แดง</li>
+        <li>She spends more time in Area 2 (สวนริมคลอง), helping with the garden</li>
+        <li>น้องปิ่น reports seeing "a shadow in the canal" — most people dismiss it</li>
+        <li>Mali investigates, finds evidence of something</li>
+        <li>The spirits in Area 3 seem agitated — they warn her in their subtle way</li>
+        <li>Mali discovers that the shop has always been connected to the canal — it's an old trade route</li>
+        <li>Aunt Mali finally tells her something real: the shop is a "thread point" — a place where the spirit world and human world are thin</li>
+      </ul>
+    </div>
+    <div class="unlock">
+      <strong>New game elements unlocked:</strong>
+      <ul style="margin:0.5rem 0 0 1.5rem;font-size:0.9rem;">
+        <li>Area 2 (สวนริมคลอง)</li>
+        <li>5 chains (ผ้าฝ้าย, ดอกกระถิน, ใบไผ่, ผลไม้, ธูป)</li>
+        <li>Weekly events unlocked</li>
+      </ul>
+    </div>
+    <div class="cliffhanger">
+      <strong>⚡ Cliffhanger ending:</strong> น้องปิ่น runs to Mali, breathless. "The canal is glowing," she says. "Something is coming."
+    </div>
+  </div>
+
+  <div class="chapter-card">
+    <h3>Chapter 4: ผีช่วยงาน</h3>
+    <p class="thai-ch">The Spirits Help Out</p>
+    <div class="state">
+      <strong>Opening state:</strong> Something has definitely shifted. The canal glowed last night, and the village is nervous. But the next morning, the wedding order is due — and the shop is behind. Mali is panicking.
+    </div>
+    <div>
+      <strong>Events:</strong>
+      <ul class="events">
+        <li>Mali works through the night on the order</li>
+        <li>The spirits (ผีเอื้อ) quietly help — moving fabric, holding things in place</li>
+        <li>Mali doesn't see them directly but knows they're there</li>
+        <li>พี่แดง stays to help — they talk about what the shop means to them</li>
+        <li>The order is completed, delivered, the customer is happy</li>
+        <li>Aunt Mali tells Mali the full story: the shop has protected the village for generations. The spirits here aren't just ghosts — they're guardians. And Mali was called back because she has "the thread" — the ability to see and work with them</li>
+      </ul>
+    </div>
+    <div class="unlock">
+      <strong>New game elements unlocked:</strong>
+      <ul style="margin:0.5rem 0 0 1.5rem;font-size:0.9rem;">
+        <li>Area 3 (บ้านของผีเล็ก)</li>
+        <li>7 chains (including ผ้าไหม, ลายฉลุ, เทียน, ธูป)</li>
+        <li>Storage expansion available</li>
+      </ul>
+    </div>
+    <div class="cliffhanger">
+      <strong>⚡ Cliffhanger ending:</strong> Mali is processing all of this. She's not sure she believes it, but the spirits helped, and that was real. Aunt Mali gives her a choice: "You can go back to Bangkok. The shop will find someone else. Or you can stay, and I'll teach you everything." Mali says she needs time to think.
+    </div>
+  </div>
+
+  <div class="chapter-card" style="border-color:var(--success);">
+    <h3>Chapter 5: งานรื่นเริง</h3>
+    <p class="thai-ch">The Festival</p>
+    <div class="state">
+      <strong>Opening state:</strong> The village is preparing for its annual festival — a celebration of the canal, the spirits, and the community. Mali has been working hard, the shop is thriving, and she's starting to feel like she belongs. But she's still thinking about Aunt Mali's offer.
+    </div>
+    <div>
+      <strong>Events:</strong>
+      <ul class="events">
+        <li>The village prepares for the festival (everyone has a role)</li>
+        <li>Mali helps decorate Area 1, 2, and 3</li>
+        <li>Old friends and neighbors come to visit</li>
+        <li>คุณนายวิไล tells Mali stories about the festival growing up</li>
+        <li>ลุงสมหมาย predicts (wrong, as always) that something special will happen</li>
+        <li>น้องปิ่น is SO EXCITED about the festival spirits (the real ones)</li>
+        <li>The spirits are preparing too — they have their own role in the festival</li>
+      </ul>
+    </div>
+    <div class="unlock">
+      <strong>Festival scene (central event):</strong>
+      <p style="margin:0.5rem 0;font-size:0.9rem;">The village comes together. Mali participates in the traditional activities. At night, there's a lantern ceremony. Mali floats a lantern with a wish. The spirits appear (briefly, to those who can see them) — they also have wishes. Aunt Mali watches Mali with pride.</p>
+    </div>
+    <div class="state" style="background:#e8f8f0;">
+      <strong>Ending:</strong> Mali hasn't given her final answer yet about staying. But in this moment, watching the lanterns float away, she realizes: she doesn't have to choose between here and there. She can be both. She can stay and still be who she is.
+    </div>
+    <div class="state" style="background:#d5f5e3;border-color:var(--success);">
+      <strong>Final scene:</strong> Mali back at the shop the next morning. She's not leaving. She looks at Aunt Mali and says: "Teach me."
+    </div>
+  </div>
+
+  <h3>3.2 Post-MVP Cliffhangers (Chapters 6-7)</h3>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Chapter 6 (post-MVP)</h4>
+      <p>Someone comes to the village — someone who knows about "thread points." They want to buy the shop. Aunt Mali says no. But this person doesn't take no for an answer.</p>
+    </div>
+    <div class="info-card">
+      <h4>Chapter 7 (post-MVP)</h4>
+      <p>The village's old enemy — another spirit faction that doesn't believe in coexistence — is making moves. The spirits are worried. Mali and the spirits must work together to protect the village.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: DIALOGUE -->
+<section id="dialogue">
+  <h2><span class="icon">💬</span> 4. Dialogue Spec</h2>
+
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Total at MVP</td><td>~3,000-5,000 words</td></tr>
+    <tr><td>Per chapter</td><td>~500-800 words</td></tr>
+    <tr><td>Per NPC</td><td>~150-250 words</td></tr>
+    <tr><td>Format</td><td>JSON strings per language</td></tr>
+    <tr><td>Localization-ready</td><td>Yes</td></tr>
+  </table>
+
+  <h4>Dialogue Categories</h4>
+  <div class="info-grid">
+    <div class="info-card"><h4>Cutscene narration</h4><p>Story beats</p></div>
+    <div class="info-card"><h4>NPC conversation</h4><p>Ongoing</p></div>
+    <div class="info-card"><h4>Order dialogue</h4><p>NPC requests</p></div>
+    <div class="info-card"><h4>Tutorial dialogue</h4><p>FTUE</p></div>
+    <div class="info-card"><h4>UI hints</h4><p>Contextual</p></div>
+  </div>
+
+  <h4>Key Dialogue Moments to Write</h4>
+  <div class="dialogue-list">
+    <ol style="padding-left:1.5rem;">
+      <li>Mali arrives at the village (Ch1)</li>
+      <li>Mali meets Aunt Mali (Ch1)</li>
+      <li>Mali finds the hidden letter (Ch1)</li>
+      <li>Mali meets the spirits first time (Ch2)</li>
+      <li>Aunt Mali's story about the shop (Ch2)</li>
+      <li>Mali discovers the thread point (Ch3)</li>
+      <li>Spirits help with wedding order (Ch4)</li>
+      <li>Aunt Mali's offer (Ch4)</li>
+      <li>Festival scene (Ch5)</li>
+      <li>Mali's choice to stay (Ch5)</li>
+    </ol>
+  </div>
+</section>
+
+<!-- SECTION 5: ART -->
+<section id="art">
+  <h2><span class="icon">🎨</span> 5. Art Requirements</h2>
+
+  <h3>Character Art</h3>
+  <table>
+    <tr><th>Character</th><th>Portraits</th><th>Expressions</th><th>Notes</th></tr>
+    <tr><td>มะลิ (Mali)</td><td>1</td><td>6</td><td>Neutral, happy, sad, surprised, determined, thinking</td></tr>
+    <tr><td>คุณป้ามะลิ</td><td>1</td><td>6</td><td>Kind, mysterious, strict, tired, proud, sad</td></tr>
+    <tr><td>พี่แดง</td><td>1</td><td>6</td><td>Neutral, focused, warm, surprised, tired, happy</td></tr>
+    <tr><td>น้องปิ่น</td><td>1</td><td>6</td><td>Excited, curious, scared, happy, serious, sleepy</td></tr>
+    <tr><td>ลุงสมหมาย</td><td>1</td><td>6</td><td>Jolly, serious, conspiratorial, surprised, proud, confused</td></tr>
+    <tr><td>คุณนายวิไล</td><td>1</td><td>6</td><td>Warm, gossipy, conspiratorial, surprised, kind, stern</td></tr>
+    <tr><td>ผีเอื้อ</td><td>1</td><td>6</td><td>Shy, happy, worried, curious, grateful, excited</td></tr>
+  </table>
+
+  <h3>Cutscene Illustrations</h3>
+  <table>
+    <tr><th>Chapter</th><th>Scene</th><th>Description</th></tr>
+    <tr><td>1</td><td>Mali arrives</td><td>Mali stepping off boat onto the dock, village in background</td></tr>
+    <tr><td>2</td><td>Hidden letter</td><td>Mali holding old letter, fabric swatches around her</td></tr>
+    <tr><td>3</td><td>Canal glow</td><td>Canal glowing at night, small figure watching from bank</td></tr>
+    <tr><td>4</td><td>Spirits helping</td><td>Mali working at night, small spirit shapes helping</td></tr>
+    <tr><td>5</td><td>Festival</td><td>Village festival, lanterns floating, characters together</td></tr>
+  </table>
+
+  <h3>Area Art</h3>
+  <table>
+    <tr><th>Area</th><th>Scenes needed</th><th>Upgrade states</th></tr>
+    <tr><td>ร้านผ้าโบราณ</td><td>1</td><td>3 (initial, mid-upgrade, full)</td></tr>
+    <tr><td>สวนริมคลอง</td><td>1</td><td>3</td></tr>
+    <tr><td>บ้านของผีเล็ก</td><td>1</td><td>3</td></tr>
+  </table>
+</section>
+
+<!-- SECTION 6: TONE -->
+<section id="tone">
+  <h2><span class="icon">✨</span> 6. Tone Guide</h2>
+
+  <!-- TONE MATRIX -->
+  <div class="tone-matrix">
+    <div class="tone-panel do">
+      <h4>✓ DO</h4>
+      <ul>
+        <li>Warm, cozy, inviting</li>
+        <li>Light mystery (not dark)</li>
+        <li>Community and belonging</li>
+        <li>Humor in everyday moments</li>
+        <li>Spirits as friends, not foes</li>
+        <li>Thai-inspired aesthetics as accent</li>
+      </ul>
+    </div>
+    <div class="tone-panel dont">
+      <h4>✗ DON'T</h4>
+      <ul>
+        <li>Horror, violence, graphic imagery</li>
+        <li>Dark or depressive themes</li>
+        <li>Cultural appropriation</li>
+        <li>Exclusionary representation</li>
+        <li>Heavy exposition (show, don't tell)</li>
+        <li>Making specific Thai cultural claims</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="info-card" style="border-color:var(--magic);margin-top:1rem;text-align:center;">
+    <h4>Reference</h4>
+    <p>Gossip Harbor (narrative warmth + mystery) + Seaside Escape (cozy + community)</p>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:2rem;color:var(--text-light);font-size:0.9rem;">
+  <p>🏮 Lantern & Legend — Story Bible v1.0</p>
+  <p>Bonfire Gathering</p>
+</footer>
+
+</div>
+</body>
+</html>

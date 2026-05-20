@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M1 Deliverables — Bonfire Gathering</title>
+<style>
+  :root {
+    --primary: #27ae60;
+    --primary-dark: #1e8449;
+    --secondary: #2c3e50;
+    --accent: #f39c12;
+    --bg-light: #e8f8f0;
+    --bg-card: #ffffff;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --border: #ecf0f1;
+    --success: #27ae60;
+    --info: #3498db;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--bg-light) 0%, #d5f5e3 100%);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  header {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(135deg, var(--secondary) 0%, #1a252f 100%);
+    color: white;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(39,174,96,0.15) 0%, transparent 50%);
+    animation: glow 8s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+
+  .status-badge {
+    display: inline-block;
+    background: var(--success);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+
+  .header-meta {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  nav {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 1rem;
+    z-index: 100;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    justify-content: center;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  nav a:hover {
+    background: var(--primary);
+    color: white;
+  }
+
+  section {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+
+  section h2 {
+    color: var(--secondary);
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  section h2 .icon {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    color: var(--secondary);
+    font-size: 1.1rem;
+    margin: 1.5rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  h3::before {
+    content: '▶';
+    color: var(--accent);
+    font-size: 0.7rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+  }
+
+  th {
+    background: var(--secondary);
+    color: white;
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:nth-child(even) { background: #f8f9fa; }
+  tr:hover { background: #e8f8f0; }
+
+  .check-table td:first-child { width: 40px; text-align: center; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .info-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    border-left: 4px solid var(--primary);
+  }
+
+  .info-card h4 {
+    color: var(--secondary);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .info-card p { color: var(--text-light); font-size: 0.9rem; }
+
+  .spec-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+
+  .spec-item {
+    background: #f8f9fa;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+  }
+
+  .spec-item strong { color: var(--secondary); }
+
+  .checklist {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .checklist h4 {
+    color: var(--secondary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .check-item::before {
+    content: '☐';
+    font-size: 1.2rem;
+    color: var(--primary);
+  }
+
+  .timeline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .milestone {
+    flex: 1;
+    min-width: 150px;
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    border: 2px solid var(--border);
+    position: relative;
+  }
+
+  .milestone::after {
+    content: '→';
+    position: absolute;
+    right: -1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 1.5rem;
+  }
+
+  .milestone:last-child::after { display: none; }
+
+  .milestone .month {
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+  }
+
+  .milestone h4 { color: var(--secondary); font-size: 0.95rem; margin-top: 0.5rem; }
+  .milestone p { color: var(--text-light); font-size: 0.8rem; margin-top: 0.25rem; }
+
+  .character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .character-card {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    border-left: 4px solid var(--accent);
+  }
+
+  .character-card h4 {
+    color: var(--secondary);
+    font-size: 1.1rem;
+  }
+
+  .character-card .thai {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .character-card p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+
+  .area-list {
+    display: grid;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .area-item {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    border: 1px solid var(--border);
+  }
+
+  .area-item h4 {
+    color: var(--secondary);
+  }
+
+  .area-item .thai {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .next-steps {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .next-steps h4 {
+    color: white;
+    margin-bottom: 1rem;
+  }
+
+  .next-steps ol {
+    padding-left: 1.5rem;
+  }
+
+  .next-steps li {
+    padding: 0.4rem 0;
+    font-size: 0.95rem;
+  }
+
+  /* ===== CHECKLIST PROGRESS ===== */
+  .checklist-progress {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa, #e8e8e8);
+    border-radius: 12px;
+  }
+
+  .progress-ring {
+    width: 60px;
+    height: 60px;
+    position: relative;
+  }
+
+  .progress-ring svg {
+    transform: rotate(-90deg);
+  }
+
+  .progress-ring circle {
+    fill: none;
+    stroke-width: 6;
+  }
+
+  .progress-ring .bg {
+    stroke: #ddd;
+  }
+
+  .progress-ring .fill {
+    stroke: var(--primary);
+    stroke-dasharray: 157;
+    stroke-dashoffset: 157;
+    transition: stroke-dashoffset 0.5s;
+  }
+
+  .progress-ring .text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    color: var(--secondary);
+    font-size: 0.9rem;
+  }
+
+  .progress-info h4 {
+    color: var(--secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  .progress-info p {
+    color: var(--text-light);
+    font-size: 0.85rem;
+  }
+
+  /* ===== WEEK TIMELINE ===== */
+  .week-timeline {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+
+  .week-card {
+    flex: 1;
+    min-width: 150px;
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    position: relative;
+  }
+
+  .week-card.current {
+    border-color: var(--primary);
+    background: #f0fdf4;
+  }
+
+  .week-card .week-num {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .week-card.current .week-num {
+    background: var(--success);
+  }
+
+  .week-card h4 {
+    color: var(--secondary);
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .week-card ul {
+    list-style: none;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+  }
+
+  .week-card li {
+    padding: 0.2rem 0;
+  }
+
+  /* ===== CHARACTER CARDS ===== */
+  .char-visual {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .char-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 25px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .char-badge .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .char-badge .info strong {
+    color: var(--secondary);
+    font-size: 0.9rem;
+  }
+
+  .char-badge .info span {
+    color: var(--text-light);
+    font-size: 0.8rem;
+  }
+
+  /* ===== AREA ICONS ===== */
+  .area-icons {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .area-icon {
+    flex: 1;
+    min-width: 150px;
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    border: 2px solid var(--border);
+  }
+
+  .area-icon .icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .area-icon h4 {
+    color: var(--secondary);
+    font-size: 0.95rem;
+  }
+
+  .area-icon .thai {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    header h1 { font-size: 1.8rem; }
+    section { padding: 1.25rem; }
+    .timeline { flex-direction: column; }
+    .milestone::after { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>📋 M1 Deliverables</h1>
+  <p style="opacity:0.9;">Planning Phase Completion Report</p>
+  <div class="status-badge">✅ Planning Complete, Ready for Implementation</div>
+  <div class="header-meta">Last Updated: 2026-05-20</div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#documents">Documents</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#story">Story</a></li>
+    <li><a href="#checklist">Implementation</a></li>
+    <li><a href="#milestones">Milestones</a></li>
+    <li><a href="#next">Next Steps</a></li>
+  </ul>
+</nav>
+
+<section id="documents">
+  <h2><span class="icon">📄</span> Documents Delivered</h2>
+  <table>
+    <tr><th>#</th><th>Document</th><th>Path</th><th>Status</th></tr>
+    <tr><td>1</td><td>Tech Spec</td><td><code>docs/TECH_SPEC.md</code></td><td>✅ Complete</td></tr>
+    <tr><td>2</td><td>Game Design Doc</td><td><code>docs/GAME_DESIGN_DOC.md</code></td><td>✅ Complete</td></tr>
+    <tr><td>3</td><td>Story Bible</td><td><code>docs/STORY_BIBLE.md</code></td><td>✅ Complete</td></tr>
+  </table>
+</section>
+
+<section id="architecture">
+  <h2><span class="icon">🏗️</span> Architecture Summary</h2>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Engine</h4>
+      <p>Unity 2021 LTS+</p>
+    </div>
+    <div class="info-card">
+      <h4>Architecture</h4>
+      <p>Clean Architecture + MVVM + UniRx + VContainer</p>
+    </div>
+    <div class="info-card">
+      <h4>Firebase Stack</h4>
+      <p>Analytics, Remote Config, Auth, Firestore, Cloud Messaging</p>
+    </div>
+  </div>
+
+  <h3>Key Specs</h3>
+  <div class="spec-list">
+    <div class="spec-item"><strong>Board</strong><span>6×8 (48 cells) MVP → 7×9</span></div>
+    <div class="spec-item"><strong>Chains</strong><span>20 chains, 10 tiers live (MVP)</span></div>
+    <div class="spec-item"><strong>Energy</strong><span>100 cap, regen 1/2min</span></div>
+    <div class="spec-item"><strong>Storage</strong><span>20 off-board slots</span></div>
+    <div class="spec-item"><strong>Areas</strong><span>3 (MVP) → 6 (Beta)</span></div>
+  </div>
+</section>
+
+<section id="story">
+  <h2><span class="icon">📖</span> Story Summary — "Lantern & Legend"</h2>
+
+  <div class="info-card" style="margin-bottom:1rem;">
+    <h4>Protagonist: มะลิ (Mali)</h4>
+    <p>Young designer, returns home to help aunt's fabric shop</p>
+  </div>
+
+  <h3>5 Chapters MVP</h3>
+  <div class="area-list">
+    <div class="area-item">
+      <h4>Chapter 1: กลับมาบ้าน (Coming Home)</h4>
+      <p>Area 1 + 3 chains</p>
+    </div>
+    <div class="area-item">
+      <h4>Chapter 2: ความลับของผ้าเก่า (Secret of Old Fabric)</h4>
+      <p>Area 1 expanded</p>
+    </div>
+    <div class="area-item">
+      <h4>Chapter 3: สิ่งที่คลองเล่า (What the Canal Says)</h4>
+      <p>Area 2 + 5 chains</p>
+    </div>
+    <div class="area-item">
+      <h4>Chapter 4: ผีช่วยงาน (Spirits Help Out)</h4>
+      <p>Area 3 + 7 chains</p>
+    </div>
+    <div class="area-item">
+      <h4>Chapter 5: งานรื่นเริง (The Festival)</h4>
+      <p>All areas + 10 chains</p>
+    </div>
+  </div>
+
+  <h3>6 Supporting Characters</h3>
+  <div class="character-grid">
+    <div class="character-card">
+      <h4>คุณป้ามะลิ (Aunt)</h4>
+      <p class="thai">Shop owner, has secrets</p>
+    </div>
+    <div class="character-card">
+      <h4>พี่แดง (Daeng)</h4>
+      <p class="thai">Tailor, childhood friend</p>
+    </div>
+    <div class="character-card">
+      <h4>น้องปิ่น (Pin)</h4>
+      <p class="thai">Village child, spirit believer</p>
+    </div>
+    <div class="character-card">
+      <h4>ลุงสมหมาย (Uncle)</h4>
+      <p class="thai">Bird seller, superstitious</p>
+    </div>
+    <div class="character-card">
+      <h4>คุณนายวิไล (Nai)</h4>
+      <p class="thai">Market vendor, gossip center</p>
+    </div>
+    <div class="character-card">
+      <h4>ผีเอื้อ (Phi Eua)</h4>
+      <p class="thai">Friendly house spirits</p>
+    </div>
+  </div>
+
+  <h3>3 Areas</h3>
+  <div class="area-list">
+    <div class="area-item">
+      <h4>ร้านผ้าโบราณ</h4>
+      <p class="thai">The Old Fabric Shop</p>
+    </div>
+    <div class="area-item">
+      <h4>สวนริมคลอง</h4>
+      <p class="thai">The Canal Garden</p>
+    </div>
+    <div class="area-item">
+      <h4>บ้านของผีเล็ก</h4>
+      <p class="thai">The Friendly Spirits' Home</p>
+    </div>
+  </div>
+</section>
+
+<section id="checklist">
+  <h2><span class="icon">✅</span> Implementation Checklist (M1)</h2>
+
+  <!-- CHECKLIST PROGRESS -->
+  <div class="checklist-progress">
+    <div class="progress-ring">
+      <svg width="60" height="60">
+        <circle class="bg" cx="30" cy="30" r="25"/>
+        <circle class="fill" cx="30" cy="30" r="25" style="stroke-dashoffset: 60;"/>
+      </svg>
+      <span class="text">62%</span>
+    </div>
+    <div class="progress-info">
+      <h4>M1 Planning Complete</h4>
+      <p>Documents ready • Architecture defined • Story outlined</p>
+    </div>
+  </div>
+
+  <!-- WEEK TIMELINE -->
+  <div class="week-timeline">
+    <div class="week-card current">
+      <span class="week-num">WEEK 1-2</span>
+      <h4>Project Setup</h4>
+      <ul>
+        <li>✓ Unity project</li>
+        <li>✓ Packages install</li>
+        <li>✓ Architecture skeleton</li>
+        <li>○ Firebase config</li>
+        <li>○ Remote Config keys</li>
+      </ul>
+    </div>
+    <div class="week-card">
+      <span class="week-num">WEEK 3</span>
+      <h4>Core Domain</h4>
+      <ul>
+        <li>○ MergeItem entity</li>
+        <li>○ Chain entity</li>
+        <li>○ BoardState model</li>
+        <li>○ MergeSystem</li>
+        <li>○ EnergySystem</li>
+      </ul>
+    </div>
+    <div class="week-card">
+      <span class="week-num">WEEK 4</span>
+      <h4>Board Prototype</h4>
+      <ul>
+        <li>○ 6×8 grid UI</li>
+        <li>○ Cell states</li>
+        <li>○ Drag-drop</li>
+        <li>○ Merge animation</li>
+        <li>○ Persistence</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="checklist" style="display:none;">
+    <h4>📅 Week 1-2: Project Setup</h4>
+    <div class="check-item">Create Unity project</div>
+    <div class="check-item">Install packages (VContainer, UniRx, Firebase)</div>
+    <div class="check-item">Set up Clean Architecture folder structure</div>
+    <div class="check-item">Configure Firebase (google-services.json, GoogleService-Info.plist)</div>
+    <div class="check-item">Create Remote Config keys in Firebase console</div>
+  </div>
+
+  <div class="checklist">
+    <h4>📅 Week 3: Core Domain</h4>
+    <div class="check-item">MergeItem entity</div>
+    <div class="check-item">Chain entity (20 chains data)</div>
+    <div class="check-item">BoardState model</div>
+    <div class="check-item">PlayerData model</div>
+    <div class="check-item">MergeSystem (2-to-1 rule)</div>
+    <div class="check-item">EnergySystem (cap 100, regen 1/2min)</div>
+    <div class="check-item">GeneratorSystem</div>
+  </div>
+
+  <div class="checklist">
+    <h4>📅 Week 4: Board Prototype</h4>
+    <div class="check-item">6×8 grid UI</div>
+    <div class="check-item">Cell states (empty, occupied, locked)</div>
+    <div class="check-item">Drag-drop interaction</div>
+    <div class="check-item">Merge animation</div>
+    <div class="check-item">Basic persistence (PlayerPrefs)</div>
+  </div>
+</section>
+
+<section id="milestones">
+  <h2><span class="icon">🗓️</span> Milestone Timeline</h2>
+  <div class="timeline">
+    <div class="milestone">
+      <span class="month">M1</span>
+      <h4>Planning</h4>
+      <p>Docs + Unity project + core entities + board prototype</p>
+    </div>
+    <div class="milestone">
+      <span class="month">M2</span>
+      <h4>Core Loop</h4>
+      <p>Energy, generators, drag-drop, persistence, basic UI</p>
+    </div>
+    <div class="milestone">
+      <span class="month">M3</span>
+      <h4>Alpha</h4>
+      <p>NPC orders, decoration area, chapter 1, alpha build</p>
+    </div>
+    <div class="milestone">
+      <span class="month">M4</span>
+      <h4>Soft Launch</h4>
+      <p>IAP, analytics, cloud save, daily rewards</p>
+    </div>
+    <div class="milestone">
+      <span class="month">M5</span>
+      <h4>Polish</h4>
+      <p>Battle pass, events, polish</p>
+    </div>
+    <div class="milestone">
+      <span class="month">M6</span>
+      <h4>Global Launch</h4>
+      <p>Android first, iOS simultaneous or 2 weeks later</p>
+    </div>
+  </div>
+</section>
+
+<section id="next">
+  <h2><span class="icon">🚀</span> Next Steps</h2>
+
+  <div class="next-steps">
+    <h4>Ready for Implementation Phase:</h4>
+    <ol>
+      <li>Unity project setup</li>
+      <li>Clean Architecture skeleton</li>
+      <li>Core domain entities</li>
+      <li>Board prototype</li>
+    </ol>
+  </div>
+
+  <p style="text-align:center;margin-top:1.5rem;color:var(--text-light);">
+    <strong>Start when team is ready.</strong>
+  </p>
+</section>
+
+<footer style="text-align:center;padding:2rem;color:var(--text-light);font-size:0.9rem;">
+  <p>🔥 Bonfire Gathering — M1 Deliverables v1.0</p>
+</footer>
+
+</div>
+</body>
+</html>

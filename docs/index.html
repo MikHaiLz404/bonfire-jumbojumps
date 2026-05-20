@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bonfire Gathering — Documentation Hub</title>
+<style>
+  :root {
+    --primary: #e67e22;
+    --primary-dark: #d35400;
+    --secondary: #2c3e50;
+    --accent: #f39c12;
+    --bg-light: #fef9e7;
+    --bg-card: #ffffff;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --border: #ecf0f1;
+    --success: #27ae60;
+    --info: #3498db;
+    --magic: #9b59b6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--bg-light) 0%, #fdf2e9 100%);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  header {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, var(--secondary) 0%, #1a252f 100%);
+    color: white;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(243,156,18,0.15) 0%, transparent 50%);
+    animation: glow 8s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+  }
+
+  .logo { font-size: 4rem; margin-bottom: 1rem; }
+
+  header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+
+  header .subtitle {
+    font-size: 1.2rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  header p {
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .meta-tags {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .meta-tag {
+    background: rgba(255,255,255,0.15);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+  }
+
+  /* DOC GRID */
+  .doc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .doc-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 2px solid transparent;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .doc-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+  }
+
+  .doc-card.tech::before { background: linear-gradient(90deg, #2980b9, #3498db); }
+  .doc-card.game::before { background: linear-gradient(90deg, var(--primary), var(--accent)); }
+  .doc-card.story::before { background: linear-gradient(90deg, var(--magic), #9b59b6); }
+  .doc-card.mvp::before { background: linear-gradient(90deg, #8e44ad, #9b59b6); }
+  .doc-card.m1::before { background: linear-gradient(90deg, var(--success), #2ecc71); }
+
+  .doc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    border-color: var(--accent);
+  }
+
+  .doc-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .doc-card h3 {
+    color: var(--secondary);
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .doc-card .description {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .doc-card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .doc-tag {
+    background: #f8f9fa;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+
+  .doc-card .sections {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+  }
+
+  .doc-card .sections strong {
+    color: var(--secondary);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .doc-card .sections ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+  }
+
+  .doc-card .sections li::before {
+    content: '→ ';
+    color: var(--accent);
+  }
+
+  .doc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 1rem;
+    transition: all 0.2s;
+  }
+
+  .doc-link:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary);
+  }
+
+  .stat-label {
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+
+  /* ARCH OVERVIEW */
+  .arch-overview {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  .arch-overview h2 {
+    color: var(--secondary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .arch-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding: 1.5rem;
+    background: #1e1e1e;
+    border-radius: 12px;
+  }
+
+  .arch-layer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .arch-box {
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+  }
+
+  .arch-box.domain { background: #27ae60; }
+  .arch-box.data { background: #3498db; }
+  .arch-box.application { background: #9b59b6; }
+  .arch-box.presentation { background: #e67e22; }
+  .arch-box.infrastructure { background: #1abc9c; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent);
+  }
+
+  /* QUICK LINKS */
+  .quick-links {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  .quick-links h2 {
+    color: var(--secondary);
+    margin-bottom: 1rem;
+  }
+
+  .link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .quick-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--secondary);
+    transition: all 0.2s;
+  }
+
+  .quick-link:hover {
+    background: var(--primary);
+    color: white;
+  }
+
+  .quick-link .num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.85rem;
+  }
+
+  .quick-link:hover .num {
+    background: white;
+    color: var(--primary);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+
+  footer .fire { font-size: 2rem; margin-bottom: 0.5rem; }
+
+  @media (max-width: 768px) {
+    header h1 { font-size: 1.8rem; }
+    .doc-grid { grid-template-columns: 1fr; }
+    .arch-flow { flex-direction: column; }
+    .arch-arrow { transform: rotate(90deg); }
+    .stats-bar { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="logo">🔥</div>
+  <h1>Bonfire Gathering</h1>
+  <p class="subtitle">Documentation Hub</p>
+  <p>Merge-2 Casual F2P Puzzle Game — Thai-inspired coastal village with light magical elements</p>
+  <div class="meta-tags">
+    <span class="meta-tag">🎮 Unity 2021 LTS+</span>
+    <span class="meta-tag">📱 Android First, iOS Second</span>
+    <span class="meta-tag">⏱️ 6-Month MVP</span>
+    <span class="meta-tag">🌐 English + Thai</span>
+  </div>
+</header>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-value">5</div>
+    <div class="stat-label">Documents</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">11</div>
+    <div class="stat-label">Sections</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">20</div>
+    <div class="stat-label">Chains</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">6</div>
+    <div class="stat-label">Months to Launch</div>
+  </div>
+</div>
+
+<!-- ARCHITECTURE OVERVIEW -->
+<div class="arch-overview">
+  <h2>🏗️ Architecture Overview</h2>
+  <div class="arch-flow">
+    <div class="arch-layer">
+      <div class="arch-box domain">Core/Domain</div>
+      <span style="font-size:0.7rem;color:#888;">Entities, Systems</span>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-layer">
+      <div class="arch-box data">Data</div>
+      <span style="font-size:0.7rem;color:#888;">Repositories</span>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-layer">
+      <div class="arch-box application">Application</div>
+      <span style="font-size:0.7rem;color:#888;">UseCases</span>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-layer">
+      <div class="arch-box presentation">Presentation</div>
+      <span style="font-size:0.7rem;color:#888;">Views, VMs</span>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-layer">
+      <div class="arch-box infrastructure">Infrastructure</div>
+      <span style="font-size:0.7rem;color:#888;">Firebase, IAP</span>
+    </div>
+  </div>
+</div>
+
+<!-- DOCUMENT CARDS -->
+<div class="doc-grid">
+  <div class="doc-card tech">
+    <div class="icon">🎮</div>
+    <h3>Tech Spec</h3>
+    <p class="description">Unity architecture, Firebase stack, Clean Architecture + MVVM + UniRx + VContainer</p>
+    <div class="tags">
+      <span class="doc-tag">Unity 2021 LTS+</span>
+      <span class="doc-tag">Firebase</span>
+      <span class="doc-tag">VContainer</span>
+    </div>
+    <div class="sections">
+      <strong>13 Sections</strong>
+      <ul>
+        <li>Architecture</li>
+        <li>Core Systems</li>
+        <li>Data Models</li>
+        <li>Firebase Stack</li>
+        <li>Remote Config</li>
+        <li>Dependencies</li>
+      </ul>
+    </div>
+    <a href="TECH_SPEC.html" class="doc-link">📄 View Document →</a>
+  </div>
+
+  <div class="doc-card game">
+    <div class="icon">🎯</div>
+    <h3>Game Design Doc</h3>
+    <p class="description">Core mechanics, energy system, merge rules, NPC orders, economy, retention systems</p>
+    <div class="tags">
+      <span class="doc-tag">6×8 Board</span>
+      <span class="doc-tag">20 Chains</span>
+      <span class="doc-tag">3 Areas</span>
+    </div>
+    <div class="sections">
+      <strong>11 Sections</strong>
+      <ul>
+        <li>Core Mechanics</li>
+        <li>Energy System</li>
+        <li>Meta Systems</li>
+        <li>Currency & Economy</li>
+        <li>Progression</li>
+        <li>Events</li>
+      </ul>
+    </div>
+    <a href="GAME_DESIGN_DOC.html" class="doc-link">📄 View Document →</a>
+  </div>
+
+  <div class="doc-card story">
+    <div class="icon">🏮</div>
+    <h3>Story Bible</h3>
+    <p class="description">"Lantern & Legend" narrative — 5 chapters, 6 NPCs, 3 areas, Thai-inspired world</p>
+    <div class="tags">
+      <span class="doc-tag">Protagonist: Mali</span>
+      <span class="doc-tag">6 Characters</span>
+      <span class="doc-tag">5 Chapters</span>
+    </div>
+    <div class="sections">
+      <strong>6 Sections</strong>
+      <ul>
+        <li>World Setting</li>
+        <li>Characters</li>
+        <li>Narrative</li>
+        <li>Dialogue</li>
+        <li>Art</li>
+        <li>Tone Guide</li>
+      </ul>
+    </div>
+    <a href="STORY_BIBLE.html" class="doc-link">📄 View Document →</a>
+  </div>
+
+  <div class="doc-card mvp">
+    <div class="icon">🎯</div>
+    <h3>MVP Scope</h3>
+    <p class="description">6-month phased roadmap, feature prioritization, team structure, differentiation</p>
+    <div class="tags">
+      <span class="doc-tag">Alpha MVP</span>
+      <span class="doc-tag">Beta MVP</span>
+      <span class="doc-tag">8-Person Team</span>
+    </div>
+    <div class="sections">
+      <strong>5 Sections</strong>
+      <ul>
+        <li>Timeline</li>
+        <li>Scope</li>
+        <li>Team</li>
+        <li>Differentiation</li>
+        <li>Summary</li>
+      </ul>
+    </div>
+    <a href="MVP_Scope_Recommendation.html" class="doc-link">📄 View Document →</a>
+  </div>
+
+  <div class="doc-card m1">
+    <div class="icon">📋</div>
+    <h3>M1 Deliverables</h3>
+    <p class="description">Planning phase completion — architecture, documents, checklist, milestones</p>
+    <div class="tags">
+      <span class="doc-tag">Planning Complete</span>
+      <span class="doc-tag">Ready for Dev</span>
+    </div>
+    <div class="sections">
+      <strong>6 Sections</strong>
+      <ul>
+        <li>Documents</li>
+        <li>Architecture</li>
+        <li>Story</li>
+        <li>Checklist</li>
+        <li>Milestones</li>
+        <li>Next Steps</li>
+      </ul>
+    </div>
+    <a href="M1_DELIVERABLES.html" class="doc-link">📄 View Document →</a>
+  </div>
+</div>
+
+<!-- QUICK LINKS -->
+<div class="quick-links">
+  <h2>⚡ Quick Reference</h2>
+  <div class="link-grid">
+    <a href="TECH_SPEC.html#board" class="quick-link">
+      <span class="num">1</span>
+      <span>Board Spec (6×8 → 7×9)</span>
+    </a>
+    <a href="GAME_DESIGN_DOC.html#mechanics" class="quick-link">
+      <span class="num">2</span>
+      <span>Merge System (2-to-1)</span>
+    </a>
+    <a href="GAME_DESIGN_DOC.html#energy" class="quick-link">
+      <span class="num">3</span>
+      <span>Energy (100 cap, 1/2min)</span>
+    </a>
+    <a href="GAME_DESIGN_DOC.html#meta" class="quick-link">
+      <span class="num">4</span>
+      <span>NPC Orders (3 queue)</span>
+    </a>
+    <a href="STORY_BIBLE.html#narrative" class="quick-link">
+      <span class="num">5</span>
+      <span>5 Chapters Story</span>
+    </a>
+    <a href="TECH_SPEC.html#firebase" class="quick-link">
+      <span class="num">6</span>
+      <span>Firebase Stack</span>
+    </a>
+    <a href="TECH_SPEC.html#remote" class="quick-link">
+      <span class="num">7</span>
+      <span>Remote Config Keys</span>
+    </a>
+    <a href="MVP_Scope_Recommendation.html#timeline" class="quick-link">
+      <span class="num">8</span>
+      <span>6-Month Timeline</span>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div class="fire">🔥</div>
+  <p><strong>Bonfire Gathering</strong> — Documentation Hub</p>
+  <p>Last Updated: 2026-05-20</p>
+</footer>
+
+</div>
+</body>
+</html>

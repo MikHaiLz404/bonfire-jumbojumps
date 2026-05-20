@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "Bash(brew list *)",
+      "Bash(tesseract *)",
+      "Bash(npx create-next-app@latest jumbojumps-web --typescript --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --use-npm --no-turbopack)",
+      "Bash(npm install *)",
+      "Bash(timeout 5 node src/index.js)",
+      "Bash(node src/index.js)",
+      "Bash(curl -s http://localhost:3000/health)",
+      "Bash(pkill -f \"node src/index.js\")",
+      "Bash(/Applications/Unity/Hub/Unity.sh --createProject /Users/jojo/Github/jumbojumps-unity --unityVersion 2022.3.20f1)",
+      "Bash(npm run *)"
+    ]
+  }
+}

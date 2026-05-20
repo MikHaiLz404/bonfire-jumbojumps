@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unity Tech Spec — Bonfire Gathering</title>
+<style>
+  :root {
+    --primary: #2980b9;
+    --primary-dark: #1a5276;
+    --secondary: #2c3e50;
+    --accent: #3498db;
+    --bg-light: #eaf2f8;
+    --bg-card: #ffffff;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --border: #ecf0f1;
+    --code-bg: #1e1e1e;
+    --code-text: #d4d4d4;
+    --success: #27ae60;
+    --warning: #f39c12;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--bg-light) 0%, #d5e8f7 100%);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  header {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(135deg, var(--secondary) 0%, #1a252f 100%);
+    color: white;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(41,128,185,0.15) 0%, transparent 50%);
+    animation: glow 8s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+
+  header .unity-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  header p { opacity: 0.9; }
+  header .meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  nav {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 1rem;
+    z-index: 100;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    justify-content: center;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  nav a:hover { background: var(--primary); color: white; }
+
+  section {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+
+  section h2 {
+    color: var(--secondary);
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  section h2 .icon { font-size: 1.5rem; }
+
+  h3 {
+    color: var(--secondary);
+    font-size: 1.1rem;
+    margin: 1.5rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  h3::before { content: '▶'; color: var(--accent); font-size: 0.7rem; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+
+  th {
+    background: var(--secondary);
+    color: white;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:nth-child(even) { background: #f8f9fa; }
+  tr:hover { background: #eaf2f8; }
+
+  .code-block {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+
+  .code-block .keyword { color: #569cd6; }
+  .code-block .type { color: #4ec9b0; }
+  .code-block .comment { color: #6a9955; }
+  .code-block .string { color: #ce9178; }
+
+  .folder-tree {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.8rem;
+    line-height: 1.8;
+  }
+
+  .folder-tree .folder { color: #dcdcaa; }
+  .folder-tree .file { color: #9cdcfe; }
+  .folder-tree .indent { padding-left: 1.5rem; }
+
+  .priority-p0 { background: #e74c3c !important; color: white; padding: 0.15rem 0.5rem; border-radius: 4px; }
+  .priority-p1 { background: #f39c12 !important; color: white; padding: 0.15rem 0.5rem; border-radius: 4px; }
+  .priority-p2 { background: #3498db !important; color: white; padding: 0.15rem 0.5rem; border-radius: 4px; }
+  .priority-post { background: #95a5a6 !important; color: white; padding: 0.15rem 0.5rem; border-radius: 4px; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .info-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    border-left: 4px solid var(--primary);
+  }
+
+  .info-card h4 { color: var(--secondary); margin-bottom: 0.75rem; }
+  .info-card p { color: var(--text-light); font-size: 0.9rem; }
+
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .spec-row strong { color: var(--secondary); }
+
+  .milestone-timeline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .milestone-box {
+    flex: 1;
+    min-width: 180px;
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    position: relative;
+  }
+
+  .milestone-box::after {
+    content: '→';
+    position: absolute;
+    right: -0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 1.2rem;
+  }
+
+.milestone-box:last-child::after { display: none; }
+
+  /* ===== ARCHITECTURE SVG ===== */
+  .arch-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: var(--code-bg);
+    border-radius: 12px;
+  }
+
+  .arch-layer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .arch-box {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+  }
+
+  .arch-box.domain { background: #27ae60; }
+  .arch-box.data { background: #3498db; }
+  .arch-box.application { background: #9b59b6; }
+  .arch-box.presentation { background: #e67e22; }
+  .arch-box.infrastructure { background: #1abc9c; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent);
+  }
+
+  /* ===== FIREBASE STACK VISUAL ===== */
+  .firebase-visual {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .firebase-node {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    border: 2px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .firebase-node.active {
+    border-color: var(--success);
+  }
+
+  .firebase-node.active::before {
+    content: '✓ MVP';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--success);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+  }
+
+  .firebase-node.deferred::before {
+    content: 'M4+';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--warning);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+  }
+
+  .firebase-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .firebase-node h4 {
+    color: var(--secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  .firebase-node p {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+
+  /* ===== SYSTEM PRIORITY MATRIX ===== */
+  .priority-matrix {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+
+  .matrix-header {
+    background: var(--secondary);
+    color: white;
+    padding: 0.75rem;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .matrix-row-label {
+    background: #f8f9fa;
+    padding: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .matrix-cell {
+    padding: 0.75rem;
+    text-align: center;
+    border-radius: 4px;
+  }
+
+  .matrix-cell.p0 { background: #fadbd8; color: #c0392b; font-weight: bold; }
+  .matrix-cell.p1 { background: #fef9e7; color: #d68910; font-weight: bold; }
+  .matrix-cell.p2 { background: #d5f5e3; color: #27ae60; font-weight: bold; }
+  .matrix-cell.post { background: #ecf0f1; color: #7f8c8d; font-weight: bold; }
+
+  /* ===== REMOTE CONFIG KEYS TABLE ===== */
+  .config-visual {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+
+  .config-key {
+    background: white;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border);
+  }
+
+  .config-key strong {
+    color: var(--primary);
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+  }
+
+  .config-key .value {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+  }
+
+  /* ===== DEPENDENCY CARDS ===== */
+  .dep-visual {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+
+  .dep-card {
+    background: white;
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .dep-card .icon {
+    font-size: 1.5rem;
+  }
+
+  .dep-card strong {
+    color: var(--secondary);
+  }
+
+  .dep-card .version {
+    color: var(--text-light);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    header h1 { font-size: 1.8rem; }
+    header .meta { flex-direction: column; gap: 0.5rem; }
+    section { padding: 1.25rem; }
+    .milestone-timeline { flex-direction: column; }
+    .milestone-box::after { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="unity-icon">🎮</div>
+  <h1>Unity Tech Spec</h1>
+  <p>Bonfire Gathering — Merge-2 Casual F2P Puzzle Game</p>
+  <div class="meta">
+    <span class="badge">Unity 2021 LTS+</span>
+    <span class="badge">Last Updated: 2026-05-20</span>
+  </div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#architecture">1. Architecture</a></li>
+    <li><a href="#systems">2. Systems</a></li>
+    <li><a href="#decisions">3. Decisions</a></li>
+    <li><a href="#models">4. Data Models</a></li>
+    <li><a href="#firebase">5. Firebase</a></li>
+    <li><a href="#files">6. Files</a></li>
+    <li><a href="#milestones">7. Milestones</a></li>
+    <li><a href="#board">8. Board</a></li>
+    <li><a href="#energy">9. Energy</a></li>
+    <li><a href="#iap">10. IAP</a></li>
+    <li><a href="#analytics">11. Analytics</a></li>
+    <li><a href="#remote">12. Remote Config</a></li>
+    <li><a href="#deps">13. Dependencies</a></li>
+  </ul>
+</nav>
+
+<section id="architecture">
+  <h2><span class="icon">🏗️</span> 1. Architecture</h2>
+  <div class="info-card" style="border-color:var(--primary);margin-bottom:1rem;">
+    <h4>Pattern: Clean Architecture + MVVM + UniRx + VContainer</h4>
+  </div>
+
+  <!-- ARCHITECTURE FLOW VISUAL -->
+  <div class="arch-flow">
+    <div class="arch-layer">
+      <div class="arch-box domain">Core/Domain</div>
+      <div style="font-size:0.7rem;color:#888;">Entities, Systems, ValueObjects</div>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-layer">
+      <div class="arch-box data">Data</div>
+      <div style="font-size:0.7rem;color:#888;">Repositories, Persistence</div>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-layer">
+      <div class="arch-box application">Application</div>
+      <div style="font-size:0.7rem;color:#888;">UseCases, Services</div>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-layer">
+      <div class="arch-box presentation">Presentation</div>
+      <div style="font-size:0.7rem;color:#888;">Views, ViewModels</div>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-layer">
+      <div class="arch-box infrastructure">Infrastructure</div>
+      <div style="font-size:0.7rem;color:#888;">Firebase, IAP, Analytics</div>
+    </div>
+  </div>
+
+  <div class="folder-tree">
+<span class="folder">src/</span>
+<div class="indent"><span class="folder">Core/</span> <span class="comment"># Domain layer - pure game logic, no Unity deps</span></div>
+<div class="indent"><div class="indent"><span class="file">Entities/</span> <span class="comment">MergeItem, Chain, Generator, Order</span></div></div>
+<div class="indent"><div class="indent"><span class="file">Systems/</span> <span class="comment">MergeSystem, EnergySystem, OrderSystem</span></div></div>
+<div class="indent"><div class="indent"><span class="file">ValueObjects/</span> <span class="comment">Tier, Position, Currency</span></div></div>
+<div class="indent"></div>
+<div class="indent"><span class="folder">Data/</span> <span class="comment"># Data layer - persistence, remote config</span></div>
+<div class="indent"><div class="indent"><span class="file">Persistence/</span> <span class="comment">BoardState, PlayerData save/load</span></div></div>
+<div class="indent"><div class="indent"><span class="file">RemoteConfig/</span> <span class="comment">Server config models</span></div></div>
+<div class="indent"><div class="indent"><span class="file">Repositories/</span> <span class="comment">Interfaces + implementations</span></div></div>
+<div class="indent"></div>
+<div class="indent"><span class="folder">Application/</span> <span class="comment"># Use cases - orchestrates domain + data</span></div>
+<div class="indent"><div class="indent"><span class="file">UseCases/</span> <span class="comment">MergeItems, CompleteOrder, SpendEnergy</span></div></div>
+<div class="indent"><div class="indent"><span class="file">Services/</span> <span class="comment">GameService, EconomyService</span></div></div>
+<div class="indent"></div>
+<div class="indent"><span class="folder">Presentation/</span> <span class="comment"># UI layer - Unity MVVM</span></div>
+<div class="indent"><div class="indent"><span class="file">Views/</span> <span class="comment">Scenes (Board, Orders, Decoration)</span></div></div>
+<div class="indent"><div class="indent"><span class="file">ViewModels/</span> <span class="comment">BoardVM, OrderVM, etc.</span></div></div>
+<div class="indent"><div class="indent"><span class="file">Bindings/</span> <span class="comment">Unity UI bindings</span></div></div>
+<div class="indent"><div class="indent"><span class="file">Components/</span> <span class="comment">Reusable UI components</span></div></div>
+<div class="indent"></div>
+<div class="indent"><span class="folder">Infrastructure/</span> <span class="comment"># External integrations</span></div>
+<div class="indent"><div class="indent"><span class="file">Analytics/</span> <span class="comment">Firebase Analytics</span></div></div>
+<div class="indent"><div class="indent"><span class="file">IAP/</span> <span class="comment">Unity IAP</span></div></div>
+<div class="indent"><div class="indent"><span class="file">CloudSave/</span> <span class="comment">Firebase Auth + Firestore</span></div></div>
+<div class="indent"><div class="indent"><span class="file">RemoteConfig/</span> <span class="comment">Firebase Remote Config</span></div></div>
+<div class="indent"></div>
+<div class="indent"><span class="folder">Common/</span> <span class="comment"># Shared utilities</span></div>
+<div class="indent"><div class="indent"><span class="file">Extensions/</span></div></div>
+<div class="indent"><div class="indent"><span class="file">Utilities/</span></div></div>
+<div class="indent"><div class="indent"><span class="file">Constants/</span></div></div>
+  </div>
+</section>
+
+<section id="systems">
+  <h2><span class="icon">⚙️</span> 2. Core Systems</h2>
+
+  <!-- PRIORITY MATRIX -->
+  <h3 style="margin-bottom:1rem;">System Priority Matrix</h3>
+  <div class="priority-matrix">
+    <div class="matrix-header">System</div>
+    <div class="matrix-header">Description</div>
+    <div class="matrix-header">Priority</div>
+
+    <div class="matrix-row-label">Board/Grid</div>
+    <div class="matrix-cell">6×8 (MVP) → 7×9 via Remote Config</div>
+    <div class="matrix-cell p0">P0</div>
+
+    <div class="matrix-row-label">Merge Logic</div>
+    <div class="matrix-cell">2-to-1 rule, chain validation</div>
+    <div class="matrix-cell p0">P0</div>
+
+    <div class="matrix-row-label">Energy System</div>
+    <div class="matrix-cell">Cap 100, regen 1/2min, cost 1/tap</div>
+    <div class="matrix-cell p0">P0</div>
+
+    <div class="matrix-row-label">Generators</div>
+    <div class="matrix-cell">Production, regen timer, tap-unlock</div>
+    <div class="matrix-cell p0">P0</div>
+
+    <div class="matrix-row-label">Item Management</div>
+    <div class="matrix-cell">Storage (20 slots), inventory</div>
+    <div class="matrix-cell p0">P0</div>
+
+    <div class="matrix-row-label">NPC Orders</div>
+    <div class="matrix-cell">Queue, rewards, scaling</div>
+    <div class="matrix-cell p1">P1</div>
+
+    <div class="matrix-row-label">Decoration</div>
+    <div class="matrix-cell">Stars, 3 areas (MVP)</div>
+    <div class="matrix-cell p1">P1</div>
+
+    <div class="matrix-row-label">Story/Chapters</div>
+    <div class="matrix-cell">Dialogue system, cutscenes</div>
+    <div class="matrix-cell p1">P1</div>
+
+    <div class="matrix-row-label">Economy</div>
+    <div class="matrix-cell">Coins, gems, IAP, pricing</div>
+    <div class="matrix-cell p1">P1</div>
+
+    <div class="matrix-row-label">Events</div>
+    <div class="matrix-cell">Daily rewards, weekend events</div>
+    <div class="matrix-cell p2">P2</div>
+
+    <div class="matrix-row-label">Club/Guild</div>
+    <div class="matrix-cell">Co-op orders, gifts</div>
+    <div class="matrix-cell post">Post</div>
+  </div>
+</section>
+
+<section id="decisions">
+  <h2><span class="icon">✓</span> 3. Technical Decisions</h2>
+  <table>
+    <tr><th>Decision</th><th>Choice</th><th>Rationale</th></tr>
+    <tr><td><strong>UI Framework</strong></td><td>UI Toolkit (2021 LTS+)</td><td>Modern, better performance than uGUI</td></tr>
+    <tr><td><strong>Serialization</strong></td><td>Newtonsoft.Json</td><td>Board state save, human-readable</td></tr>
+    <tr><td><strong>DI Container</strong></td><td>VContainer</td><td>Lightweight, Unity-native, testable</td></tr>
+    <tr><td><strong>Architecture</strong></td><td>MVVM with UniRx</td><td>Reactive bindings, clean separation</td></tr>
+    <tr><td><strong>Localization</strong></td><td>JSON per language</td><td>English + Thai at launch, 12+ future</td></tr>
+    <tr><td><strong>Scene Management</strong></td><td>Addressables</td><td>Async load, DLC-ready</td></tr>
+    <tr><td><strong>Board Persistence</strong></td><td>PlayerPrefs (MVP) → Firebase (launch)</td><td>Critical per PRD</td></tr>
+    <tr><td><strong>Analytics</strong></td><td>Firebase Analytics</td><td>Unified with Firebase stack</td></tr>
+    <tr><td><strong>Remote Config</strong></td><td>Firebase Remote Config</td><td>Server-side econ, A/B ready</td></tr>
+    <tr><td><strong>IAP</strong></td><td>Unity IAP</td><td>Unified store handling</td></tr>
+    <tr><td><strong>Cloud Save</strong></td><td>Firebase Auth + Firestore</td><td>Cross-device sync (mandatory)</td></tr>
+  </table>
+</section>
+
+<section id="models">
+  <h2><span class="icon">📦</span> 4. Data Models</h2>
+  <h3>Board State</h3>
+  <div class="code-block">
+<span class="keyword">public class</span> <span class="type">BoardState</span>
+{
+    <span class="type">CellState</span>[,] grid = <span class="keyword">new</span> <span class="type">CellState</span>[6, 8];
+    <span class="keyword">int</span> energy;
+    <span class="type">DateTime</span> lastEnergyRegen;
+    <span class="type">List</span>&lt;<span class="type">string</span>&gt; unlockedChains;
+    <span class="type">DateTime</span> timestamp;
+}
+  </div>
+  <h3>Player Data</h3>
+  <div class="code-block">
+<span class="keyword">public class</span> <span class="type">PlayerData</span>
+{
+    <span class="keyword">long</span> coins;
+    <span class="keyword">long</span> gems;
+    <span class="keyword">int</span> currentChapter;
+    <span class="keyword">int</span> completedOrders;
+    <span class="type">Dict</span>&lt;<span class="type">string</span>, <span class="keyword">int</span>&gt; decorationStars;
+    <span class="type">string</span> cloudId;
+    <span class="type">DateTime</span> lastSaveTime;
+}
+  </div>
+  <h3>Merge Item</h3>
+  <div class="code-block">
+<span class="keyword">public class</span> <span class="type">MergeItem</span>
+{
+    <span class="type">string</span> chainId;
+    <span class="keyword">int</span> tier;
+    <span class="type">Vector2Int</span> position;
+    <span class="type">DateTime</span> generatedAt;
+}
+  </div>
+  <h3>Order</h3>
+  <div class="code-block">
+<span class="keyword">public class</span> <span class="type">Order</span>
+{
+    <span class="type">string</span> id;
+    <span class="type">string</span> requestedChain;
+    <span class="keyword">int</span> requestedTier;
+    <span class="keyword">int</span> quantity;
+    <span class="keyword">int</span> rewardCoins;
+    <span class="keyword">int</span> rewardExp;
+    <span class="type">OrderState</span> state;
+}
+  </div>
+</section>
+
+<section id="firebase">
+  <h2><span class="icon">🔥</span> 5. Firebase Stack</h2>
+
+  <!-- FIREBASE VISUAL -->
+  <div class="firebase-visual">
+    <div class="firebase-node active">
+      <div class="firebase-icon">📊</div>
+      <h4>Firebase Analytics</h4>
+      <p>Event catalog (BoardSnapshots, EnergyOut, ChainCompletion)</p>
+    </div>
+    <div class="firebase-node active">
+      <div class="firebase-icon">⚙️</div>
+      <h4>Remote Config</h4>
+      <p>Server-side econ, prices, A/B flags</p>
+    </div>
+    <div class="firebase-node active">
+      <div class="firebase-icon">🔐</div>
+      <h4>Firebase Auth</h4>
+      <p>Cloud save (cross-device sync)</p>
+    </div>
+    <div class="firebase-node deferred">
+      <div class="firebase-icon">🔔</div>
+      <h4>Cloud Messaging</h4>
+      <p>Push notifications (10+ triggers)</p>
+    </div>
+    <div class="firebase-node active">
+      <div class="firebase-icon">☁️</div>
+      <h4>Cloud Firestore</h4>
+      <p>Player data persistence</p>
+    </div>
+    <div class="firebase-node">
+      <div class="firebase-icon">💥</div>
+      <h4>Crashlytics</h4>
+      <p>Error tracking</p>
+    </div>
+  </div>
+</section>
+
+<section id="files">
+  <h2><span class="icon">📁</span> 6. File Structure</h2>
+  <div class="folder-tree">
+<span class="folder">Assets/</span>
+<div class="indent"><span class="folder">_Project/</span></div>
+<div class="indent"><div class="indent"><span class="folder">Scripts/</span></div></div>
+<div class="indent"><div class="indent"><div class="indent"><span class="folder">Core/</span> <span class="comment">(Entities, Systems, ValueObjects)</span></div></div></div>
+<div class="indent"><div class="indent"><div class="indent"><span class="folder">Data/</span> <span class="comment">(Persistence, RemoteConfig, Repositories)</span></div></div></div>
+<div class="indent"><div class="indent"><div class="indent"><span class="folder">Application/</span> <span class="comment">(UseCases, Services)</span></div></div></div>
+<div class="indent"><div class="indent"><div class="indent"><span class="folder">Presentation/</span> <span class="comment">(Views, ViewModels, Bindings, Components)</span></div></div></div>
+<div class="indent"><div class="indent"><div class="indent"><span class="folder">Infrastructure/</span> <span class="comment">(Analytics, IAP, CloudSave, RemoteConfig)</span></div></div></div>
+<div class="indent"><div class="indent"><div class="indent"><span class="folder">Common/</span> <span class="comment">(Extensions, Utilities, Constants)</span></div></div></div>
+<div class="indent"><span class="folder">Prefabs/</span> <span class="comment">(Board, Items, UI, Effects)</span></div>
+<div class="indent"><span class="folder">ScriptableObjects/</span> <span class="comment">(Chains, Areas, Chapters, Events)</span></div>
+<div class="indent"><span class="folder">Art/</span></div>
+<div class="indent"><span class="folder">Plugins/</span></div>
+<div class="indent"><span class="folder">ThirdParty/</span></div>
+  </div>
+</section>
+
+<section id="milestones">
+  <h2><span class="icon">🗓️</span> 7. Milestone Mapping</h2>
+  <div class="milestone-timeline">
+    <div class="milestone-box">
+      <span class="month">M1</span>
+      <h4>Project Setup</h4>
+      <p>Clean Architecture skeleton, Core domain entities, Board grid system, Merge logic prototype</p>
+    </div>
+    <div class="milestone-box">
+      <span class="month">M2</span>
+      <h4>Core Loop</h4>
+      <p>Energy system, Generators, Drag-drop, Basic UI, Persistence (PlayerPrefs)</p>
+    </div>
+    <div class="milestone-box">
+      <span class="month">M3</span>
+      <h4>Alpha</h4>
+      <p>NPC Orders, Decoration area, Chapter 1, Alpha test build</p>
+    </div>
+    <div class="milestone-box">
+      <span class="month">M4</span>
+      <h4>Soft Launch</h4>
+      <p>IAP integration, Analytics, Cloud save (Firebase), Daily rewards</p>
+    </div>
+    <div class="milestone-box">
+      <span class="month">M5</span>
+      <h4>Polish</h4>
+      <p>Battle pass, Events framework, Polish</p>
+    </div>
+    <div class="milestone-box">
+      <span class="month">M6</span>
+      <h4>Global Launch</h4>
+    </div>
+  </div>
+</section>
+
+<section id="board">
+  <h2><span class="icon">🎯</span> 8. Board Spec (MVP → Full)</h2>
+  <table>
+    <tr><th>Item</th><th>MVP</th><th>Post-Launch</th></tr>
+    <tr><td>Grid Size</td><td>6×8 (48 cells)</td><td>7×9 (63 cells) via Remote Config</td></tr>
+    <tr><td>Chains</td><td>20 chains</td><td>30 chains</td></tr>
+    <tr><td>Tiers per chain</td><td>10 live</td><td>15 live</td></tr>
+    <tr><td>Merge icons</td><td>~200</td><td>~300</td></tr>
+    <tr><td>Areas</td><td>3</td><td>6</td></tr>
+  </table>
+</section>
+
+<section id="energy">
+  <h2><span class="icon">⚡</span> 9. Energy Spec</h2>
+  <div class="info-grid">
+    <div class="info-card"><h4>Cap</h4><p style="font-size:1.5rem;font-weight:bold;color:var(--primary);">100</p></div>
+    <div class="info-card"><h4>Regen</h4><p>1 per 2 min (~3.5h full recharge)</p></div>
+    <div class="info-card"><h4>Generator tap cost</h4><p style="font-size:1.5rem;font-weight:bold;color:var(--primary);">1</p></div>
+    <div class="info-card"><h4>Overflow</h4><p>Cap at 100, no overflow</p></div>
+  </div>
+  <div class="spec-row"><strong>Persistence</strong><span>Save timestamp on exit, calc on return</span></div>
+  <div class="spec-row"><strong>IAP refill</strong><span>$0.99 (50), $2.99 (200), $4.99 (500)</span></div>
+</section>
+
+<section id="iap">
+  <h2><span class="icon">💰</span> 10. IAP Pricing (MVP)</h2>
+  <table>
+    <tr><th>Item</th><th>Price</th><th>Notes</th></tr>
+    <tr><td>Energy refill (small)</td><td>$0.99</td><td>50 energy</td></tr>
+    <tr><td>Energy refill (medium)</td><td>$2.99</td><td>200 energy</td></tr>
+    <tr><td>Energy refill (large)</td><td>$4.99</td><td>500 energy</td></tr>
+    <tr><td>Starter pack</td><td>$0.99</td><td>First-time, 72h window</td></tr>
+    <tr><td>Piggy bank (small)</td><td>$4.99</td><td>Accumulates with play</td></tr>
+    <tr><td>Piggy bank (medium)</td><td>$9.99</td><td>-</td></tr>
+    <tr><td>Piggy bank (large)</td><td>$19.99</td><td>-</td></tr>
+    <tr><td>Gem SKUs</td><td>$0.99 - $99.99</td><td>8 price points</td></tr>
+    <tr><td>VIP/Club pass</td><td>$4.99/wk or $15.99/mo</td><td>Beta MVP</td></tr>
+    <tr><td>Event pass</td><td>$9.99</td><td>Per major event</td></tr>
+  </table>
+</section>
+
+<section id="analytics">
+  <h2><span class="icon">📊</span> 11. Analytics Events Catalog</h2>
+  <h3>Board Events</h3>
+  <div class="event-list">
+    <div class="event-item"><strong>board_snapshot</strong> <span>— periodic board state</span></div>
+    <div class="event-item"><strong>merge_success</strong> <span>— chain, tier, items merged</span></div>
+    <div class="event-item"><strong>merge_fail</strong> <span>— failed merge attempt</span></div>
+    <div class="event-item"><strong>energy_out</strong> <span>— player ran out of energy</span></div>
+    <div class="event-item"><strong>generator_tap</strong> <span>— generator type</span></div>
+  </div>
+  <h3>Progression Events</h3>
+  <div class="event-list">
+    <div class="event-item"><strong>order_completed</strong> <span>— order tier, reward</span></div>
+    <div class="event-item"><strong>order_accepted</strong> <span>— new order accepted</span></div>
+    <div class="event-item"><strong>chapter_started</strong> <span>— chapter started</span></div>
+    <div class="event-item"><strong>chapter_completed</strong> <span>— chapter completed</span></div>
+    <div class="event-item"><strong>area_unlocked</strong> <span>— new area unlocked</span></div>
+  </div>
+  <h3>Economy Events</h3>
+  <div class="event-list">
+    <div class="event-item"><strong>currency_earned</strong> <span>— source</span></div>
+    <div class="event-item"><strong>currency_spent</strong> <span>— use</span></div>
+    <div class="event-item"><strong>iap_purchased</strong> <span>— sku, amount</span></div>
+  </div>
+  <h3>Retention Events</h3>
+  <div class="event-list">
+    <div class="event-item"><strong>daily_login</strong> <span>— day streak</span></div>
+    <div class="event-item"><strong>lapsed_return</strong> <span>— days absent</span></div>
+    <div class="event-item"><strong>push_received</strong> <span>— campaign ID</span></div>
+    <div class="event-item"><strong>push_clicked</strong> <span>— campaign ID</span></div>
+  </div>
+</section>
+
+<section id="remote">
+  <h2><span class="icon">🔧</span> 12. Remote Config Keys</h2>
+
+  <!-- CONFIG VISUAL -->
+  <div class="config-visual">
+    <div class="config-key">
+      <strong>energy_cap</strong>
+      <span class="value">100</span>
+    </div>
+    <div class="config-key">
+      <strong>energy_regen_rate</strong>
+      <span class="value">120</span>
+    </div>
+    <div class="config-key">
+      <strong>board_size</strong>
+      <span class="value">"6x8"</span>
+    </div>
+    <div class="config-key">
+      <strong>chains_live</strong>
+      <span class="value">20</span>
+    </div>
+    <div class="config-key">
+      <strong>tiers_live</strong>
+      <span class="value">10</span>
+    </div>
+    <div class="config-key">
+      <strong>coin_earn_base</strong>
+      <span class="value">10</span>
+    </div>
+    <div class="config-key">
+      <strong>gem_earn_rate</strong>
+      <span class="value">1</span>
+    </div>
+    <div class="config-key">
+      <strong>order_queue_size</strong>
+      <span class="value">3</span>
+    </div>
+    <div class="config-key">
+      <strong>storage_size</strong>
+      <span class="value">20</span>
+    </div>
+    <div class="config-key">
+      <strong>starter_pack_enabled</strong>
+      <span class="value">true</span>
+    </div>
+    <div class="config-key">
+      <strong>piggy_enabled</strong>
+      <span class="value">true</span>
+    </div>
+    <div class="config-key">
+      <strong>dynamic_pricing_enabled</strong>
+      <span class="value">false</span>
+    </div>
+  </div>
+</section>
+
+<section id="deps">
+  <h2><span class="icon">📚</span> 13. Dependencies</h2>
+
+  <!-- DEPENDENCY CARDS -->
+  <div class="dep-visual">
+    <div class="dep-card">
+      <span class="icon">📦</span>
+      <div>
+        <strong>VContainer</strong>
+        <div class="version">latest • DI Container</div>
+      </div>
+    </div>
+    <div class="dep-card">
+      <span class="icon">🔄</span>
+      <div>
+        <strong>UniRx</strong>
+        <div class="version">latest • Reactive</div>
+      </div>
+    </div>
+    <div class="dep-card">
+      <span class="icon">🔥</span>
+      <div>
+        <strong>Firebase Analytics</strong>
+        <div class="version">latest</div>
+      </div>
+    </div>
+    <div class="dep-card">
+      <span class="icon">⚙️</span>
+      <div>
+        <strong>Firebase Remote Config</strong>
+        <div class="version">latest</div>
+      </div>
+    </div>
+    <div class="dep-card">
+      <span class="icon">🔐</span>
+      <div>
+        <strong>Firebase Auth</strong>
+        <div class="version">latest</div>
+      </div>
+    </div>
+    <div class="dep-card">
+      <span class="icon">☁️</span>
+      <div>
+        <strong>Firebase Firestore</strong>
+        <div class="version">latest</div>
+      </div>
+    </div>
+    <div class="dep-card">
+      <span class="icon">📝</span>
+      <div>
+        <strong>Newtonsoft.Json</strong>
+        <div class="version">latest • Serialization</div>
+      </div>
+    </div>
+    <div class="dep-card">
+      <span class="icon">🎨</span>
+      <div>
+        <strong>Unity UI Toolkit</strong>
+        <div class="version">2021 LTS+</div>
+      </div>
+    </div>
+    <div class="dep-card">
+      <span class="icon">📍</span>
+      <div>
+        <strong>Addressables</strong>
+        <div class="version">latest • Async Load</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:2rem;color:var(--text-light);font-size:0.9rem;">
+  <p>🎮 Bonfire Gathering — Unity Tech Spec v1.0</p>
+</footer>
+
+</div>
+</body>
+</html>

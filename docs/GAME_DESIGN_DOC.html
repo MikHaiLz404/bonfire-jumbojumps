@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Design Document — Bonfire Gathering</title>
+<style>
+  :root {
+    --primary: #e67e22;
+    --primary-dark: #d35400;
+    --secondary: #2c3e50;
+    --accent: #f39c12;
+    --bg-light: #fef9e7;
+    --bg-card: #ffffff;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --border: #ecf0f1;
+    --success: #27ae60;
+    --info: #3498db;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--bg-light) 0%, #fdf2e9 100%);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  header {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(135deg, var(--secondary) 0%, #1a252f 100%);
+    color: white;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(243,156,18,0.1) 0%, transparent 50%);
+    animation: glow 8s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+
+  header .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    color: var(--accent);
+  }
+
+  header .meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  .badge.mvp { background: #e74c3c; color: white; }
+  .badge.platform { background: var(--info); color: white; }
+
+  nav {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 1rem;
+    z-index: 100;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    justify-content: center;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  nav a:hover {
+    background: var(--primary);
+    color: white;
+  }
+
+  section {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+
+  section h2 {
+    color: var(--secondary);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  section h2 .num {
+    background: var(--primary);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+
+  h3 {
+    color: var(--secondary);
+    font-size: 1.1rem;
+    margin: 1.5rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  h3::before {
+    content: '▶';
+    color: var(--accent);
+    font-size: 0.7rem;
+  }
+
+  .core-loop {
+    background: linear-gradient(135deg, var(--secondary) 0%, #1a252f 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    text-align: center;
+    margin: 1rem 0;
+    letter-spacing: 1px;
+  }
+
+  .core-loop span {
+    color: var(--accent);
+    font-weight: bold;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+  }
+
+  th {
+    background: var(--secondary);
+    color: white;
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:nth-child(even) { background: #f8f9fa; }
+  tr:hover { background: #fef9e7; }
+
+  td:first-child { font-weight: 600; color: var(--secondary); }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .info-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    border-left: 4px solid var(--primary);
+  }
+
+  .info-card h4 {
+    color: var(--secondary);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .info-card p { color: var(--text-light); font-size: 0.9rem; }
+
+  .flow-diagram {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e8e8e8 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+  }
+
+  .flow-step:not(:last-child) {
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .flow-num {
+    background: var(--primary);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .flow-text { flex: 1; }
+
+  .flow-text strong { color: var(--secondary); }
+
+  .areas-list {
+    display: grid;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .area-card {
+    background: linear-gradient(135deg, var(--bg-light) 0%, #fff 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    border: 2px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .area-card:hover {
+    border-color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .area-card .area-num {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--secondary);
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .area-card h4 {
+    color: var(--secondary);
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .area-card .thai { color: var(--primary); font-weight: 600; }
+  .area-card p { color: var(--text-light); font-size: 0.9rem; }
+
+  .currency-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .currency-card {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    border: 2px solid var(--accent);
+  }
+
+  .currency-card .icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .currency-card h4 {
+    color: var(--secondary);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .currency-card ul {
+    list-style: none;
+    font-size: 0.85rem;
+    color: var(--text-light);
+  }
+
+  .currency-card li { padding: 0.25rem 0; }
+
+  .benchmark-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .benchmark-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .benchmark-card strong { color: var(--secondary); display: block; margin-bottom: 0.25rem; }
+  .benchmark-card span { color: var(--text-light); font-size: 0.85rem; }
+
+  .reward-table { overflow-x: auto; }
+
+  .order-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .order-type {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    border-left: 4px solid var(--success);
+  }
+
+  .order-type h4 { color: var(--success); margin-bottom: 0.5rem; }
+
+  .event-type {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border: 1px solid var(--border);
+  }
+
+  .event-type strong { color: var(--info); }
+
+  .push-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .push-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .push-item .trigger { font-weight: 600; color: var(--secondary); }
+  .push-item .timing { color: var(--text-light); font-size: 0.8rem; }
+  .push-item .theme { color: var(--primary); font-style: italic; }
+
+  .chapter-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 1rem 0;
+  }
+
+  .chapter-box {
+    background: var(--secondary);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 100px;
+  }
+
+  .chapter-box .ch-num { font-size: 0.75rem; opacity: 0.8; }
+  .chapter-box .ch-title { font-weight: 600; font-size: 0.85rem; }
+
+  .chapter-arrow { color: var(--accent); font-size: 1.2rem; }
+
+  /* ===== BOARD MOCKUP VISUALIZATION ===== */
+  .board-mockup {
+    background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+
+  .board-mockup-title {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .board-mockup-title span { color: var(--accent); }
+
+  .board-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .board-cell {
+    aspect-ratio: 1;
+    background: rgba(255,255,255,0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    position: relative;
+  }
+
+  .board-cell.generator {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-color: var(--accent);
+    color: white;
+    font-weight: bold;
+  }
+
+  .board-cell.locked {
+    background: rgba(0,0,0,0.3);
+    border-color: #555;
+  }
+
+  .board-cell.item-tier-1 { background: rgba(46, 204, 113, 0.3); border-color: #2ecc71; }
+  .board-cell.item-tier-2 { background: rgba(52, 152, 219, 0.3); border-color: #3498db; }
+  .board-cell.item-tier-3 { background: rgba(155, 89, 182, 0.3); border-color: #9b59b6; }
+  .board-cell.item-tier-4 { background: rgba(241, 196, 15, 0.3); border-color: #f1c40f; }
+
+  .board-cell .item-icon {
+    font-size: 1.2rem;
+  }
+
+  .board-cell .cell-label {
+    position: absolute;
+    bottom: 2px;
+    font-size: 0.5rem;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .board-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.8rem;
+  }
+
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+
+  /* ===== MERGE CHAIN VISUALIZATION ===== */
+  .merge-chain-visual {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .chain-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .chain-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    border: 2px solid;
+  }
+
+  .chain-node.tier-1 .chain-icon { background: #d5f5e3; border-color: #2ecc71; }
+  .chain-node.tier-2 .chain-icon { background: #d6eaf8; border-color: #3498db; }
+  .chain-node.tier-3 .chain-icon { background: #e8daef; border-color: #9b59b6; }
+  .chain-node.tier-4 .chain-icon { background: #fdebd0; border-color: #e67e22; }
+  .chain-node.tier-5 .chain-icon { background: #fadbd8; border-color: #e74c3c; }
+
+  .chain-label {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    text-align: center;
+  }
+
+  .merge-arrow {
+    font-size: 1.5rem;
+    color: var(--accent);
+    font-weight: bold;
+  }
+
+  .merge-plus {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    font-weight: bold;
+    padding: 0 0.25rem;
+  }
+
+  /* ===== ENERGY GAUGE ===== */
+  .energy-gauge {
+    background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .gauge-visual {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+
+  .gauge-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: conic-gradient(from 180deg, var(--primary) 0%, var(--accent) 72%, #333 72%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .gauge-inner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #1a252f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .gauge-value {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .gauge-max {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.7rem;
+  }
+
+  .energy-info {
+    flex: 1;
+  }
+
+  .energy-info h4 {
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+
+  .energy-stats {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .energy-stat {
+    background: rgba(255,255,255,0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+  }
+
+  .energy-stat .label {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.75rem;
+  }
+
+  .energy-stat .value {
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  /* ===== CURRENCY DISPLAY ===== */
+  .currency-display {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+
+  .currency-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 2px solid;
+  }
+
+  .currency-badge.coins { border-color: #f1c40f; }
+  .currency-badge.gems { border-color: #9b59b6; }
+  .currency-badge.energy { border-color: #3498db; }
+
+  .currency-badge .icon {
+    font-size: 1.5rem;
+  }
+
+  .currency-badge .amount {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--secondary);
+  }
+
+  /* ===== ORDER QUEUE VISUAL ===== */
+  .order-queue-visual {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .order-slot {
+    flex: 1;
+    min-width: 180px;
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    border: 2px dashed var(--border);
+    text-align: center;
+  }
+
+  .order-slot.active {
+    border-style: solid;
+    border-color: var(--success);
+    background: #f0fdf4;
+  }
+
+  .order-slot .order-id {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .order-slot .order-item {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+  }
+
+  .order-slot .order-tier {
+    background: var(--primary);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    display: inline-block;
+  }
+
+  .order-slot .order-reward {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+  }
+
+  /* ===== IAP PRICING VISUAL ===== */
+  .iap-visual {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .iap-product {
+    background: white;
+    border-radius: 16px;
+    padding: 1.25rem;
+    text-align: center;
+    border: 2px solid var(--border);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .iap-product:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+
+  .iap-product.featured {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, #fffaf0, white);
+  }
+
+  .iap-product .product-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .iap-product h4 {
+    color: var(--secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  .iap-product .product-desc {
+    color: var(--text-light);
+    font-size: 0.8rem;
+  }
+
+  .iap-product .product-price {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ===== PUSH NOTIFICATION CARDS ===== */
+  .push-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-left: 4px solid var(--primary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .push-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+  }
+
+  .push-content {
+    flex: 1;
+  }
+
+  .push-content .trigger {
+    font-weight: 600;
+    color: var(--secondary);
+  }
+
+  .push-content .timing {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+
+  .push-content .message {
+    font-style: italic;
+    color: var(--primary);
+    font-size: 0.9rem;
+  }
+
+  /* ===== AREA PROGRESS BAR ===== */
+  .area-progress {
+    margin: 1rem 0;
+  }
+
+  .progress-bar-container {
+    background: #ecf0f1;
+    border-radius: 10px;
+    height: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-bar-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: var(--secondary);
+  }
+
+  /* ===== TIMELINE VISUAL ===== */
+  .timeline-visual {
+    position: relative;
+    padding-left: 2rem;
+    margin: 1rem 0;
+  }
+
+  .timeline-visual::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--primary), var(--accent));
+    border-radius: 3px;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 3px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  .timeline-item .date {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+
+  .timeline-item h4 {
+    color: var(--secondary);
+    margin: 0.25rem 0;
+  }
+
+  .timeline-item p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+
+  /* ===== CORE LOOP SVG ===== */
+  .core-loop-svg {
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+
+  .iap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .iap-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .iap-card.highlight {
+    border-color: var(--accent);
+    background: #fffaf0;
+  }
+
+  .iap-info h4 { color: var(--secondary); font-size: 1rem; }
+  .iap-info span { color: var(--text-light); font-size: 0.85rem; }
+  .iap-price { font-weight: bold; color: var(--primary); font-size: 1.1rem; }
+
+  .analytics-events {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .event-category {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+  }
+
+  .event-category h4 {
+    color: var(--info);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .event-category ul {
+    list-style: none;
+    font-size: 0.85rem;
+  }
+
+  .event-category li {
+    padding: 0.4rem 0;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+  }
+
+  .event-category li::before {
+    content: '•';
+    color: var(--accent);
+    margin-right: 0.5rem;
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .tech-item {
+    background: linear-gradient(135deg, #e8f4f8 0%, #fff 100%);
+    border-radius: 10px;
+    padding: 1rem;
+    border-left: 4px solid var(--info);
+  }
+
+  .tech-item strong { color: var(--info); display: block; margin-bottom: 0.5rem; }
+  .tech-item span { font-size: 0.9rem; color: var(--text-light); }
+
+  @media (max-width: 768px) {
+    header h1 { font-size: 1.8rem; }
+    header .meta { flex-direction: column; gap: 0.5rem; }
+    section { padding: 1.25rem; }
+    nav ul { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
+    .chapter-flow { flex-direction: column; }
+    .chapter-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>🔥 Bonfire Gathering</h1>
+  <p class="subtitle">Game Design Document</p>
+  <div class="meta">
+    <span class="badge mvp">MVP (6-Month)</span>
+    <span class="badge platform">Android First, iOS Second</span>
+  </div>
+  <p style="margin-top:1rem;opacity:0.7;font-size:0.9rem;">Last Updated: 2026-05-20</p>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#overview">1. Overview</a></li>
+    <li><a href="#mechanics">2. Core Mechanics</a></li>
+    <li><a href="#meta">3. Meta Systems</a></li>
+    <li><a href="#economy">4. Currency & Economy</a></li>
+    <li><a href="#progression">5. Progression</a></li>
+    <li><a href="#retention">6. Retention</a></li>
+    <li><a href="#events">7. Events</a></li>
+    <li><a href="#iap">8. IAP</a></li>
+    <li><a href="#story">9. Story</a></li>
+    <li><a href="#analytics">10. Analytics</a></li>
+    <li><a href="#tech">11. Technical</a></li>
+  </ul>
+</nav>
+
+<!-- SECTION 1: OVERVIEW -->
+<section id="overview">
+  <h2><span class="num">1</span> Overview</h2>
+  
+  <h3>1.1 Game Concept</h3>
+  <p style="margin:1rem 0;color:var(--text-light);font-size:1.05rem;">
+    <strong style="color:var(--secondary);">Bonfire Gathering</strong> is a narrative-driven Merge-2 puzzle game set in a Thai-inspired coastal village with light magical elements. Players merge items to complete NPC orders, unlock story chapters, and decorate areas. The game balances cozy aesthetics with light mystery cliffhangers to drive retention.
+  </p>
+
+  <div class="core-loop">
+    <span>Merge Items</span> → <span>Complete Orders</span> → <span>Earn Coins</span> → <span>Unlock Areas</span> → <span>Board Energy Gate</span> → <span>Repeat</span>
+  </div>
+
+  <p style="text-align:center;margin-top:0.75rem;"><strong>Retention Drivers:</strong> Chapter cliffhangers + decoration progress + chain completion</p>
+
+  <h3>Benchmark Games</h3>
+  <div class="benchmark-list">
+    <div class="benchmark-card">
+      <strong>Gossip Harbor</strong>
+      <span>SAYGAMES/FIRECRAFT — Narrative-heavy, mystery reveals</span>
+    </div>
+    <div class="benchmark-card">
+      <strong>Travel Town</strong>
+      <span>MAGMATIC GAMES — Board clarity, onboarding</span>
+    </div>
+    <div class="benchmark-card">
+      <strong>Seaside Escape</strong>
+      <span>MATCHINGHAM — Event design, piggy economy</span>
+    </div>
+    <div class="benchmark-card">
+      <strong>Merge Mansion</strong>
+      <span>METACORE — Core merge tuning</span>
+    </div>
+  </div>
+
+  <h3>1.2 Platforms & Timeline</h3>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Platforms</h4>
+      <p>Android first, iOS second</p>
+    </div>
+    <div class="info-card">
+      <h4>Engine</h4>
+      <p>Unity 2021 LTS+</p>
+    </div>
+    <div class="info-card">
+      <h4>Languages</h4>
+      <p>English + Thai at launch</p>
+    </div>
+    <div class="info-card">
+      <h4>Dev Timeline</h4>
+      <p>6 months to soft launch, 12 months to full launch</p>
+    </div>
+    <div class="info-card">
+      <h4>Target Audience</h4>
+      <p>Global (not Thailand-exclusive)</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: CORE MECHANICS -->
+<section id="mechanics">
+  <h2><span class="num">2</span> Core Mechanics</h2>
+
+  <h3>2.1 Board System</h3>
+
+  <!-- BOARD MOCKUP -->
+  <div class="board-mockup">
+    <div class="board-mockup-title">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span>6×8</span> Board Grid MVP
+    </div>
+    <div class="board-grid">
+      <!-- Row 1 -->
+      <div class="board-cell generator"><span class="item-icon">⚡</span><span class="cell-label">GEN</span></div>
+      <div class="board-cell item-tier-1"><span class="item-icon">🧵</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-2"><span class="item-icon">🪡</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-1"><span class="item-icon">🧶</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell locked"></div>
+      <!-- Row 2 -->
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-1"><span class="item-icon">🧵</span></div>
+      <div class="board-cell item-tier-2"><span class="item-icon">🪡</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-3"><span class="item-icon">👘</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-1"><span class="item-icon">🧶</span></div>
+      <div class="board-cell"></div>
+      <!-- Row 3 -->
+      <div class="board-cell generator"><span class="item-icon">🌿</span><span class="cell-label">GEN</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-2"><span class="item-icon">🪡</span></div>
+      <div class="board-cell item-tier-1"><span class="item-icon">🧵</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-2"><span class="item-icon">🪡</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell locked"></div>
+      <!-- Row 4 -->
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-3"><span class="item-icon">👘</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-2"><span class="item-icon">🪡</span></div>
+      <div class="board-cell item-tier-1"><span class="item-icon">🧶</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-1"><span class="item-icon">🧵</span></div>
+      <div class="board-cell"></div>
+      <!-- Row 5 -->
+      <div class="board-cell generator"><span class="item-icon">🕯️</span><span class="cell-label">GEN</span></div>
+      <div class="board-cell item-tier-1"><span class="item-icon">🧵</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-2"><span class="item-icon">🪡</span></div>
+      <div class="board-cell item-tier-3"><span class="item-icon">👘</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell locked"></div>
+      <!-- Row 6 -->
+      <div class="board-cell"></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-2"><span class="item-icon">🪡</span></div>
+      <div class="board-cell item-tier-1"><span class="item-icon">🧶</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell item-tier-1"><span class="item-icon">🧵</span></div>
+      <div class="board-cell"></div>
+      <div class="board-cell"></div>
+    </div>
+    <div class="board-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:linear-gradient(135deg,var(--primary),var(--accent));"></div> Generator</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(46,204,113,0.5);border:1px solid #2ecc71;"></div> Tier 1-2</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(52,152,219,0.5);border:1px solid #3498db;"></div> Tier 3-4</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(155,89,182,0.5);border:1px solid #9b59b6;"></div> Tier 5+</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(0,0,0,0.3);border:1px solid #555;"></div> Locked</div>
+    </div>
+  </div>
+
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Grid Size (MVP)</td><td>6×8 (48 cells)</td></tr>
+    <tr><td>Grid Size (Post-Launch)</td><td>7×9 (63 cells) via Remote Config</td></tr>
+    <tr><td>Cell States</td><td>Empty, Occupied, Locked, Generator</td></tr>
+    <tr><td>Interaction</td><td>Drag-drop merge, tap generator</td></tr>
+    <tr><td>Persistence</td><td>Save on every action, load on launch</td></tr>
+  </table>
+
+  <h3>2.2 Merge System</h3>
+
+  <!-- MERGE CHAIN VISUAL -->
+  <div style="background:#f8f9fa;border-radius:12px;padding:1.5rem;margin:1rem 0;">
+    <h4 style="color:var(--secondary);margin-bottom:1rem;">Merge Chain Example: ผ้าคราม (Indigo Fabric)</h4>
+    <div class="merge-chain-visual">
+      <div class="chain-node tier-1">
+        <div class="chain-icon">🧵</div>
+        <span class="chain-label">Tier 1<br>Cotton Thread</span>
+      </div>
+      <span class="merge-plus">+</span>
+      <div class="chain-node tier-1">
+        <div class="chain-icon">🧵</div>
+        <span class="chain-label">Tier 1<br>Cotton Thread</span>
+      </div>
+      <span class="merge-arrow">→</span>
+      <div class="chain-node tier-2">
+        <div class="chain-icon">🪢</div>
+        <span class="chain-label">Tier 2<br>Spool</span>
+      </div>
+      <span class="merge-arrow">→</span>
+      <div class="chain-node tier-3">
+        <div class="chain-icon">🧱</div>
+        <span class="chain-label">Tier 3<br>Fabric</span>
+      </div>
+      <span class="merge-arrow" style="opacity:0.3;">→</span>
+      <div class="chain-node tier-4" style="opacity:0.5;">
+        <div class="chain-icon">👘</div>
+        <span class="chain-label">Tier 4+<br>Locked</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-diagram">
+    <h4 style="margin-bottom:1rem;color:var(--secondary);">Merge Validation</h4>
+    <div class="flow-step">
+      <span class="flow-num">1</span>
+      <div class="flow-text"><strong>Check</strong> — Both items must be same chain AND same tier</div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">2</span>
+      <div class="flow-text"><strong>Place</strong> — Result item placed at tap/drop position</div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">3</span>
+      <div class="flow-text"><strong>Find</strong> — If target position occupied, find nearest empty cell</div>
+    </div>
+  </div>
+
+  <h3>2.3 Energy System</h3>
+
+  <!-- ENERGY GAUGE VISUAL -->
+  <div class="energy-gauge">
+    <div class="gauge-visual">
+      <div class="gauge-circle">
+        <div class="gauge-inner">
+          <span class="gauge-value">72</span>
+          <span class="gauge-max">/ 100</span>
+        </div>
+      </div>
+    </div>
+    <div class="energy-info">
+      <h4>⚡ Energy</h4>
+      <div class="energy-stats">
+        <div class="energy-stat">
+          <div class="label">Regen Rate</div>
+          <div class="value">1 / 2min</div>
+        </div>
+        <div class="energy-stat">
+          <div class="label">Full in</div>
+          <div class="value">~56min</div>
+        </div>
+        <div class="energy-stat">
+          <div class="label">Tap Cost</div>
+          <div class="value">1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Cap</td><td>100</td></tr>
+    <tr><td>Regen</td><td>1 per 2 min (~3.5h full recharge)</td></tr>
+    <tr><td>Generator tap cost</td><td>1 energy</td></tr>
+    <tr><td>Overflow</td><td>Cap at 100, no overflow</td></tr>
+    <tr><td>Persistence</td><td>Save timestamp + energy on exit, calc on return</td></tr>
+  </table>
+
+  <div class="flow-diagram">
+    <h4 style="margin-bottom:1rem;color:var(--secondary);">Energy Flow</h4>
+    <div class="flow-step">
+      <span class="flow-num">1</span>
+      <div class="flow-text"><strong>Check</strong> — Player taps generator → check energy ≥ 1</div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">2</span>
+      <div class="flow-text"><strong>Deduct</strong> — Deduct 1 energy → trigger generator production</div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">3</span>
+      <div class="flow-text"><strong>Spawn</strong> — Spawn item → start regen timer</div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">4</span>
+      <div class="flow-text"><strong>Ready</strong> — On timer complete → generator ready for next tap</div>
+    </div>
+  </div>
+
+  <h3>2.4 Generator System</h3>
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Output</td><td>Tier 1-2 items</td></tr>
+    <tr><td>Types</td><td>3 types per area (9 total MVP)</td></tr>
+    <tr><td>Regen times</td><td>30s, 60s, 120s (varies by generator)</td></tr>
+    <tr><td>Tap-unlock</td><td>Tap → produce → cooldown</td></tr>
+  </table>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Visual Indicator</h4>
+      <p>Glow/particle effect when ready</p>
+    </div>
+    <div class="info-card">
+      <h4>Cooldown Overlay</h4>
+      <p>Shows time remaining</p>
+    </div>
+    <div class="info-card">
+      <h4>Item Spawn</h4>
+      <p>Adjacent or at selected position</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: META SYSTEMS -->
+<section id="meta">
+  <h2><span class="num">3</span> Meta Systems</h2>
+
+  <h3>3.1 NPC Orders</h3>
+
+  <!-- ORDER QUEUE VISUAL -->
+  <div class="order-queue-visual">
+    <div class="order-slot active">
+      <div class="order-id">Order #1</div>
+      <div class="order-item">👘</div>
+      <div class="order-tier">Tier 3-4</div>
+      <div class="order-reward">🪙 150-200 • XP 30-50</div>
+    </div>
+    <div class="order-slot active">
+      <div class="order-id">Order #2</div>
+      <div class="order-item">🧵</div>
+      <div class="order-tier">Tier 1-2</div>
+      <div class="order-reward">🪙 50-100 • XP 10-20</div>
+    </div>
+    <div class="order-slot">
+      <div class="order-id" style="color:var(--text-light);">Empty Slot</div>
+      <div style="font-size:2rem;opacity:0.3;margin:0.5rem 0;">+</div>
+      <div style="font-size:0.8rem;color:var(--text-light);">Wait or refresh</div>
+    </div>
+  </div>
+
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Queue</td><td>Max 3 pending orders</td></tr>
+    <tr><td>Order types</td><td>Main story orders + side orders (daily/weekly)</td></tr>
+    <tr><td>Reward</td><td>Coins + Story progress + Decoration stars + XP</td></tr>
+    <tr><td>Scaling</td><td>Early: tier 2-3, Mid: tier 5-7, Late: tier 12-15</td></tr>
+  </table>
+
+  <div class="flow-diagram">
+    <h4 style="margin-bottom:1rem;color:var(--secondary);">Order Queue Behavior</h4>
+    <div class="flow-step">
+      <span class="flow-num">1</span>
+      <div class="flow-text">New order appears when slot available</div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">2</span>
+      <div class="flow-text">Player can refresh (costs gems) or wait (auto-refill timer)</div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">3</span>
+      <div class="flow-text">Side orders reset daily/weekly with bonus rewards</div>
+    </div>
+  </div>
+
+  <h4 style="margin:1.5rem 0 1rem;color:var(--secondary);">Reward Structure</h4>
+  <div class="reward-table">
+    <table>
+      <tr><th>Order Tier</th><th>Coins</th><th>XP</th><th>Decoration Stars</th></tr>
+      <tr><td>1-3 (Early)</td><td>50-100</td><td>10-20</td><td>1-2</td></tr>
+      <tr><td>4-6 (Mid)</td><td>150-300</td><td>30-50</td><td>3-5</td></tr>
+      <tr><td>7-10 (Late)</td><td>500-1000</td><td>100-200</td><td>10-20</td></tr>
+    </table>
+  </div>
+
+  <h3>3.2 Decoration Layer</h3>
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Areas at MVP</td><td>3 areas</td></tr>
+    <tr><td>Areas at full</td><td>6 areas</td></tr>
+    <tr><td>Stars</td><td>Earned per order completed</td></tr>
+    <tr><td>Style options</td><td>3 per decor slot (cosmetic)</td></tr>
+    <tr><td>Upgrade states</td><td>Multiple per area</td></tr>
+  </table>
+
+  <h4 style="margin:1.5rem 0 1rem;color:var(--secondary);">3 MVP Areas</h4>
+
+  <!-- AREA PROGRESS -->
+  <div class="area-progress" style="margin-bottom:1.5rem;">
+    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+      <span style="color:var(--secondary);font-weight:600;">Area 1: ร้านผ้าโบราณ</span>
+      <span style="color:var(--success);">★★★☆☆</span>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" style="width:60%;"></div>
+      <span class="progress-bar-text">6/10 decoration slots</span>
+    </div>
+  </div>
+
+  <div class="areas-list">
+    <div class="area-card">
+      <span class="area-num">AREA 1</span>
+      <h4>ร้านผ้าโบราณ</h4>
+      <p class="thai">The Old Fabric Shop</p>
+      <p>Inherited craft shop</p>
+    </div>
+    <div class="area-card">
+      <span class="area-num">AREA 2</span>
+      <h4>สวนริมคลอง</h4>
+      <p class="thai">The Canal Garden</p>
+      <p>Garden by the water</p>
+    </div>
+    <div class="area-card">
+      <span class="area-num">AREA 3</span>
+      <h4>บ้านของผีเล็ก</h4>
+      <p class="thai">The Friendly Spirits' Home</p>
+      <p>Helpful house guardians</p>
+    </div>
+  </div>
+
+  <h3>3.3 Storage</h3>
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Off-board slots</td><td>20 (MVP)</td></tr>
+    <tr><td>Expandable</td><td>Via IAP (additional 10 slots)</td></tr>
+    <tr><td>Behavior</td><td>Store excess items, drag back to board</td></tr>
+  </table>
+</section>
+
+<!-- SECTION 4: CURRENCY & ECONOMY -->
+<section id="economy">
+  <h2><span class="num">4</span> Currency & Economy</h2>
+
+  <h3>4.1 Currency System</h3>
+
+  <!-- CURRENCY DISPLAY -->
+  <div class="currency-display">
+    <div class="currency-badge coins">
+      <span class="icon">🪙</span>
+      <span class="amount">12,450</span>
+    </div>
+    <div class="currency-badge gems">
+      <span class="icon">💎</span>
+      <span class="amount">85</span>
+    </div>
+    <div class="currency-badge energy">
+      <span class="icon">⚡</span>
+      <span class="amount">72/100</span>
+    </div>
+  </div>
+
+  <div class="currency-grid">
+    <div class="currency-card">
+      <div class="icon">🪙</div>
+      <h4>Coins</h4>
+      <ul>
+        <li>Source: Orders, achievements, daily login</li>
+        <li>Use: Board upgrades, decorations, IAP</li>
+      </ul>
+    </div>
+    <div class="currency-card">
+      <div class="icon">💎</div>
+      <h4>Gems (Free)</h4>
+      <ul>
+        <li>Source: Daily login, milestones, slow earn</li>
+        <li>Use: Refresh orders, expand storage, IAP</li>
+      </ul>
+    </div>
+    <div class="currency-card">
+      <div class="icon">💰</div>
+      <h4>Gems (Paid)</h4>
+      <ul>
+        <li>Source: Purchased via IAP</li>
+        <li>Use: Same as free gems</li>
+      </ul>
+    </div>
+  </div>
+  
+  <p style="margin-top:1rem;text-align:center;">
+    <strong style="color:var(--primary);">Gem to Coin Rate:</strong> 1 gem ≈ 50 coins <span style="color:var(--text-light);">(configurable via Remote Config)</span>
+  </p>
+
+  <h3>4.2 Balance Parameters</h3>
+  <table>
+    <tr><th>Item</th><th>Value</th></tr>
+    <tr><td>Energy refill (small)</td><td>$0.99 → 50 energy</td></tr>
+    <tr><td>Energy refill (medium)</td><td>$2.99 → 200 energy</td></tr>
+    <tr><td>Energy refill (large)</td><td>$4.99 → 500 energy</td></tr>
+    <tr><td>Storage expansion</td><td>100 gems → 10 slots</td></tr>
+    <tr><td>Order refresh</td><td>10 gems</td></tr>
+    <tr><td>Generator speed-up</td><td>5 gems</td></tr>
+    <tr><td>Piggy unlock (small)</td><td>$4.99</td></tr>
+    <tr><td>Piggy unlock (medium)</td><td>$9.99</td></tr>
+    <tr><td>Piggy unlock (large)</td><td>$19.99</td></tr>
+  </table>
+</section>
+
+<!-- SECTION 5: PROGRESSION -->
+<section id="progression">
+  <h2><span class="num">5</span> Progression</h2>
+
+  <h3>5.1 Chapter Unlock</h3>
+
+  <!-- TIMELINE VISUAL -->
+  <div class="timeline-visual" style="margin-bottom:1.5rem;">
+    <div class="timeline-item">
+      <div class="date">Start</div>
+      <h4>Chapter 1: กลับมาบ้าน</h4>
+      <p>Area 1, 3 chains unlocked</p>
+    </div>
+    <div class="timeline-item">
+      <div class="date">Complete Ch1</div>
+      <h4>Chapter 2: ความลับของผ้าเก่า</h4>
+      <p>Area 1 expanded</p>
+    </div>
+    <div class="timeline-item">
+      <div class="date">Complete Ch2</div>
+      <h4>Chapter 3: สิ่งที่คลองเล่า</h4>
+      <p>Area 2, 5 chains</p>
+    </div>
+    <div class="timeline-item">
+      <div class="date">Complete Ch3</div>
+      <h4>Chapter 4: ผีช่วยงาน</h4>
+      <p>Area 3, 7 chains</p>
+    </div>
+    <div class="timeline-item" style="background:#fef9e7;padding:0.75rem;border-radius:8px;margin-left:-0.5rem;">
+      <div class="date">Complete Ch4</div>
+      <h4>Chapter 5: งานรื่นเริง 🎉</h4>
+      <p>All areas, 10 chains — MVP Complete!</p>
+    </div>
+  </div>
+
+  <table>
+    <tr><th>Chapter</th><th>Unlock Requirement</th><th>New Content</th></tr>
+    <tr><td>1</td><td>Start</td><td>Area 1, 3 chains</td></tr>
+    <tr><td>2</td><td>Complete Ch1 orders</td><td>Area 1 expanded</td></tr>
+    <tr><td>3</td><td>Complete Ch2 orders</td><td>Area 2, 5 chains</td></tr>
+    <tr><td>4</td><td>Complete Ch3 orders</td><td>Area 3, 7 chains</td></tr>
+    <tr><td>5</td><td>Complete Ch4 orders</td><td>All areas, 10 chains</td></tr>
+    <tr><td>6-7</td><td>Post-MVP</td><td>Additional chapters</td></tr>
+  </table>
+
+  <div class="chapter-flow">
+    <div class="chapter-box">
+      <div class="ch-num">CHAPTER 1</div>
+      <div class="ch-title">กลับมาบ้าน</div>
+      <div style="font-size:0.75rem;opacity:0.8;">Coming Home</div>
+    </div>
+    <span class="chapter-arrow">→</span>
+    <div class="chapter-box">
+      <div class="ch-num">CHAPTER 2</div>
+      <div class="ch-title">ความลับของผ้าเก่า</div>
+      <div style="font-size:0.75rem;opacity:0.8;">Secret of Old Fabric</div>
+    </div>
+    <span class="chapter-arrow">→</span>
+    <div class="chapter-box">
+      <div class="ch-num">CHAPTER 3</div>
+      <div class="ch-title">สิ่งที่คลองเล่า</div>
+      <div style="font-size:0.75rem;opacity:0.8;">What the Canal Says</div>
+    </div>
+    <span class="chapter-arrow">→</span>
+    <div class="chapter-box">
+      <div class="ch-num">CHAPTER 4</div>
+      <div class="ch-title">ผีช่วยงาน</div>
+      <div style="font-size:0.75rem;opacity:0.8;">Spirits Help Out</div>
+    </div>
+    <span class="chapter-arrow">→</span>
+    <div class="chapter-box" style="background:var(--primary);">
+      <div class="ch-num">CHAPTER 5</div>
+      <div class="ch-title">งานรื่นเริง</div>
+      <div style="font-size:0.75rem;opacity:0.8;">The Festival</div>
+    </div>
+  </div>
+
+  <h3>5.2 Chain Unlocks</h3>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Start</h4>
+      <p>3 chains unlocked</p>
+    </div>
+    <div class="info-card">
+      <h4>Progress</h4>
+      <p>New chain per chapter completed</p>
+    </div>
+    <div class="info-card">
+      <h4>Bonus</h4>
+      <p>Chains from side quests</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: RETENTION -->
+<section id="retention">
+  <h2><span class="num">6</span> Retention Systems</h2>
+
+  <h3>6.1 FTUE (First-Time User Experience)</h3>
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Duration</td><td>15 min mandatory</td></tr>
+    <tr><td>Structure</td><td>Guided merge → order complete → area unlock</td></tr>
+    <tr><td>Skippable</td><td>No (core mechanics must be taught)</td></tr>
+    <tr><td>Elements</td><td>Board basics, merge, generator, order, first decoration</td></tr>
+  </table>
+
+  <h3>6.2 D1-D7 Pacing</h3>
+  <table>
+    <tr><th>Day</th><th>Content</th></tr>
+    <tr><td>D1</td><td>Chapter 1 complete, 1 area unlocked</td></tr>
+    <tr><td>D2</td><td>Chapter 2 starts, 2-3 orders/day</td></tr>
+    <tr><td>D3-4</td><td>Chapter 2-3, daily orders visible</td></tr>
+    <tr><td>D5-7</td><td>Chapter 3-4, weekend event possible</td></tr>
+  </table>
+
+  <h3>6.3 Daily Loop</h3>
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Login calendar</td><td>Day 1-7 rewards, repeat on 7-day cycle</td></tr>
+    <tr><td>Daily order</td><td>1 main order refresh/day</td></tr>
+    <tr><td>Daily free booster</td><td>1 free generator speed-up/day</td></tr>
+    <tr><td>Daily challenge</td><td>Optional extra rewards</td></tr>
+  </table>
+
+  <h3>6.4 Weekly Loop</h3>
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Weekly challenge</td><td>Harder orders, bonus coins</td></tr>
+    <tr><td>Weekend event</td><td>Ranking/Collection/Banner type</td></tr>
+    <tr><td>Side order refresh</td><td>Weekly bonus rewards</td></tr>
+  </table>
+
+  <h3>6.5 Push Triggers</h3>
+
+  <!-- PUSH NOTIFICATION CARDS -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin:1rem 0;">
+    <div class="push-card">
+      <div class="push-icon">⚡</div>
+      <div class="push-content">
+        <div class="trigger">Energy Full</div>
+        <div class="timing">On full</div>
+        <div class="message">"Ready to play!"</div>
+      </div>
+    </div>
+    <div class="push-card">
+      <div class="push-icon">📦</div>
+      <div class="push-content">
+        <div class="trigger">Order Ready</div>
+        <div class="timing">On ready</div>
+        <div class="message">"Someone needs your help"</div>
+      </div>
+    </div>
+    <div class="push-card">
+      <div class="push-icon">📖</div>
+      <div class="push-content">
+        <div class="trigger">Chapter Available</div>
+        <div class="timing">On unlock</div>
+        <div class="message">"New chapter awaits"</div>
+      </div>
+    </div>
+    <div class="push-card">
+      <div class="push-icon">🎯</div>
+      <div class="push-content">
+        <div class="trigger">Daily Event</div>
+        <div class="timing">9:00 AM local</div>
+        <div class="message">"Daily challenge available"</div>
+      </div>
+    </div>
+    <div class="push-card" style="border-color:#e74c3c;">
+      <div class="push-icon" style="background:linear-gradient(135deg,#e74c3c,#c0392b);">😢</div>
+      <div class="push-content">
+        <div class="trigger">Lapsed (1 day)</div>
+        <div class="timing">Day 2 no login</div>
+        <div class="message">"Your friends miss you"</div>
+      </div>
+    </div>
+    <div class="push-card" style="border-color:#9b59b6;">
+      <div class="push-icon" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);">💰</div>
+      <div class="push-content">
+        <div class="trigger">Lapsed (3 days)</div>
+        <div class="timing">Day 4 no login</div>
+        <div class="message">"Special offer just for you"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="push-grid" style="display:none;"><!-- Hidden original table -->
+    <div class="push-item">
+      <span class="trigger">Energy full</span>
+      <span class="timing">On full</span>
+      <span class="theme">"Ready to play!"</span>
+    </div>
+    <div class="push-item">
+      <span class="trigger">Order ready</span>
+      <span class="timing">On ready</span>
+      <span class="theme">"Someone needs your help"</span>
+    </div>
+    <div class="push-item">
+      <span class="trigger">Chapter available</span>
+      <span class="timing">On unlock</span>
+      <span class="theme">"New chapter awaits"</span>
+    </div>
+    <div class="push-item">
+      <span class="trigger">Daily event</span>
+      <span class="timing">9:00 AM local</span>
+      <span class="theme">"Daily challenge available"</span>
+    </div>
+    <div class="push-item">
+      <span class="trigger">Lapsed (1 day)</span>
+      <span class="timing">Day 2 no login</span>
+      <span class="theme">"Your friends miss you"</span>
+    </div>
+    <div class="push-item">
+      <span class="trigger">Lapsed (3 days)</span>
+      <span class="timing">Day 4 no login</span>
+      <span class="theme">"Special offer just for you"</span>
+    </div>
+    <div class="push-item">
+      <span class="trigger">Lapsed (7 days)</span>
+      <span class="timing">Day 8 no login</span>
+      <span class="theme">"Welcome back!" + win-back offer</span>
+    </div>
+    <div class="push-item">
+      <span class="trigger">Booster expire</span>
+      <span class="timing">24h before</span>
+      <span class="theme">"Your booster is about to expire"</span>
+    </div>
+    <div class="push-item">
+      <span class="trigger">Event ending</span>
+      <span class="timing">2h before</span>
+      <span class="theme">"Event ending soon!"</span>
+    </div>
+    <div class="push-item">
+      <span class="trigger">New content</span>
+      <span class="timing">On release</span>
+      <span class="theme">"New area unlocked!"</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 7: EVENTS -->
+<section id="events">
+  <h2><span class="num">7</span> Event Framework</h2>
+
+  <h3>6 Event Types (Post-MVP)</h3>
+
+  <!-- EVENT TYPE CARDS -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1rem 0;">
+    <div class="order-type" style="text-align:center;">
+      <h4 style="font-size:2rem;margin-bottom:0.5rem;">🎁</h4>
+      <h4>Login</h4>
+      <p style="color:var(--text-light);font-size:0.85rem;">Daily login rewards<br>Streak bonuses</p>
+    </div>
+    <div class="order-type" style="text-align:center;">
+      <h4 style="font-size:2rem;margin-bottom:0.5rem;">🏆</h4>
+      <h4>Ranking</h4>
+      <p style="color:var(--text-light);font-size:0.85rem;">Leaderboard competition<br>Top % rewards</p>
+    </div>
+    <div class="order-type" style="text-align:center;">
+      <h4 style="font-size:2rem;margin-bottom:0.5rem;">📦</h4>
+      <h4>Collection</h4>
+      <p style="color:var(--text-light);font-size:0.85rem;">Collect X items<br>Bonus rewards</p>
+    </div>
+    <div class="order-type" style="text-align:center;">
+      <h4 style="font-size:2rem;margin-bottom:0.5rem;">📊</h4>
+      <h4>Banner</h4>
+      <p style="color:var(--text-light);font-size:0.85rem;">Progress bar<br>Tiered rewards</p>
+    </div>
+    <div class="order-type" style="text-align:center;">
+      <h4 style="font-size:2rem;margin-bottom:0.5rem;">✅</h4>
+      <h4>Mission</h4>
+      <p style="color:var(--text-light);font-size:0.85rem;">Complete tasks<br>Sequential rewards</p>
+    </div>
+    <div class="order-type" style="text-align:center;">
+      <h4 style="font-size:2rem;margin-bottom:0.5rem;">🎯</h4>
+      <h4>Milestone</h4>
+      <p style="color:var(--text-light);font-size:0.85rem;">Reach X total<br>Celebrate bonus</p>
+    </div>
+  </div>
+    <div class="order-type">
+      <h4>🎁 Login</h4>
+      <p>Daily login rewards, streak bonuses</p>
+    </div>
+    <div class="order-type">
+      <h4>🏆 Ranking</h4>
+      <p>Leaderboard competition, top % rewards</p>
+    </div>
+    <div class="order-type">
+      <h4>📦 Collection</h4>
+      <p>Collect X items from category, bonus rewards</p>
+    </div>
+    <div class="order-type">
+      <h4>📊 Banner</h4>
+      <p>Progress bar, track toward goal, tiered rewards</p>
+    </div>
+    <div class="order-type">
+      <h4>✅ Mission</h4>
+      <p>Complete specific tasks, sequential rewards</p>
+    </div>
+    <div class="order-type">
+      <h4>🎯 Milestone</h4>
+      <p>Reach X total, celebrate with bonus</p>
+    </div>
+  </div>
+
+  <div class="info-grid" style="margin-top:1.5rem;">
+    <div class="info-card" style="border-color:var(--primary);">
+      <h4>MVP (M4)</h4>
+      <p>Daily rewards + weekend events (Ranking, Banner, Mission types)</p>
+    </div>
+    <div class="info-card" style="border-color:var(--success);">
+      <h4>Full (M12)</h4>
+      <p>All 6 event types</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 8: IAP -->
+<section id="iap">
+  <h2><span class="num">8</span> IAP Integration</h2>
+
+  <h3>8.1 MVP IAP</h3>
+
+  <!-- IAP PRODUCT CARDS -->
+  <div class="iap-visual">
+    <div class="iap-product featured">
+      <div class="product-icon">🎁</div>
+      <h4>Starter Pack</h4>
+      <p class="product-desc">First-time only • 72h window<br>Gems + Coins + Booster</p>
+      <div class="product-price">$0.99</div>
+    </div>
+    <div class="iap-product">
+      <div class="product-icon">⚡</div>
+      <h4>Energy Small</h4>
+      <p class="product-desc">50 Energy</p>
+      <div class="product-price">$0.99</div>
+    </div>
+    <div class="iap-product">
+      <div class="product-icon">🔋</div>
+      <h4>Energy Medium</h4>
+      <p class="product-desc">200 Energy</p>
+      <div class="product-price">$2.99</div>
+    </div>
+    <div class="iap-product">
+      <div class="product-icon">💎</div>
+      <h4>Energy Large</h4>
+      <p class="product-desc">500 Energy</p>
+      <div class="product-price">$4.99</div>
+    </div>
+    <div class="iap-product">
+      <div class="product-icon">🐷</div>
+      <h4>Piggy Small</h4>
+      <p class="product-desc">2× Coin Multiplier</p>
+      <div class="product-price">$4.99</div>
+    </div>
+    <div class="iap-product">
+      <div class="product-icon">🐷</div>
+      <h4>Piggy Medium</h4>
+      <p class="product-desc">3× Coin Multiplier</p>
+      <div class="product-price">$9.99</div>
+    </div>
+  </div>
+
+  <h4 style="margin:1.5rem 0 1rem;color:var(--secondary);">Gem Packs</h4>
+  <div class="iap-visual">
+    <div class="iap-card">
+      <div class="iap-info">
+        <h4>energy_small</h4>
+        <span>50 energy</span>
+      </div>
+      <span class="iap-price">$0.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info">
+        <h4>energy_medium</h4>
+        <span>200 energy</span>
+      </div>
+      <span class="iap-price">$2.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info">
+        <h4>energy_large</h4>
+        <span>500 energy</span>
+      </div>
+      <span class="iap-price">$4.99</span>
+    </div>
+    <div class="iap-card highlight">
+      <div class="iap-info">
+        <h4>starter_pack</h4>
+        <span>First-time only, 72h window, gems + coins + booster</span>
+      </div>
+      <span class="iap-price">$0.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info">
+        <h4>piggy_small</h4>
+        <span>Accumulated coins (2x multiplier)</span>
+      </div>
+      <span class="iap-price">$4.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info">
+        <h4>piggy_medium</h4>
+        <span>Accumulated coins (3x multiplier)</span>
+      </div>
+      <span class="iap-price">$9.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info">
+        <h4>piggy_large</h4>
+        <span>Accumulated coins (4x multiplier)</span>
+      </div>
+      <span class="iap-price">$19.99</span>
+    </div>
+  </div>
+
+  <h4 style="margin:1.5rem 0 1rem;color:var(--secondary);">Gem Packs</h4>
+  <div class="iap-grid">
+    <div class="iap-card">
+      <div class="iap-info"><h4>gem_pack_1</h4><span>50 gems</span></div>
+      <span class="iap-price">$0.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>gem_pack_2</h4><span>180 gems</span></div>
+      <span class="iap-price">$2.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>gem_pack_3</h4><span>350 gems</span></div>
+      <span class="iap-price">$4.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>gem_pack_4</h4><span>800 gems</span></div>
+      <span class="iap-price">$9.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>gem_pack_5</h4><span>2000 gems</span></div>
+      <span class="iap-price">$19.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>gem_pack_6</h4><span>6000 gems</span></div>
+      <span class="iap-price">$49.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>gem_pack_7</h4><span>14000 gems</span></div>
+      <span class="iap-price">$99.99</span>
+    </div>
+  </div>
+
+  <h3>8.2 Beta IAP</h3>
+  <div class="iap-grid">
+    <div class="iap-card">
+      <div class="iap-info"><h4>vip_weekly</h4><span>7-day VIP pass, daily gems + booster</span></div>
+      <span class="iap-price">$4.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>vip_monthly</h4><span>30-day VIP pass</span></div>
+      <span class="iap-price">$15.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>event_pass</h4><span>Per major event, free + paid tracks</span></div>
+      <span class="iap-price">$9.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>progression_pack_10</h4><span>Level 10 milestone pack</span></div>
+      <span class="iap-price">$2.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>progression_pack_25</h4><span>Level 25 milestone pack</span></div>
+      <span class="iap-price">$4.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>progression_pack_50</h4><span>Level 50 milestone pack</span></div>
+      <span class="iap-price">$9.99</span>
+    </div>
+    <div class="iap-card">
+      <div class="iap-info"><h4>progression_pack_80</h4><span>Level 80 milestone pack</span></div>
+      <span class="iap-price">$14.99</span>
+    </div>
+  </div>
+
+  <h3>8.3 First Purchase</h3>
+  <div class="info-card" style="border-color:var(--success);margin-top:1rem;">
+    <h4>🎉 Double gems on first purchase</h4>
+    <p>Any gem pack — framework must support this</p>
+  </div>
+</section>
+
+<!-- SECTION 9: STORY -->
+<section id="story">
+  <h2><span class="num">9</span> Story Integration</h2>
+
+  <h3>9.1 Beat → Reward Mapping</h3>
+  <table>
+    <tr><th>Story Beat</th><th>Merge Reward</th></tr>
+    <tr><td>New area unlocked</td><td>Extra coins + new chains</td></tr>
+    <tr><td>NPC introduction</td><td>Daily order bonus</td></tr>
+    <tr><td>Chapter cliffhanger</td><td>XP boost + decoration star</td></tr>
+    <tr><td>Chapter complete</td><td>Area expansion + premium currency</td></tr>
+  </table>
+
+  <div class="info-card" style="border-color:#e74c3c;margin-top:1rem;background:#fdf2f2;">
+    <h4>⚠️ Story Rule</h4>
+    <p>Never block story behind paid unlock. <strong>All story content free.</strong></p>
+  </div>
+
+  <h3>9.2 Dialogue Spec</h3>
+  <table>
+    <tr><th>Item</th><th>Spec</th></tr>
+    <tr><td>Total at MVP</td><td>~3,000-5,000 words</td></tr>
+    <tr><td>Per chapter</td><td>~500-800 words</td></tr>
+    <tr><td>Languages</td><td>English + Thai at launch</td></tr>
+    <tr><td>Format</td><td>JSON strings, localization-ready</td></tr>
+  </table>
+</section>
+
+<!-- SECTION 10: ANALYTICS -->
+<section id="analytics">
+  <h2><span class="num">10</span> Analytics Requirements</h2>
+
+  <h3>10.1 Core Events</h3>
+  <div class="analytics-events">
+    <div class="event-category">
+      <h4>📊 Board</h4>
+      <ul>
+        <li>merge_success — chain, tier, items merged, time since last merge</li>
+        <li>merge_fail — attempted invalid merge</li>
+        <li>energy_out — D1-D7 funnel, time to out</li>
+        <li>generator_tap — type, energy remaining</li>
+      </ul>
+    </div>
+    <div class="event-category">
+      <h4>📈 Progression</h4>
+      <ul>
+        <li>order_completed — tier, reward, time to complete</li>
+        <li>order_accepted — queue time</li>
+        <li>chapter_started / chapter_completed — time in chapter</li>
+        <li>area_unlocked — first time</li>
+      </ul>
+    </div>
+    <div class="event-category">
+      <h4>💰 Economy</h4>
+      <ul>
+        <li>currency_earned — amount, source, balance after</li>
+        <li>currency_spent — amount, use, balance after</li>
+        <li>iap_purchased — sku, amount, first purchase Y/N</li>
+      </ul>
+    </div>
+    <div class="event-category">
+      <h4>🔄 Retention</h4>
+      <ul>
+        <li>daily_login — day streak</li>
+        <li>lapsed_return — days absent, previous session length</li>
+        <li>push_received / push_clicked — campaign ID</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>10.2 Funnels</h3>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>FTUE</h4>
+      <p>Completion rate (D1, D3, D7)</p>
+    </div>
+    <div class="info-card">
+      <h4>Energy → IAP</h4>
+      <p>Energy out → IAP conversion</p>
+    </div>
+    <div class="info-card">
+      <h4>Orders</h4>
+      <p>Order completion → repeat orders</p>
+    </div>
+    <div class="info-card">
+      <h4>Chapters</h4>
+      <p>Chapter completion rate</p>
+    </div>
+    <div class="info-card">
+      <h4>Lapsed</h4>
+      <p>Recovery rate by trigger</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 11: TECHNICAL -->
+<section id="tech">
+  <h2><span class="num">11</span> Technical Requirements</h2>
+  <div class="tech-grid">
+    <div class="tech-item">
+      <strong>Board Persistence</strong>
+      <span>Save every action to PlayerPrefs (MVP), Firebase (launch)</span>
+    </div>
+    <div class="tech-item">
+      <strong>Remote Config</strong>
+      <span>Firebase Remote Config, all balance/econ values</span>
+    </div>
+    <div class="tech-item">
+      <strong>Server-side econ</strong>
+      <span>Remote Config keys, no hardcoded values</span>
+    </div>
+    <div class="tech-item">
+      <strong>Receipt validation</strong>
+      <span>Client-side Unity IAP (MVP), server-side (production)</span>
+    </div>
+    <div class="tech-item">
+      <strong>Cloud save</strong>
+      <span>Firebase Auth + Firestore, cross-device sync</span>
+    </div>
+    <div class="tech-item">
+      <strong>Analytics</strong>
+      <span>Firebase Analytics, full event catalog</span>
+    </div>
+    <div class="tech-item">
+      <strong>A/B framework</strong>
+      <span>Remote Config user property segmentation</span>
+    </div>
+    <div class="tech-item">
+      <strong>Push notifications</strong>
+      <span>Firebase Cloud Messaging (M4+)</span>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:2rem;color:var(--text-light);font-size:0.9rem;">
+  <p>🔥 Bonfire Gathering — Game Design Document v1.0</p>
+  <p>Merge-2 Casual F2P Puzzle Game</p>
+</footer>
+
+</div>
+</body>
+</html>
