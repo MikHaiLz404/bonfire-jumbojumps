@@ -105,6 +105,7 @@
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
+    align-items: stretch;
   }
 
   .doc-card {
@@ -116,6 +117,8 @@
     transition: all 0.3s;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   .doc-card::before {
@@ -177,6 +180,7 @@
     padding: 1rem;
     font-size: 0.85rem;
     color: var(--text-light);
+    flex: 1;
   }
 
   .doc-card .sections strong {
@@ -197,23 +201,29 @@
     color: var(--accent);
   }
 
+  .doc-card-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+
   .doc-link {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     background: var(--primary);
     color: white;
-    padding: 0.75rem 1.5rem;
+    padding: 0.85rem 1.5rem;
     border-radius: 25px;
     text-decoration: none;
     font-weight: 600;
-    margin-top: 1rem;
     transition: all 0.2s;
+    width: 100%;
   }
 
   .doc-link:hover {
     background: var(--primary-dark);
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
 
   /* STATS BAR */
@@ -456,7 +466,9 @@
         <li>Dependencies</li>
       </ul>
     </div>
-    <a href="TECH_SPEC.html" class="doc-link">📄 View Document →</a>
+    <div class="doc-card-footer">
+      <a href="TECH_SPEC.html" class="doc-link">📄 View Document →</a>
+    </div>
   </div>
 
   <div class="doc-card game">
@@ -479,7 +491,9 @@
         <li>Events</li>
       </ul>
     </div>
-    <a href="GAME_DESIGN_DOC.html" class="doc-link">📄 View Document →</a>
+    <div class="doc-card-footer">
+      <a href="GAME_DESIGN_DOC.html" class="doc-link">📄 View Document →</a>
+    </div>
   </div>
 
   <div class="doc-card story">
@@ -502,7 +516,9 @@
         <li>Tone Guide</li>
       </ul>
     </div>
-    <a href="STORY_BIBLE.html" class="doc-link">📄 View Document →</a>
+    <div class="doc-card-footer">
+      <a href="STORY_BIBLE.html" class="doc-link">📄 View Document →</a>
+    </div>
   </div>
 
   <div class="doc-card mvp">
@@ -524,7 +540,9 @@
         <li>Summary</li>
       </ul>
     </div>
-    <a href="MVP_Scope_Recommendation.html" class="doc-link">📄 View Document →</a>
+    <div class="doc-card-footer">
+      <a href="MVP_Scope_Recommendation.html" class="doc-link">📄 View Document →</a>
+    </div>
   </div>
 
   <div class="doc-card m1">
@@ -546,7 +564,9 @@
         <li>Next Steps</li>
       </ul>
     </div>
-    <a href="M1_DELIVERABLES.html" class="doc-link">📄 View Document →</a>
+    <div class="doc-card-footer">
+      <a href="M1_DELIVERABLES.html" class="doc-link">📄 View Document →</a>
+    </div>
   </div>
 </div>
 

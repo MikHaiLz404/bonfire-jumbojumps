@@ -69,6 +69,24 @@
     position: relative;
   }
 
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover {
+    background: rgba(255,255,255,0.25);
+  }
+
   header p {
     opacity: 0.9;
     font-size: 1rem;
@@ -529,6 +547,7 @@
 <div class="container">
 
 <header>
+  <a href="index.html" class="back-btn">← Back to Hub</a>
   <h1>🎯 MVP Scope Recommendation</h1>
   <p>6-Month to 1-Year Plan</p>
   <div class="header-badge">Phased Implementation Strategy</div>

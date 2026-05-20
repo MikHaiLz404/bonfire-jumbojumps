@@ -69,6 +69,24 @@
     position: relative;
   }
 
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover {
+    background: rgba(255,255,255,0.25);
+  }
+
   header .subtitle {
     color: var(--accent);
     font-size: 1.2rem;
@@ -746,6 +764,7 @@
 <div class="container">
 
 <header>
+  <a href="index.html" class="back-btn">← Back to Hub</a>
   <div class="lantern-icon">🏮</div>
   <h1>Story Bible — "Lantern & Legend"</h1>
   <p class="subtitle">Bonfire Gathering Narrative Framework</p>

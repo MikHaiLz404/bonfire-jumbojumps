@@ -71,6 +71,24 @@
     position: relative;
   }
 
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover {
+    background: rgba(255,255,255,0.25);
+  }
+
   header .unity-icon { font-size: 3rem; margin-bottom: 0.5rem; }
   header p { opacity: 0.9; }
   header .meta {
@@ -489,6 +507,7 @@
 <div class="container">
 
 <header>
+  <a href="index.html" class="back-btn">← Back to Hub</a>
   <div class="unity-icon">🎮</div>
   <h1>Unity Tech Spec</h1>
   <p>Bonfire Gathering — Merge-2 Casual F2P Puzzle Game</p>
