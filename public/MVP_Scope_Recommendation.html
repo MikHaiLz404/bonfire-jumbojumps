@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MVP Scope Recommendation — Bonfire Gathering</title>
+<title>MVP Scope Recommendation</title>
 <style>
   :root {
     --primary: #8e44ad;
@@ -18,798 +18,382 @@
     --success: #27ae60;
     --warning: #f39c12;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, var(--bg-light) 0%, #e8d5f5 100%);
-    color: var(--text);
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-
-  .container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-  }
-
-  header {
-    text-align: center;
-    padding: 3rem 1rem;
-    background: linear-gradient(135deg, var(--secondary) 0%, #1a252f 100%);
-    color: white;
-    border-radius: 16px;
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(142,68,173,0.15) 0%, transparent 50%);
-    animation: glow 8s ease-in-out infinite;
-  }
-
-  @keyframes glow {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-  }
-
-  header h1 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    position: relative;
-  }
-
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(255,255,255,0.15);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-    transition: all 0.2s;
-  }
-
-  .back-btn:hover {
-    background: rgba(255,255,255,0.25);
-  }
-
-  header p {
-    opacity: 0.9;
-    font-size: 1rem;
-  }
-
-  .header-badge {
-    display: inline-block;
-    background: var(--primary);
-    color: white;
-    padding: 0.5rem 1.5rem;
-    border-radius: 25px;
-    font-weight: 600;
-    margin-top: 1rem;
-  }
-
-  nav {
-    background: var(--bg-card);
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    position: sticky;
-    top: 1rem;
-    z-index: 100;
-  }
-
-  nav ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    list-style: none;
-    justify-content: center;
-  }
-
-  nav a {
-    text-decoration: none;
-    color: var(--text);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, var(--bg-light) 0%, #e8d5f5 100%); color: var(--text); line-height: 1.6; min-height: 100vh; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+  header { text-align: center; padding: 3rem 1rem; background: linear-gradient(135deg, var(--secondary) 0%, #1a252f 100%); color: white; border-radius: 16px; margin-bottom: 2rem; position: relative; overflow: hidden; }
+  header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(142,68,173,0.15) 0%, transparent 50%); animation: glow 8s ease-in-out infinite; }
+  @keyframes glow { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
+  header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; position: relative; }
+  .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.15); color: white; padding: 0.5rem 1rem; border-radius: 20px; text-decoration: none; font-size: 0.9rem; margin-bottom: 1rem; transition: all 0.2s; }
+  .back-btn:hover { background: rgba(255,255,255,0.25); }
+  header p { opacity: 0.9; font-size: 1rem; }
+  .header-badge { display: inline-block; background: var(--primary); color: white; padding: 0.5rem 1.5rem; border-radius: 25px; font-weight: 600; margin-top: 1rem; }
+  nav { background: var(--bg-card); border-radius: 12px; padding: 1rem; margin-bottom: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); position: sticky; top: 1rem; z-index: 100; }
+  nav ul { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; justify-content: center; }
+  nav a { text-decoration: none; color: var(--text); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
   nav a:hover { background: var(--primary); color: white; }
-
-  section {
-    background: var(--bg-card);
-    border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-  }
-
-  section h2 {
-    color: var(--secondary);
-    font-size: 1.4rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 3px solid var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
+  section { background: var(--bg-card); border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+  section h2 { color: var(--secondary); font-size: 1.4rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 3px solid var(--primary); display: flex; align-items: center; gap: 0.75rem; }
   section h2 .icon { font-size: 1.5rem; }
-
-  h3 {
-    color: var(--secondary);
-    font-size: 1.1rem;
-    margin: 1.5rem 0 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
+  h3 { color: var(--secondary); font-size: 1.1rem; margin: 1.5rem 0 1rem; display: flex; align-items: center; gap: 0.5rem; }
   h3::before { content: '▶'; color: var(--accent); font-size: 0.7rem; }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
-    font-size: 0.95rem;
-  }
-
-  th {
-    background: var(--secondary);
-    color: white;
-    padding: 0.85rem 1rem;
-    text-align: left;
-    font-weight: 600;
-  }
-
-  td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; }
+  th { background: var(--secondary); color: white; padding: 0.85rem 1rem; text-align: left; font-weight: 600; }
+  td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
   tr:nth-child(even) { background: #f8f9fa; }
   tr:hover { background: #f5eef8; }
-
   .highlight-row { background: #f5eef8 !important; }
-
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1rem;
-    margin: 1rem 0;
-  }
-
-  .info-card {
-    background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
-    border-radius: 12px;
-    padding: 1.25rem;
-    border-left: 4px solid var(--primary);
-  }
-
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  .info-card { background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid var(--primary); }
   .info-card h4 { color: var(--secondary); margin-bottom: 0.75rem; }
   .info-card p { color: var(--text-light); font-size: 0.9rem; }
-
-  .phase-card {
-    background: white;
-    border-radius: 12px;
-    padding: 1.25rem;
-    border: 2px solid var(--border);
-    margin: 0.5rem 0;
-  }
-
-  .phase-card h4 {
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-  }
-
-  .phase-card .months {
-    background: var(--secondary);
-    color: white;
-    padding: 0.2rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    display: inline-block;
-    margin-bottom: 0.5rem;
-  }
-
-  .phase-card p { color: var(--text-light); font-size: 0.9rem; }
-
-  .scope-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-
-  .scope-item {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 1rem;
-    border-left: 4px solid var(--success);
-  }
-
-  .scope-item .phase {
-    font-size: 0.75rem;
-    color: var(--text-light);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .scope-item h4 { color: var(--secondary); margin: 0.25rem 0; }
-  .scope-item p { font-size: 0.85rem; color: var(--text-light); }
-
-  .team-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin: 1rem 0;
-  }
-
-  .team-card {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e8e8e8 100%);
-    border-radius: 10px;
-    padding: 1rem;
-    text-align: center;
-  }
-
-  .team-card .count {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--primary);
-  }
-
-  .team-card h4 { color: var(--secondary); margin: 0.5rem 0; }
-  .team-card p { font-size: 0.85rem; color: var(--text-light); }
-
-  .diff-card {
-    background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 2px solid var(--warning);
-    margin: 1rem 0;
-  }
-
-  .diff-card h4 { color: var(--warning); margin-bottom: 0.75rem; }
-
-  .diff-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-
-  .diff-item {
-    background: white;
-    border-radius: 8px;
-    padding: 1rem;
-    border: 1px solid var(--border);
-  }
-
-  .diff-item strong { color: var(--secondary); display: block; margin-bottom: 0.25rem; }
-  .diff-item span { font-size: 0.85rem; color: var(--text-light); }
-
-  .summary-table td:nth-child(2) { background: #d5f5e3; }
-  .summary-table td:nth-child(3) { background: #fef9e7; }
-
-  .opportunity-badge {
-    display: inline-block;
-    background: var(--success);
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-left: 0.5rem;
-  }
-
-  /* ===== TIMELINE PHASES ===== */
-  .phase-timeline {
-    display: flex;
-    gap: 1rem;
-    margin: 1.5rem 0;
-    flex-wrap: wrap;
-  }
-
-  .phase-block {
-    flex: 1;
-    min-width: 200px;
-    background: white;
-    border-radius: 12px;
-    padding: 1.25rem;
-    border: 2px solid;
-    position: relative;
-  }
-
-  .phase-block.alpha { border-color: var(--primary); }
-  .phase-block.beta { border-color: var(--accent); }
-  .phase-block.post { border-color: #95a5a6; }
-
-  .phase-block .phase-label {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-  }
-
-  .phase-block.alpha .phase-label { background: var(--primary); color: white; }
-  .phase-block.beta .phase-label { background: var(--accent); color: var(--secondary); }
-  .phase-block.post .phase-label { background: #95a5a6; color: white; }
-
-  .phase-block h4 {
-    color: var(--secondary);
-    margin-bottom: 0.5rem;
-  }
-
-  .phase-block .months {
-    font-weight: bold;
-    color: var(--primary);
-    margin-bottom: 0.75rem;
-  }
-
-  .phase-block ul {
-    list-style: none;
-    font-size: 0.85rem;
-    color: var(--text-light);
-  }
-
-  .phase-block li {
-    padding: 0.3rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .phase-block li::before {
-    content: '✓';
-    color: var(--success);
-    font-weight: bold;
-  }
-
-  /* ===== SCOPE COMPARISON ===== */
-  .scope-comparison {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin: 1rem 0;
-  }
-
-  .scope-card {
-    background: white;
-    border-radius: 12px;
-    padding: 1rem;
-    text-align: center;
-    border: 1px solid var(--border);
-  }
-
-  .scope-card .phase-tag {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-light);
-    margin-bottom: 0.5rem;
-  }
-
-  .scope-card .big-number {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: var(--primary);
-  }
-
-  .scope-card h4 {
-    color: var(--secondary);
-    margin-top: 0.25rem;
-  }
-
-  .scope-card p {
-    font-size: 0.8rem;
-    color: var(--text-light);
-    margin-top: 0.25rem;
-  }
-
-  /* ===== TEAM VISUAL ===== */
-  .team-visual {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin: 1rem 0;
-    justify-content: center;
-  }
-
-  .team-member {
-    background: linear-gradient(135deg, #f8f9fa, #e8e8e8);
-    border-radius: 10px;
-    padding: 1rem;
-    text-align: center;
-    min-width: 120px;
-  }
-
-  .team-member .avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    margin: 0 auto 0.5rem;
-  }
-
-  .team-member h4 {
-    color: var(--secondary);
-    font-size: 0.9rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .team-member p {
-    font-size: 0.75rem;
-    color: var(--text-light);
-  }
-
-  /* ===== DIFFERENTIATOR CARDS ===== */
-  .diff-visual {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-    margin: 1rem 0;
-  }
-
-  .diff-card-visual {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    text-align: center;
-    border: 2px solid var(--border);
-  }
-
-  .diff-card-visual .icon {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .diff-card-visual h4 {
-    color: var(--secondary);
-    margin-bottom: 0.5rem;
-  }
-
-  .diff-card-visual .tag {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-
-  .diff-card-visual .tag.high { background: #d5f5e3; color: #27ae60; }
-  .diff-card-visual .tag.medium { background: #fef9e7; color: #d68910; }
-  .diff-card-visual .tag.low { background: #fadbd8; color: #c0392b; }
-
-  /* ===== SUMMARY TABLE GRID ===== */
-  .summary-grid {
-    display: grid;
-    grid-template-columns: 2fr 2fr 1fr;
-    gap: 0.5rem;
-    margin: 1rem 0;
-  }
-
-  .summary-header {
-    background: var(--secondary);
-    color: white;
-    padding: 0.75rem;
-    font-weight: 600;
-    text-align: center;
-  }
-
-  .summary-row {
-    display: contents;
-  }
-
-  .summary-cell {
-    background: white;
-    padding: 0.75rem;
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-  }
-
-  .summary-cell.prd { background: #f8f9fa; }
-  .summary-cell.mvp { background: #d5f5e3; }
-  .summary-cell.timeline { background: #fef9e7; font-weight: bold; }
-
-  @media (max-width: 768px) {
-    header h1 { font-size: 1.8rem; }
-    section { padding: 1.25rem; }
-  }
+  footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.9rem; }
+  @media (max-width: 768px) { header h1 { font-size: 1.8rem; } section { padding: 1.25rem; } }
 </style>
 </head>
 <body>
 <div class="container">
-
 <header>
   <a href="index.html" class="back-btn">← Back to Hub</a>
-  <h1>🎯 MVP Scope Recommendation</h1>
-  <p>6-Month to 1-Year Plan</p>
-  <div class="header-badge">Phased Implementation Strategy</div>
+  <h1>MVP Scope Recommendation</h1>
+  <p>7–7.5 Month Plan — 687 Man-Days</p>
 </header>
-
-<nav>
-  <ul>
-    <li><a href="#timeline">Timeline</a></li>
-    <li><a href="#scope">Scope Details</a></li>
-    <li><a href="#team">Team</a></li>
-    <li><a href="#differentiation">Differentiation</a></li>
-    <li><a href="#summary">Summary</a></li>
-  </ul>
-</nav>
-
-<section id="timeline">
-  <h2><span class="icon">🗓️</span> Timeline Mapping</h2>
-
-  <!-- PHASE TIMELINE -->
-  <div class="phase-timeline">
-    <div class="phase-block alpha">
-      <span class="phase-label">Alpha MVP</span>
-      <h4>Core Loop First</h4>
-      <div class="months">Month 0–3</div>
-      <ul>
-        <li>Board + Energy + Generators</li>
-        <li>3 Areas, Chapter 1-2</li>
-        <li>Basic IAP</li>
-        <li>20 chains, 10 tiers</li>
-      </ul>
-    </div>
-    <div class="phase-block beta">
-      <span class="phase-label">Beta MVP</span>
-      <h4>Full Content</h4>
-      <div class="months">Month 3–6</div>
-      <ul>
-        <li>6 areas, 30 chains</li>
-        <li>Story Ch1-5</li>
-        <li>Weekend events, battle pass</li>
-        <li>15 tiers live</li>
-      </ul>
-    </div>
-    <div class="phase-block post">
-      <span class="phase-label">Post-Launch</span>
-      <h4>Scale Up</h4>
-      <div class="months">Month 6–12</div>
-      <ul>
-        <li>Guild system</li>
-        <li>Rewarded ads</li>
-        <li>7×9 board</li>
-        <li>Branching story</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section id="scope">
-  <h2><span class="icon">📋</span> Recommended MVP Scope (6-Month Alpha)</h2>
-
-  <h3>Core Gameplay — Phased Board Size</h3>
-  <div class="info-card">
-    <h4>Start: 6×8 (48 cells) → Expand: 7×9 (63 cells)</h4>
-    <p>MVP+, lighter art pipeline, faster dev. Ships at month 3. Expand via Remote Config post-launch.</p>
-  </div>
-
-  <div class="scope-grid" style="margin-top:1rem;">
-    <div class="scope-item">
-      <div class="phase">Alpha MVP</div>
-      <h4>20 Chains / 10 Tiers</h4>
-      <p>200 merge-item icons at launch</p>
-    </div>
-    <div class="scope-item">
-      <div class="phase">Beta MVP</div>
-      <h4>30 Chains / 15 Tiers</h4>
-      <p>300 merge-item icons at Beta</p>
-    </div>
-    <div class="scope-item">
-      <div class="phase">Post-Launch</div>
-      <h4>30 Chains / Up to 20 Tiers</h4>
-      <p>Full spec achieved</p>
-    </div>
-  </div>
-
-  <h3>Areas Phasing</h3>
-  <table>
-    <tr><th>Phase</th><th>Areas</th></tr>
-    <tr><td>Alpha MVP</td><td>3 areas (dense M1 narrative pacing)</td></tr>
-    <tr><td>Beta MVP</td><td>6 areas (per PRD launch spec)</td></tr>
-    <tr><td>Post-Launch</td><td>Additional areas via live content</td></tr>
-  </table>
-
-  <h3>Story — Lean Cliffhanger Format</h3>
-  <table>
-    <tr><th>Item</th><th>Spec</th></tr>
-    <tr><td>Chapters at Launch</td><td>5–7 chapters (vs. PRD's ~15)</td></tr>
-    <tr><td>Chapter Length</td><td>20–30 min each</td></tr>
-    <tr><td>Dialogue</td><td>~3,000–5,000 words at launch</td></tr>
-    <tr><td>Cutscenes</td><td>Static art + text box (no animation)</td></tr>
-    <tr><td>Post-Launch</td><td>Scale to ~15 chapters by month 12</td></tr>
-  </table>
-
-  <h3>Monetization — Core IAP at Launch, Battle Pass at Beta</h3>
-  <div class="info-grid">
-    <div class="info-card">
-      <h4>Alpha MVP</h4>
-      <p>Energy refills, starter pack, piggy bank, gem SKUs</p>
-    </div>
-    <div class="info-card">
-      <h4>Beta MVP</h4>
-      <p>Battle pass, VIP/Club pass, progression packs</p>
-    </div>
-    <div class="info-card">
-      <h4>Post-Launch</h4>
-      <p>Event pass, rewarded ads, offerwall</p>
-    </div>
-  </div>
-
-  <h3>Events — Weekend Events at Beta</h3>
-  <table>
-    <tr><th>Phase</th><th>Features</th></tr>
-    <tr><td>Alpha MVP</td><td>Daily rewards, daily orders only</td></tr>
-    <tr><td>Beta MVP</td><td>Weekend events (Ranking, Banner, Mission types), 1 major event</td></tr>
-    <tr><td>Post-Launch</td><td>All 6 event types per PRD</td></tr>
-  </table>
-
-  <h3>Social — Light at MVP</h3>
-  <table>
-    <tr><th>Item</th><th>Phase</th><th>Rationale</th></tr>
-    <tr>
-      <td>Friend Energy Gifting</td>
-      <td>Beta MVP</td>
-      <td>Light social, high retention</td>
-    </tr>
-    <tr>
-      <td>Guild System</td>
-      <td>Post-Launch (month 6+)</td>
-      <td>Feature Gap Analysis: Post-MVP, very high opportunity</td>
-    </tr>
-  </table>
-</section>
-
-<section id="team">
-  <h2><span class="icon">👥</span> Recommended Team Structure</h2>
-
-  <div class="info-card" style="border-color:var(--primary);margin-bottom:1rem;">
-    <h4>Engine: Unity (Recommended)</h4>
-    <p>Stronger mobile F2P tooling, Merge Mansion/Seaside Escape reference architecture. Godot requires justification per PRD.</p>
-  </div>
-
-  <h3>Minimum Viable Team for 6-Month Launch</h3>
-
-  <!-- TEAM VISUAL -->
-  <div class="team-visual">
-    <div class="team-member">
-      <div class="avatar">🎮</div>
-      <h4>Game Designer</h4>
-      <p>Core loop + econ</p>
-    </div>
-    <div class="team-member">
-      <div class="avatar">👨‍💻</div>
-      <h4>Lead Developer</h4>
-      <p>Engine + architecture</p>
-    </div>
-    <div class="team-member">
-      <div class="avatar">👥</div>
-      <h4>2 Developers</h4>
-      <p>UI, backend</p>
-    </div>
-    <div class="team-member">
-      <div class="avatar">🎨</div>
-      <h4>2 Artists</h4>
-      <p>Merge items, chars</p>
-    </div>
-    <div class="team-member">
-      <div class="avatar">📱</div>
-      <h4>UI Artist</h4>
-      <p>Menus, HUD</p>
-    </div>
-    <div class="team-member">
-      <div class="avatar">🔍</div>
-      <h4>QA</h4>
-      <p>Testing</p>
-    </div>
-    <div class="team-member">
-      <div class="avatar">📋</div>
-      <h4>PM</h4>
-      <p>Management</p>
-    </div>
-  </div>
-
-  <div class="info-card" style="text-align:center;margin-top:1rem;">
-    <h4>Total: 8-Person Core Team</h4>
-  </div>
-
-  <h3>Milestones</h3>
-  <table>
-    <tr><th>Month</th><th>Milestone</th></tr>
-    <tr><td>M1</td><td>Game design doc, tech spec, story bible, art direction locked</td></tr>
-    <tr><td>M2</td><td>Core merge loop playable, energy system, board UI</td></tr>
-    <tr><td>M3</td><td>Orders + NPC system, 3 areas, alpha test</td></tr>
-    <tr><td>M4</td><td>IAP integration, daily rewards, weekend events, soft launch</td></tr>
-    <tr><td>M5</td><td>Battle pass, character collection, polish</td></tr>
-    <tr><td>M6</td><td>Global launch (Android first, iOS simultaneous or 2 weeks later)</td></tr>
-  </table>
-</section>
-
-<section id="differentiation">
-  <h2><span class="icon">🌟</span> Key Differentiator: Southeast Asian Theme</h2>
-
-  <div class="diff-card">
-    <h4>Feature Gap Analysis: Southeast Asian Theme</h4>
-    <div class="diff-grid">
-      <div class="diff-item">
-        <strong>Market Saturation</strong>
-        <span>Very Low</span>
-      </div>
-      <div class="diff-item">
-        <strong>Opportunity</strong>
-        <span>High</span>
-      </div>
-      <div class="diff-item">
-        <strong>Recommended Priority</strong>
-        <span>MVP</span>
-      </div>
-    </div>
-  </div>
-
-  <p style="margin:1rem 0;color:var(--text-light);">
-    This aligns with PRD's "Thai-inspired welcomed if globally appealing" and "lantern light, coastal warmth, folk-tale spirits" as accent flavor.
-  </p>
-
-  <div class="info-card" style="border-color:var(--success);">
-    <h4>Recommendation</h4>
-    <p>Thai-inspired soft-power flavor at launch — globally readable, not exclusionary.</p>
-  </div>
-</section>
-
-<section id="summary">
-  <h2><span class="icon">📊</span> Summary: Feasible Within 6 Months</h2>
-
-  <table class="summary-table">
-    <tr><th>PRD Feature</th><th>MVP Recommendation</th><th>Timeline</th></tr>
-    <tr><td>Board 7×9</td><td>Start 6×8, expand post-launch</td><td>M0–M3 → M6</td></tr>
-    <tr><td>30 chains, 20 tiers</td><td>Start 20 chains/10 tiers, expand</td><td>M0–M3 → M12</td></tr>
-    <tr><td>6 areas</td><td>Start 3 areas, expand to 6</td><td>M0–M3 → M6</td></tr>
-    <tr><td>15 chapters</td><td>Start 5–7 chapters, live cadence</td><td>M0–M3 → M12</td></tr>
-    <tr><td>6 event types</td><td>Daily + weekend at MVP, all 6 post-launch</td><td>M0–M6 → M12</td></tr>
-    <tr><td>Guild system</td><td>Post-launch</td><td>M6+</td></tr>
-    <tr><td>Rewarded ads</td><td>Post-launch</td><td>M6+</td></tr>
-    <tr><td>Full art volume</td><td>Phased (200 icons at MVP vs. 600 full)</td><td>M0–M12</td></tr>
-  </table>
-
-  <div class="info-card" style="border-color:var(--success);margin-top:1.5rem;text-align:center;">
-    <h4>Promise: Done.</h4>
-    <p>The recommended solution reduces initial scope to ship a polished core loop in 6 months while preserving the full PRD roadmap via phased post-launch expansion.</p>
-  </div>
-</section>
-
-<footer style="text-align:center;padding:2rem;color:var(--text-light);font-size:0.9rem;">
-  <p>🔥 Bonfire Gathering — MVP Scope Recommendation v1.0</p>
+<article>
+<h1>MVP Scope Recommendation — 7–7.5 Month Plan</h1>
+<p><strong>Based on:</strong> <code>docs/2026-May-21-scope.md</code> + Game Design Analysis
+<strong>Updated:</strong> 2026-05-21</p>
+<hr />
+<h2>Timeline Mapping</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Months</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>M1: Playable Prototype</strong></td>
+<td>0–2.5</td>
+<td>Core board (7×9), merge mechanics, energy system, generators</td>
+</tr>
+<tr>
+<td><strong>M2: Vertical Slice</strong></td>
+<td>2.5–4.5</td>
+<td>Town building, story (Ch1-5), NPC orders, decoration</td>
+</tr>
+<tr>
+<td><strong>M3: Alpha Build</strong></td>
+<td>4.5–6</td>
+<td>Full 3 areas, IAP, guild/social, battle pass, events</td>
+</tr>
+<tr>
+<td><strong>M4: Beta &amp; Commercial Ready</strong></td>
+<td>6–7.5</td>
+<td>Polish, optimization, QA, soft launch ready</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>Recommended MVP Scope</h2>
+<h3>Core Gameplay — Board Size (7×9 at Launch)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Board: 7×9 (63 cells)</strong></td>
+<td>Full PRD spec from day 1</td>
+</tr>
+<tr>
+<td><strong>Expandable via Remote Config</strong></td>
+<td>Future areas/chains can expand board dynamically</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Why:</strong> Full scope agreed upon. 7×9 board is the target for the 7–7.5 month timeline with 5-member team.</p>
+<h3>Chains — 20 Chains at 10 Tiers (MVP)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Chains</th>
+<th>Tiers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP (M1-M3)</td>
+<td>20 chains</td>
+<td>10 tiers live</td>
+</tr>
+<tr>
+<td>Post-Launch</td>
+<td>30 chains</td>
+<td>15 tiers live</td>
+</tr>
+</tbody>
+</table></div>
+<p>Starting at 10 tier caps the art workload: 20 chains × 10 tiers = <strong>200 merge-item icons</strong> at launch.</p>
+<h3>Areas — 3 at Launch, Expand to 6</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Areas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP</td>
+<td>3 areas</td>
+</tr>
+<tr>
+<td>Post-Launch</td>
+<td>Additional areas via live content</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Story — 15 Chapters (Full Scope)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Spec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chapters at Launch</td>
+<td>15 chapters (full scope)</td>
+</tr>
+<tr>
+<td>Chapter Length</td>
+<td>30–60 min each</td>
+</tr>
+<tr>
+<td>Dialogue</td>
+<td>~15,000–20,000 words total</td>
+</tr>
+<tr>
+<td>Cutscenes</td>
+<td>Static art + text box + VFX sequencing</td>
+</tr>
+<tr>
+<td>Post-Launch</td>
+<td>Additional chapters via live content</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Monetization — Core at Launch</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP (M1-M3)</td>
+<td>Energy refills, starter pack, piggy bank, gem SKUs, battle pass</td>
+</tr>
+<tr>
+<td>Post-Launch</td>
+<td>Event pass, rewarded ads, VIP/Club pass, offerwall</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Events — Weekend Events at M3</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP (M1-M2)</td>
+<td>Daily rewards, daily orders only</td>
+</tr>
+<tr>
+<td>M3+</td>
+<td>Weekend events (Ranking, Banner, Mission types)</td>
+</tr>
+<tr>
+<td>Post-Launch</td>
+<td>All 6 event types per PRD</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Social — Light at MVP</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Phase</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Friend Energy Gifting</td>
+<td>M3</td>
+<td>Light social, high retention</td>
+</tr>
+<tr>
+<td>Guild System</td>
+<td>M4 / Post-Launch</td>
+<td>Full guild with chat, leaderboards</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>Recommended Team Structure for 7–7.5 Month Timeline</h2>
+<h3>Engine: Unity 2021 LTS+</h3>
+<ul>
+<li>Unity has stronger mobile F2P tooling, Merge Mansion / Seaside Escape reference architecture</li>
+<li>Clean Architecture + MVVM + UniRx + VContainer</li>
+</ul>
+<h3>Team Size (5 Members — Recommended)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Count</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Game Designer</td>
+<td>1</td>
+<td>Core loop + economy</td>
+</tr>
+<tr>
+<td>Lead Developer</td>
+<td>1</td>
+<td>Engine + architecture</td>
+</tr>
+<tr>
+<td>Developer</td>
+<td>2</td>
+<td>UI, backend integration</td>
+</tr>
+<tr>
+<td>Artist</td>
+<td>1</td>
+<td>Merge items, characters, UI</td>
+</tr>
+<tr>
+<td>QA</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>5</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Milestones</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Month</th>
+<th>Milestone</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>M1 (0–2.5)</strong></td>
+<td>Game design doc, tech spec, story bible locked. Core merge loop playable.</td>
+</tr>
+<tr>
+<td><strong>M2 (2.5–4.5)</strong></td>
+<td>Orders + NPC system, town building, story, 3 areas, alpha test.</td>
+</tr>
+<tr>
+<td><strong>M3 (4.5–6)</strong></td>
+<td>IAP integration, guild/social, battle pass, weekend events, soft launch.</td>
+</tr>
+<tr>
+<td><strong>M4 (6–7.5)</strong></td>
+<td>Polish, optimization, QA, global launch (Android first, iOS simultaneous or 2 weeks later).</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>Key Differentiator: Southeast Asian Theme</h2>
+<p><strong>Thailand-inspired coastal village with light magical elements</strong> — "Lantern &amp; Legend" narrative.</p>
+<p>Feature Analysis rates <strong>Southeast Asian Theme</strong> as:
+- <strong>Market Saturation:</strong> Very Low
+- <strong>Opportunity:</strong> High
+- <strong>Recommended Priority:</strong> MVP (full scope)</p>
+<p>Thai-inspired soft-power flavor — globally readable, not exclusionary. Lantern light, coastal warmth, folk-tale spirits.</p>
+<hr />
+<h2>Summary</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Spec</th>
+<th>Timeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Board</td>
+<td>7×9 (63 cells)</td>
+<td>MVP</td>
+</tr>
+<tr>
+<td>Chains</td>
+<td>20 chains / 10 tiers live</td>
+<td>MVP → 30/15 post-launch</td>
+</tr>
+<tr>
+<td>Areas</td>
+<td>3 areas</td>
+<td>MVP → 6 post-launch</td>
+</tr>
+<tr>
+<td>Chapters</td>
+<td>15 chapters</td>
+<td>MVP (full scope)</td>
+</tr>
+<tr>
+<td>Events</td>
+<td>Daily + Weekend at MVP</td>
+<td>Full 6 types post-launch</td>
+</tr>
+<tr>
+<td>Guild</td>
+<td>M4 / Post-Launch</td>
+<td>Full guild + chat</td>
+</tr>
+<tr>
+<td>Team</td>
+<td>5 members</td>
+<td>Duration: 7–7.5 months</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Total Effort:</strong> 687 Man-Days</p>
+<p><strong>Promise:</strong> Full scope delivered within 7–7.5 months with the recommended 5-member team.</p>
+</article>
+<footer>
+  <p>🔥 Bonfire Gathering — MVP Scope Recommendation</p>
 </footer>
-
 </div>
 </body>
 </html>

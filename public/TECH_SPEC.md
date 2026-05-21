@@ -2,7 +2,7 @@
 
 **Project:** Merge-2 Casual F2P Puzzle Game
 **Engine:** Unity 2021 LTS+
-**Last Updated:** 2026-05-20
+**Last Updated:** 2026-05-21
 
 ---
 
@@ -50,17 +50,17 @@ src/
 
 | System | Priority | Key Considerations |
 |---|---|---|
-| **Board/Grid** | P0 | 6×8 (MVP) → 7×9 via Remote Config, cell states, drag-drop |
+| **Board/Grid** | P0 | 7×9 (63 cells), cell states, drag-drop |
 | **Merge Logic** | P0 | 2-to-1 rule, chain validation, tier calculation |
 | **Energy System** | P0 | Cap 100, regen 1/2min, cost 1/tap, save timestamp |
 | **Generators** | P0 | Production, regen timer, tap-unlock |
 | **Item Management** | P0 | Storage (20 slots), inventory |
 | **NPC Orders** | P1 | Queue, rewards, scaling (tier 2-3 → 12-15) |
-| **Decoration** | P1 | Stars, 3 areas (MVP), 6 at Beta |
-| **Story/Chapters** | P1 | Dialogue system, static cutscenes |
+| **Decoration** | P1 | Stars, 3 areas (MVP) |
+| **Story/Chapters** | P1 | 15 chapters, dialogue system, cutscenes |
 | **Economy** | P1 | Coins, gems, IAP, dynamic pricing |
-| **Events** | P2 | Daily rewards, weekend events at Beta |
-| **Club/Guild** | Post-launch | Co-op orders, gifts |
+| **Events** | P2 | Daily rewards, weekend events |
+| **Club/Guild** | P2 | Full guild system with chat |
 
 ---
 
@@ -194,11 +194,11 @@ Assets/
 
 ---
 
-## 8. Board Spec (MVP → Full)
+## 8. Board Spec (Launch → Full)
 
-| Item | MVP | Post-Launch |
+| Item | Launch | Post-Launch |
 |---|---|---|
-| Grid Size | 6×8 (48 cells) | 7×9 (63 cells) via Remote Config |
+| Grid Size | 7×9 (63 cells) | Expandable via Remote Config |
 | Chains | 20 chains | 30 chains |
 | Tiers per chain | 10 live | 15 live |
 | Merge icons | ~200 | ~300 |

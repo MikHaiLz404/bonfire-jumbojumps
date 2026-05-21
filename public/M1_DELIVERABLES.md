@@ -1,4 +1,4 @@
-# M1 Deliverables — 2026-05-20
+# M1 Deliverables — 2026-05-21
 
 ## Status: ✅ Planning Complete, Ready for Implementation
 
@@ -11,6 +11,8 @@
 | 1 | Tech Spec | `docs/TECH_SPEC.md` | ✅ Complete |
 | 2 | Game Design Doc | `docs/GAME_DESIGN_DOC.md` | ✅ Complete |
 | 3 | Story Bible | `docs/STORY_BIBLE.md` | ✅ Complete |
+| 4 | 2026-May-21 Scope | `docs/2026-May-21-scope.md` | ✅ Complete (new) |
+| 5 | Feature Overviews | `docs/*.md` | ✅ Complete |
 
 ---
 
@@ -21,11 +23,13 @@
 **Firebase Stack:** Analytics, Remote Config, Auth, Firestore, Cloud Messaging
 
 **Key Specs:**
-- Board: 6×8 (48 cells) MVP → 7×9 post-launch
+- Board: 7×9 (63 cells)
 - Chains: 20 chains, 10 tiers live (MVP)
 - Energy: 100 cap, regen 1/2min
 - Storage: 20 off-board slots
-- Areas: 3 (MVP) → 6 (Beta)
+- Areas: 3 (MVP)
+- Chapters: 15 (full launch scope)
+- **Total Effort:** 687 Man-Days
 
 ---
 
@@ -33,12 +37,13 @@
 
 **Protagonist:** มะลิ (Mali) — young designer, returns home to help aunt's fabric shop
 
-**5 Chapters MVP:**
+**15 Chapters (Full Launch Scope):**
 1. กลับมาบ้าน (Coming Home) → Area 1 + 3 chains
-2. ความลับของผ้าเก่า (Secret of Old Fabric) → Area 1 expanded
+2. ความลับของผ้าเกา (Secret of Old Fabric) → Area 1 expanded
 3. สิ่งที่คลองเล่า (What the Canal Says) → Area 2 + 5 chains
 4. ผีช่วยงาน (Spirits Help Out) → Area 3 + 7 chains
 5. งานรื่นเริง (The Festival) → All areas + 10 chains
+6-15. Full story arc via progressive unlock
 
 **6 Supporting Characters:**
 - คุณป้ามะลิ (Aunt) — shop owner, has secrets
@@ -58,49 +63,64 @@
 ## Implementation Checklist (M1)
 
 ### Week 1-2: Project Setup
-- [ ] Create Unity project
+- [ ] Create Unity project with Clean Architecture folder structure
 - [ ] Install packages (VContainer, UniRx, Firebase)
-- [ ] Set up Clean Architecture folder structure
 - [ ] Configure Firebase (google-services.json, GoogleService-Info.plist)
 - [ ] Create Remote Config keys in Firebase console
+- [ ] Set up Addressables pipeline
 
-### Week 3: Core Domain
-- [ ] MergeItem entity
+### Week 3-4: Core Domain
+- [ ] MergeItem entity (chain, tier, position)
 - [ ] Chain entity (20 chains data)
-- [ ] BoardState model
+- [ ] BoardState model (7×9 grid)
 - [ ] PlayerData model
 - [ ] MergeSystem (2-to-1 rule)
 - [ ] EnergySystem (cap 100, regen 1/2min)
 - [ ] GeneratorSystem
 
-### Week 4: Board Prototype
-- [ ] 6×8 grid UI
-- [ ] Cell states (empty, occupied, locked)
-- [ ] Drag-drop interaction
-- [ ] Merge animation
+### Week 5-7: Board Prototype
+- [ ] 7×9 grid UI with cell states
+- [ ] Drag-drop interaction with snap
+- [ ] Merge animation (VFX + SFX)
 - [ ] Basic persistence (PlayerPrefs)
+- [ ] Game feel polish (haptics, juice)
+
+### Week 8-10: Integration
+- [ ] NPC Orders system integration
+- [ ] Story system integration
+- [ ] Alpha test build
 
 ---
 
-## Milestone Timeline
+## Milestone Timeline (5-Member Team)
 
 | Month | Target |
 |---|---|
-| **M1** | Docs + Unity project + core entities + board prototype |
-| **M2** | Energy, generators, drag-drop, persistence, basic UI |
-| **M3** | NPC orders, decoration area, chapter 1, alpha build |
-| **M4** | IAP, analytics, cloud save, daily rewards, soft launch |
-| **M5** | Battle pass, events, polish |
-| **M6** | Global launch (Android first, iOS simultaneous or 2 weeks later) |
+| **M1 (0–2.5)** | Game design doc, tech spec, story bible locked. Core merge loop playable on 7×9 board. |
+| **M2 (2.5–4.5)** | Orders + NPC system, town building, story (Ch1-5), 3 areas, alpha test. |
+| **M3 (4.5–6)** | IAP integration, guild/social, battle pass, weekend events, soft launch. |
+| **M4 (6–7.5)** | Polish, optimization, QA, global launch (Android first, iOS simultaneous or 2 weeks later). |
+
+---
+
+## Team Structure (5 Members Recommended)
+
+| Role | Count |
+|---|---|
+| Game Designer | 1 |
+| Lead Developer | 1 |
+| Developer | 2 |
+| Artist | 1 |
+| **Total** | **5** |
 
 ---
 
 ## Next Steps
 
 Ready for **Implementation Phase**:
-1. Unity project setup
-2. Clean Architecture skeleton
-3. Core domain entities
-4. Board prototype
+1. Unity project setup with Clean Architecture skeleton
+2. Core domain entities (Board, Merge, Energy)
+3. 7×9 board prototype with drag-drop + VFX
+4. Firebase integration (Analytics, Remote Config)
 
 Start when team is ready.

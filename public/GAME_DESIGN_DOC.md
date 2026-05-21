@@ -1,8 +1,8 @@
 # Game Design Document — Bonfire Gathering
 
 **Project:** Merge-2 Casual F2P Puzzle Game
-**Version:** MVP (6-Month)
-**Last Updated:** 2026-05-20
+**Version:** Full Launch (7–7.5 Month)
+**Last Updated:** 2026-05-21
 
 ---
 
@@ -43,8 +43,7 @@ Merge Items → Complete Orders → Earn Coins → Unlock Areas → Board Energy
 
 | Item | Spec |
 |---|---|
-| Grid Size (MVP) | 6×8 (48 cells) |
-| Grid Size (Post-Launch) | 7×9 (63 cells) via Remote Config |
+| Grid Size | 7×9 (63 cells) |
 | Cell States | Empty, Occupied, Locked, Generator |
 | Interaction | Drag-drop merge, tap generator |
 | Persistence | Save on every action, load on launch |
@@ -55,7 +54,7 @@ Merge Items → Complete Orders → Earn Coins → Unlock Areas → Board Energy
 |---|---|
 | Rule | 2-to-1 — merge 2 items of same tier into 1 of next tier |
 | Direction | Lower tier → Higher tier only |
-| Chains | 20 chains (MVP), 30 chains (full launch) |
+| Chains | 20 chains (MVP), 30 chains (post-launch) |
 | Tiers per chain | 10 live (MVP), 15 live (Beta), 20 authored |
 | Merge animation | Pop + glow effect, 300ms |
 
@@ -183,7 +182,10 @@ Merge Items → Complete Orders → Earn Coins → Unlock Areas → Board Energy
 | 3 | Complete Ch2 orders | Area 2, 5 chains |
 | 4 | Complete Ch3 orders | Area 3, 7 chains |
 | 5 | Complete Ch4 orders | All areas, 10 chains |
-| 6-7 | Post-MVP | Additional chapters |
+| 6-7 | Complete Ch5 orders | Additional chapters |
+| 8-15 | Progressive unlock | Full story arc via live content |
+
+**Total: 15 Chapters** — Full story "Lantern & Legend" delivered at launch over 7–7.5 month development cycle.
 
 ### 5.2 Chain Unlocks
 
@@ -323,8 +325,8 @@ Merge Items → Complete Orders → Earn Coins → Unlock Areas → Board Energy
 
 | Item | Spec |
 |---|---|
-| Total at MVP | ~3,000-5,000 words |
-| Per chapter | ~500-800 words |
+| Total at Launch | ~15,000–20,000 words |
+| Per chapter | ~1,000–1,500 words |
 | Languages | English + Thai at launch |
 | Format | JSON strings, localization-ready |
 
