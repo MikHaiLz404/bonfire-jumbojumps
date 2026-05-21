@@ -20,7 +20,7 @@
   h3::before { content: '▶'; color: var(--accent); font-size: 0.7rem; }
   table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; }
   th { background: var(--secondary); color: white; padding: 0.85rem 1rem; font-weight: 600; }
-  td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
+  td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); text-align: center; }
   tr:nth-child(even) { background: #f8f9fa; }
   .info-card { background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid var(--primary); margin: 1rem 0; }
   .info-card h4 { color: var(--secondary); margin-bottom: 0.75rem; }
@@ -178,157 +178,94 @@
 </tbody>
 </table>
 <hr />
-<h2>Team Structure (5 Engineers + N Support Roles)</h2>
-<h4>Option A: 2D Art (Current Scope)</h4>
+<h2>Team Structure Comparison: 2D vs 3D</h2>
 <table>
 <thead>
 <tr>
 <th>Role</th>
-<th>Count</th>
-<th>Notes</th>
+<th style="text-align: center;">Option A: 2D</th>
+<th style="text-align: center;">Option B: 3D</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Lead Developer</td>
-<td>1</td>
-<td>Engine + architecture, code review</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr>
 <td>Senior Developer</td>
-<td>1</td>
-<td>UI + backend integration</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr>
 <td>Mid Developer</td>
-<td>1</td>
-<td>UI + backend integration</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr>
 <td>Junior Developer</td>
-<td>1</td>
-<td>Features + bug fixes</td>
-</tr>
-<tr>
-<td>Junior Developer</td>
-<td>1</td>
-<td>Features + bug fixes</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
 </tr>
 <tr>
 <td>Game Designer</td>
-<td>1</td>
-<td>Core loop + economy</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr>
 <td>UI Artist</td>
-<td>1</td>
-<td>Menus, HUD, UX</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr>
-<td>Artist</td>
-<td>1</td>
-<td>Merge items, icons</td>
+<td>Artist (2D sprites)</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">—</td>
 </tr>
 <tr>
 <td>Character Artist</td>
-<td>1</td>
-<td>Characters, VFX, effects</td>
-</tr>
-<tr>
-<td>Tech Artist</td>
-<td>1</td>
-<td>Shaders, pipeline, tool support</td>
-</tr>
-<tr>
-<td>QA</td>
-<td>1</td>
-<td></td>
-</tr>
-<tr>
-<td><strong>Total</strong></td>
-<td><strong>10</strong></td>
-<td>5 engineers + 5 support roles</td>
-</tr>
-</tbody>
-</table>
-<h4>Option B: 3D Art</h4>
-<table>
-<thead>
-<tr>
-<th>Role</th>
-<th>Count</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Lead Developer</td>
-<td>1</td>
-<td>Engine + architecture, code review</td>
-</tr>
-<tr>
-<td>Senior Developer</td>
-<td>1</td>
-<td>UI + backend integration</td>
-</tr>
-<tr>
-<td>Mid Developer</td>
-<td>1</td>
-<td>UI + backend integration</td>
-</tr>
-<tr>
-<td>Junior Developer</td>
-<td>1</td>
-<td>Features + bug fixes</td>
-</tr>
-<tr>
-<td>Junior Developer</td>
-<td>1</td>
-<td>Features + bug fixes</td>
-</tr>
-<tr>
-<td>Game Designer</td>
-<td>1</td>
-<td>Core loop + economy</td>
-</tr>
-<tr>
-<td>UI Artist</td>
-<td>1</td>
-<td>Menus, HUD, UX</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">—</td>
 </tr>
 <tr>
 <td>3D Artist</td>
-<td>1</td>
-<td>Characters, props, lighting</td>
-</tr>
-<tr>
-<td>3D Artist</td>
-<td>1</td>
-<td>Environments, world building</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">2</td>
 </tr>
 <tr>
 <td>Animator</td>
-<td>1</td>
-<td>Character animation, VFX</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr>
 <td>Tech Artist</td>
-<td>1</td>
-<td>3D pipeline, shaders, optimization</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr>
 <td>QA</td>
-<td>1</td>
-<td></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr>
 <td><strong>Total</strong></td>
-<td><strong>11</strong></td>
-<td>5 engineers + 6 support roles</td>
+<td style="text-align: center;"><strong>10</strong></td>
+<td style="text-align: center;"><strong>11</strong></td>
+</tr>
+<tr>
+<td><strong>Engineers</strong></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td><strong>Support</strong></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">6</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Recommended:</strong> Option A (2D) ถ้า scope ยังเป็น 2D — ประหยัดกว่าและเร็วกว่า</p>
+<p><strong>Duration:</strong> 7–7.5 months (based on 5 engineers)</p>
 <hr />
 <h2>Next Steps</h2>
 <p>Ready for <strong>Implementation Phase</strong>:

@@ -84,52 +84,27 @@ Starting at 10 tier caps the art workload: 20 chains × 10 tiers = **200 merge-i
 - Unity has stronger mobile F2P tooling, Merge Mansion / Seaside Escape reference architecture
 - Clean Architecture + MVVM + UniRx + VContainer
 
-### Team Structure (5 Engineers + N Support Roles)
+### Team Structure Comparison: 2D vs 3D
 
-#### Option A: 2D Art (Current Scope)
+| Role | Option A: 2D | Option B: 3D |
+|------|:---:|:---:|
+| Lead Developer | 1 | 1 |
+| Senior Developer | 1 | 1 |
+| Mid Developer | 1 | 1 |
+| Junior Developer | 2 | 2 |
+| Game Designer | 1 | 1 |
+| UI Artist | 1 | 1 |
+| Artist (2D sprites) | 1 | — |
+| Character Artist | 1 | — |
+| 3D Artist | — | 2 |
+| Animator | — | 1 |
+| Tech Artist | 1 | 1 |
+| QA | 1 | 1 |
+| **Total** | **10** | **11** |
+| **Engineers** | 5 | 5 |
+| **Support** | 5 | 6 |
 
-| Role | Count | Notes |
-|---|---|---|
-| Lead Developer | 1 | Engine + architecture, code review |
-| Senior Developer | 1 | UI + backend integration |
-| Mid Developer | 1 | UI + backend integration |
-| Junior Developer | 1 | Features + bug fixes |
-| Junior Developer | 1 | Features + bug fixes |
-| Game Designer | 1 | Core loop + economy |
-| UI Artist | 1 | Menus, HUD, UX |
-| Artist | 1 | Merge items, icons |
-| Character Artist | 1 | Characters, VFX, effects |
-| Tech Artist | 1 | Shaders, pipeline, tool support |
-| QA | 1 | |
-| **Total** | **10** | 5 engineers + 5 support roles |
-
-> 2D workflow: sprites, illustrations, UI — 4 artists เพียงพอสำหรับ parallel work
-
----
-
-#### Option B: 3D Art
-
-| Role | Count | Notes |
-|---|---|---|
-| Lead Developer | 1 | Engine + architecture, code review |
-| Senior Developer | 1 | UI + backend integration |
-| Mid Developer | 1 | UI + backend integration |
-| Junior Developer | 1 | Features + bug fixes |
-| Junior Developer | 1 | Features + bug fixes |
-| Game Designer | 1 | Core loop + economy |
-| UI Artist | 1 | Menus, HUD, UX |
-| 3D Artist | 1 | Characters, props, lighting |
-| 3D Artist | 1 | Environments, world building |
-| Animator | 1 | Character animation, VFX |
-| Tech Artist | 1 | 3D pipeline, shaders, optimization |
-| QA | 1 | |
-| **Total** | **11** | 5 engineers + 6 support roles |
-
-> 3D workflow: models, rigging, animation, lighting — ต้อง 6 artists เพื่อ parallel work และ redundancy
-
----
-
-**Recommended:** Option A (2D) ถ้า scope ยังเป็น 2D — ประหยัดกว่าและเร็วกว่า
+**Duration:** 7–7.5 months (based on 5 engineers)
 
 ### Milestones
 
