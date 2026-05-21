@@ -84,16 +84,18 @@ Starting at 10 tier caps the art workload: 20 chains × 10 tiers = **200 merge-i
 - Unity has stronger mobile F2P tooling, Merge Mansion / Seaside Escape reference architecture
 - Clean Architecture + MVVM + UniRx + VContainer
 
-### Team Size (5 Members — Recommended)
+### Team Size (5 Members — All Developers)
 
 | Role | Count | Notes |
 |---|---|---|
-| Game Designer | 1 | Core loop + economy |
-| Lead Developer | 1 | Engine + architecture |
-| Developer | 2 | UI, backend integration |
-| Artist | 1 | Merge items, characters, UI |
-| QA | 1 | |
-| **Total** | **5** | |
+| Lead Developer | 1 | Engine + architecture, code review |
+| Senior Developer | 1 | UI + backend integration |
+| Mid Developer | 1 | UI + backend integration |
+| Junior Developer | 1 | Features + bug fixes |
+| Junior Developer | 1 | Features + bug fixes |
+| **Total** | **5** | All developers, shared responsibilities |
+
+> **Note:** 5 developers ทำทุกอย่าง (dev, some design, some art assist) — no separate Game Designer, Artist, or QA roles
 
 ### Milestones
 
