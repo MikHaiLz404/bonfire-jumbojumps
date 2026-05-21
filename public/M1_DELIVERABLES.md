@@ -103,7 +103,7 @@
 
 ---
 
-## Team Structure (5 Engineers + 4 Support Roles)
+## Team Structure (5 Engineers + 5 Support Roles)
 
 | Role | Count | Notes |
 |---|---|---|
@@ -114,10 +114,11 @@
 | Junior Developer | 1 | Features + bug fixes |
 | Game Designer | 1 | Core loop + economy |
 | UI Artist | 1 | Menus, HUD, UX |
-| Artist | 1 | Merge items, characters, VFX |
+| Artist | 1 | Merge items, icons |
+| Character Artist | 1 | Characters, VFX, effects |
 | Tech Artist | 1 | Shaders, pipeline, tool support |
 | QA | 1 | |
-| **Total** | **9** | 5 engineers + 4 support roles |
+| **Total** | **10** | 5 engineers + 5 support roles |
 
 ---
 
