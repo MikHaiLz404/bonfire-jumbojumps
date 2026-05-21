@@ -84,7 +84,9 @@ Starting at 10 tier caps the art workload: 20 chains × 10 tiers = **200 merge-i
 - Unity has stronger mobile F2P tooling, Merge Mansion / Seaside Escape reference architecture
 - Clean Architecture + MVVM + UniRx + VContainer
 
-### Team Structure (5 Engineers + 5 Support Roles)
+### Team Structure (5 Engineers + N Support Roles)
+
+#### Option A: 2D Art (Current Scope)
 
 | Role | Count | Notes |
 |---|---|---|
@@ -101,7 +103,33 @@ Starting at 10 tier caps the art workload: 20 chains × 10 tiers = **200 merge-i
 | QA | 1 | |
 | **Total** | **10** | 5 engineers + 5 support roles |
 
-> **Note:** "Resource Engineer" table shows duration based on engineer count only (5 engineers = 7–7.5 months)
+> 2D workflow: sprites, illustrations, UI — 4 artists เพียงพอสำหรับ parallel work
+
+---
+
+#### Option B: 3D Art
+
+| Role | Count | Notes |
+|---|---|---|
+| Lead Developer | 1 | Engine + architecture, code review |
+| Senior Developer | 1 | UI + backend integration |
+| Mid Developer | 1 | UI + backend integration |
+| Junior Developer | 1 | Features + bug fixes |
+| Junior Developer | 1 | Features + bug fixes |
+| Game Designer | 1 | Core loop + economy |
+| UI Artist | 1 | Menus, HUD, UX |
+| 3D Artist | 1 | Characters, props, lighting |
+| 3D Artist | 1 | Environments, world building |
+| Animator | 1 | Character animation, VFX |
+| Tech Artist | 1 | 3D pipeline, shaders, optimization |
+| QA | 1 | |
+| **Total** | **11** | 5 engineers + 6 support roles |
+
+> 3D workflow: models, rigging, animation, lighting — ต้อง 6 artists เพื่อ parallel work และ redundancy
+
+---
+
+**Recommended:** Option A (2D) ถ้า scope ยังเป็น 2D — ประหยัดกว่าและเร็วกว่า
 
 ### Milestones
 
@@ -137,7 +165,9 @@ Thai-inspired soft-power flavor — globally readable, not exclusionary. Lantern
 | Chapters | 15 chapters | MVP (full scope) |
 | Events | Daily + Weekend at MVP | Full 6 types post-launch |
 | Guild | M4 / Post-Launch | Full guild + chat |
-| Team | 5 engineers + 5 support = 10 total | Duration: 7–7.5 months |
+| Team | Option A: 2D = 10 total | 5 engineers + 5 artists |
+| Team | Option B: 3D = 11 total | 5 engineers + 6 artists |
+| Duration | 7–7.5 months | (based on 5 engineers) |
 
 **Total Effort:** 687 Man-Days
 
