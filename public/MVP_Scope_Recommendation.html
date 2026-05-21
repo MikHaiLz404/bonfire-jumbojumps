@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MVP Scope Recommendation</title>
 <style>
-  :root { --primary: #8e44ad; --secondary: #2c3e50; --accent: #e74c3c; --bg-light: #f5eef8; --bg-card: #ffffff; --text: #2c3e50; --text-light: #7f8c8d; --border: #ecf0f1; --success: #27ae60; }
+  :root { --primary: #8e44ad; --secondary: #2c3e50; --accent: #e74c3c; --bg-light: #f5eef8; --bg-card: #ffffff; --text: #2c3e50; --text-light: #7f8c8d; --border: #ecf0f1; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, var(--bg-light) 0%, #e8d5f5 100%); color: var(--text); line-height: 1.6; min-height: 100vh; }
   .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
   header { text-align: center; padding: 3rem 1rem; background: linear-gradient(135deg, var(--secondary) 0%, #1a252f 100%); color: white; border-radius: 16px; margin-bottom: 2rem; }
   header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
-  .back-btn { display: inline-flex; color: white; padding: 0.5rem 1rem; border-radius: 20px; text-decoration: none; font-size: 0.9rem; margin-bottom: 1rem; background: rgba(255,255,255,0.15); }
+  .back-btn { display: inline-block; color: white; padding: 0.5rem 1rem; border-radius: 20px; text-decoration: none; font-size: 0.9rem; margin-bottom: 1rem; background: rgba(255,255,255,0.15); }
   header p { opacity: 0.9; }
   .header-badge { display: inline-block; background: var(--primary); color: white; padding: 0.5rem 1.5rem; border-radius: 25px; font-weight: 600; margin-top: 1rem; }
   section { background: var(--bg-card); border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
@@ -237,7 +237,7 @@
 <li>Unity has stronger mobile F2P tooling, Merge Mansion / Seaside Escape reference architecture</li>
 <li>Clean Architecture + MVVM + UniRx + VContainer</li>
 </ul>
-<h3>Team Structure (5 Engineers + Support Roles)</h3>
+<h3>Team Structure (5 Engineers + 4 Support Roles)</h3>
 <table>
 <thead>
 <tr>
@@ -278,9 +278,19 @@
 <td>Core loop + economy</td>
 </tr>
 <tr>
+<td>UI Artist</td>
+<td>1</td>
+<td>Menus, HUD, UX</td>
+</tr>
+<tr>
 <td>Artist</td>
 <td>1</td>
-<td>Merge items, characters</td>
+<td>Merge items, characters, VFX</td>
+</tr>
+<tr>
+<td>Tech Artist</td>
+<td>1</td>
+<td>Shaders, pipeline, tool support</td>
 </tr>
 <tr>
 <td>QA</td>
@@ -289,13 +299,13 @@
 </tr>
 <tr>
 <td><strong>Total</strong></td>
-<td><strong>8</strong></td>
-<td>5 engineers + 3 support roles</td>
+<td><strong>9</strong></td>
+<td>5 engineers + 4 support roles</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p><strong>Note:</strong> 5 engineers (core team) + designer + artist + QA = 8 total. The "Resource Engineer" table shows duration based on engineer count only (support roles assumed constant).</p>
+<p><strong>Note:</strong> "Resource Engineer" table shows duration based on engineer count only (5 engineers = 7–7.5 months)</p>
 </blockquote>
 <h3>Milestones</h3>
 <table>
@@ -375,7 +385,7 @@
 </tr>
 <tr>
 <td>Team</td>
-<td>5 engineers + 3 support = 8 total</td>
+<td>5 engineers + 4 support = 9 total</td>
 <td>Duration: 7–7.5 months</td>
 </tr>
 </tbody>

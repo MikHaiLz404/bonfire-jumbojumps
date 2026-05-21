@@ -84,7 +84,7 @@ Starting at 10 tier caps the art workload: 20 chains × 10 tiers = **200 merge-i
 - Unity has stronger mobile F2P tooling, Merge Mansion / Seaside Escape reference architecture
 - Clean Architecture + MVVM + UniRx + VContainer
 
-### Team Structure (5 Engineers + Support Roles)
+### Team Structure (5 Engineers + 4 Support Roles)
 
 | Role | Count | Notes |
 |---|---|---|
@@ -94,11 +94,13 @@ Starting at 10 tier caps the art workload: 20 chains × 10 tiers = **200 merge-i
 | Junior Developer | 1 | Features + bug fixes |
 | Junior Developer | 1 | Features + bug fixes |
 | Game Designer | 1 | Core loop + economy |
-| Artist | 1 | Merge items, characters |
+| UI Artist | 1 | Menus, HUD, UX |
+| Artist | 1 | Merge items, characters, VFX |
+| Tech Artist | 1 | Shaders, pipeline, tool support |
 | QA | 1 | |
-| **Total** | **8** | 5 engineers + 3 support roles |
+| **Total** | **9** | 5 engineers + 4 support roles |
 
-> **Note:** 5 engineers (core team) + designer + artist + QA = 8 total. The "Resource Engineer" table shows duration based on engineer count only (support roles assumed constant).
+> **Note:** "Resource Engineer" table shows duration based on engineer count only (5 engineers = 7–7.5 months)
 
 ### Milestones
 
@@ -134,7 +136,7 @@ Thai-inspired soft-power flavor — globally readable, not exclusionary. Lantern
 | Chapters | 15 chapters | MVP (full scope) |
 | Events | Daily + Weekend at MVP | Full 6 types post-launch |
 | Guild | M4 / Post-Launch | Full guild + chat |
-| Team | 5 engineers + 3 support = 8 total | Duration: 7–7.5 months |
+| Team | 5 engineers + 4 support = 9 total | Duration: 7–7.5 months |
 
 **Total Effort:** 687 Man-Days
 

@@ -103,15 +103,21 @@
 
 ---
 
-## Team Structure (5 Members Recommended)
+## Team Structure (5 Engineers + 4 Support Roles)
 
-| Role | Count |
-|---|---|
-| Game Designer | 1 |
-| Lead Developer | 1 |
-| Developer | 2 |
-| Artist | 1 |
-| **Total** | **5** |
+| Role | Count | Notes |
+|---|---|---|
+| Lead Developer | 1 | Engine + architecture, code review |
+| Senior Developer | 1 | UI + backend integration |
+| Mid Developer | 1 | UI + backend integration |
+| Junior Developer | 1 | Features + bug fixes |
+| Junior Developer | 1 | Features + bug fixes |
+| Game Designer | 1 | Core loop + economy |
+| UI Artist | 1 | Menus, HUD, UX |
+| Artist | 1 | Merge items, characters, VFX |
+| Tech Artist | 1 | Shaders, pipeline, tool support |
+| QA | 1 | |
+| **Total** | **9** | 5 engineers + 4 support roles |
 
 ---
 
