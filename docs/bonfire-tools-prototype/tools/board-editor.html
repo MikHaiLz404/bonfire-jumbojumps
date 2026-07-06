@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Board / Level Editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .level-canvas {
+    background: var(--canvas-2);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    position: relative;
+  }
+  .board-toolbar {
+    display: flex;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--canvas-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    width: fit-content;
+  }
+  .board-toolbar .tbtn {
+    width: 32px; height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  .board-toolbar .tbtn:hover { background: var(--purple-50); }
+  .board-toolbar .tbtn.active { background: var(--purple-600); color: white; }
+  .zoom-control {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px;
+    background: var(--canvas-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    width: fit-content;
+    margin-left: auto;
+  }
+  .preview-frame {
+    background: linear-gradient(180deg, #87CEEB 0%, #B0E0E6 100%);
+    border-radius: var(--radius);
+    width: 360px;
+    height: 480px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .preview-frame .play-overlay {
+    position: absolute;
+    bottom: 16px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 8px;
+    background: rgba(0,0,0,.4);
+    padding: 6px;
+    border-radius: 8px;
+  }
+  .preview-frame .play-overlay button {
+    width: 36px; height: 36px;
+    border: none;
+    background: rgba(255,255,255,.15);
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .preview-frame .play-overlay button.active { background: var(--purple-600); }
+  .device-frame-selector {
+    display: flex; gap: 6px;
+    margin-top: 12px; justify-content: center;
+  }
+  .device-frame-selector button {
+    padding: 6px 12px;
+    background: var(--canvas-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 12px;
+  }
+  .device-frame-selector button.active { background: var(--purple-600); color: white; border-color: var(--purple-600); }
+</style>
+</head>
+<body>
+
+<div style="padding: 24px; height: 100vh; display: flex; flex-direction: column;">
+  <div class="app-window" style="flex: 1;">
+
+    <div class="app-titlebar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="title">Board / Level Editor — level_01_area1.json</div>
+    </div>
+
+    <div class="app-body">
+
+      <aside class="sidebar">
+        <a href="../index.html" class="nav-btn" title="Home">🏠<span class="tip">Home</span></a>
+        <button class="nav-btn" title="Boards">🎨<span class="tip">Boards</span></button>
+        <button class="nav-btn active" title="Levels">📐<span class="tip">Levels</span></button>
+        <button class="nav-btn" title="Items">📦<span class="tip">Items</span></button>
+        <button class="nav-btn" title="Camera">📷<span class="tip">Camera</span></button>
+        <button class="nav-btn" title="Triggers">⚡<span class="tip">Triggers</span></button>
+        <div class="spacer"></div>
+        <button class="nav-btn" title="Settings">⚙️</button>
+      </aside>
+
+      <main class="main">
+
+        <div class="step-header">
+          <h1 class="page-title"><span class="puzzle-icon">🎨</span>Board / Level Editor</h1>
+        </div>
+
+        <div class="step-header" style="padding-top: 0;">
+          <div class="step active" data-step="1"><span class="num">1</span>🟦 Design Board</div>
+          <span class="arrow">→</span>
+          <div class="step active" data-step="2"><span class="num">2</span>📍 Place Items</div>
+          <span class="arrow">→</span>
+          <div class="step" data-step="3"><span class="num">3</span>👁 Preview &amp; Test</div>
+        </div>
+
+        <div class="toolbar">
+          <div class="group">
+            <span style="font-size: 12px; color: var(--text-3); font-weight: 600;">LEVEL</span>
+            <select class="select" id="levelSelect">
+              <option>Level 1 — Coming Home (Area 1)</option>
+              <option>Level 2 — Canal Garden (Area 2)</option>
+              <option>Level 3 — Spirits' Home (Area 3)</option>
+            </select>
+          </div>
+          <div class="group">
+            <span style="font-size: 12px; color: var(--text-3); font-weight: 600;">GRID</span>
+            <select class="select" id="gridSize">
+              <option>6 × 8 (48 cells)</option>
+              <option>7 × 9 (63 cells)</option>
+              <option>8 × 10 (80 cells)</option>
+            </select>
+          </div>
+          <div class="grow"></div>
+          <div class="group">
+            <button class="btn ghost">↶</button>
+            <button class="btn ghost">↷</button>
+            <button class="btn">Validate</button>
+            <button class="btn primary">💾 Save Level</button>
+          </div>
+        </div>
+
+        <div class="workspace">
+
+          <div class="panel" style="width: 200px;">
+            <div class="panel-header">Tile Palette</div>
+            <div class="panel-body">
+              <div class="tile-palette" id="tilePalette">
+                <div class="tile grass active" data-tile="grass">Grass</div>
+                <div class="tile sand" data-tile="sand">Sand</div>
+                <div class="tile water" data-tile="water">Water</div>
+                <div class="tile stone" data-tile="stone">Stone</div>
+                <div class="tile wood" data-tile="wood">Wood</div>
+                <div class="tile" data-tile="add" style="border-style: dashed;">+ Add</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" style="width: 200px; border-right: 1px solid var(--line);">
+            <div class="panel-header">Item Palette</div>
+            <div class="panel-body">
+              <input class="input" placeholder="🔍 Filter..." style="width: 100%; margin-bottom: 12px;">
+              <div class="palette-grid" id="itemPalette">
+                <div class="palette-item tier-1" draggable="true" data-item="tree-t1">🌱<div class="lbl">Sprout</div></div>
+                <div class="palette-item tier-1" draggable="true" data-item="stone-t1">🪨<div class="lbl">Stone</div></div>
+                <div class="palette-item tier-2" draggable="true" data-item="tree-t2">🌳<div class="lbl">Tree</div></div>
+                <div class="palette-item tier-2" draggable="true" data-item="bush-t2">🌲<div class="lbl">Bush</div></div>
+                <div class="palette-item tier-2" draggable="true" data-item="stump-t2">🪵<div class="lbl">Stump</div></div>
+                <div class="palette-item tier-2" draggable="true" data-item="barrel-t2">🛢️<div class="lbl">Barrel</div></div>
+                <div class="palette-item tier-3" draggable="true" data-item="flower-t3">🌸<div class="lbl">Flower</div></div>
+                <div class="palette-item tier-3" draggable="true" data-item="sign-t3">🪧<div class="lbl">Sign</div></div>
+                <div class="palette-item tier-3" draggable="true" data-item="fence-t3">🪵<div class="lbl">Fence</div></div>
+                <div class="palette-item tier-4" draggable="true" data-item="chest-t4">📦<div class="lbl">Chest</div></div>
+                <div class="palette-item tier-4" draggable="true" data-item="lamp-t4">🏮<div class="lbl">Lamp</div></div>
+                <div class="palette-item tier-5" draggable="true" data-item="coin-t5">🪙<div class="lbl">Coin</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="canvas-area">
+            <div>
+              <div class="board-toolbar">
+                <button class="tbtn active" data-tool="paint">🖌️</button>
+                <button class="tbtn" data-tool="erase">🧹</button>
+                <button class="tbtn" data-tool="fill">🪣</button>
+                <button class="tbtn" data-tool="eyedrop">💧</button>
+              </div>
+              <div class="zoom-control">
+                <button class="tbtn">−</button>
+                <span style="font-size: 12px; color: var(--text-2);">100%</span>
+                <button class="tbtn">+</button>
+              </div>
+              <div class="board" id="board" style="grid-template-columns: repeat(8, 64px);"></div>
+            </div>
+          </div>
+
+          <div class="panel right" style="width: 240px;">
+            <div class="panel-header">Inspector</div>
+            <div class="panel-body">
+              <p style="font-size: 12px; color: var(--text-3); margin: 0 0 16px;">Select a cell or item to edit its properties.</p>
+              <div class="property-field">
+                <label>Selected Cell</label>
+                <input class="input" value="(none)" readonly style="width: 100%; background: var(--canvas);">
+              </div>
+              <div class="property-field">
+                <label>Tile Type</label>
+                <input class="input" value="(none)" readonly style="width: 100%; background: var(--canvas);">
+              </div>
+              <div class="property-field">
+                <label>Item</label>
+                <input class="input" value="(none)" readonly style="width: 100%; background: var(--canvas);">
+              </div>
+              <hr style="border: none; border-top: 1px solid var(--line); margin: 16px 0;">
+              <div class="property-field">
+                <label>Level Stats</label>
+                <div style="font-size: 12px; color: var(--text-2); line-height: 1.8;">
+                  Total cells: <b>48</b><br>
+                  Items placed: <b id="itemCount">12</b><br>
+                  Empty cells: <b id="emptyCount">36</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+</div>
+
+<script src="../assets/app.js"></script>
+<script>
+const COLS = 8, ROWS = 6;
+const ITEMS_EMOJI = {
+  'tree-t1': { icon: '🌱', tier: 1, name: 'Sprout' },
+  'stone-t1': { icon: '🪨', tier: 1, name: 'Stone' },
+  'tree-t2': { icon: '🌳', tier: 2, name: 'Tree' },
+  'bush-t2': { icon: '🌲', tier: 2, name: 'Bush' },
+  'stump-t2': { icon: '🪵', tier: 2, name: 'Stump' },
+  'barrel-t2': { icon: '🛢️', tier: 2, name: 'Barrel' },
+  'flower-t3': { icon: '🌸', tier: 3, name: 'Flower' },
+  'sign-t3': { icon: '🪧', tier: 3, name: 'Sign' },
+  'fence-t3': { icon: '🪵', tier: 3, name: 'Fence' },
+  'chest-t4': { icon: '📦', tier: 4, name: 'Chest' },
+  'lamp-t4': { icon: '🏮', tier: 4, name: 'Lamp' },
+  'coin-t5': { icon: '🪙', tier: 5, name: 'Coin' },
+};
+
+// Sample placement
+const SAMPLE = {
+  '0,2': 'tree-t2', '0,3': 'stone-t1',
+  '1,2': 'tree-t2', '1,3': 'tree-t1', '1,4': 'bush-t2',
+  '2,1': 'fence-t3', '2,4': 'fence-t3',
+  '3,2': 'stone-t1', '3,3': 'chest-t4', '3,4': 'lamp-t4',
+  '4,3': 'barrel-t2', '4,4': 'flower-t3',
+  '5,3': 'sign-t3',
+  '7,5': 'coin-t5',
+};
+
+const board = document.getElementById('board');
+let currentTool = 'paint';
+let currentTile = 'grass';
+
+function renderBoard() {
+  board.innerHTML = '';
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.coord = `${c},${r}`;
+      const key = `${c},${r}`;
+      if (SAMPLE[key]) {
+        const it = ITEMS_EMOJI[SAMPLE[key]];
+        cell.classList.add('has-item', `tier-${it.tier}`);
+        cell.innerHTML = `${it.icon}<span class="tier-badge">T${it.tier}</span>`;
+      }
+      BT.dropTarget(cell, (data) => {
+        const it = ITEMS_EMOJI[data];
+        if (it) {
+          SAMPLE[key] = data;
+          cell.innerHTML = `${it.icon}<span class="tier-badge">T${it.tier}</span>`;
+          cell.className = `cell has-item tier-${it.tier}`;
+          updateStats();
+          BT.toast(`Placed ${it.name} T${it.tier}`, 'success');
+        }
+      });
+      cell.addEventListener('click', () => {
+        if (currentTool === 'erase' && SAMPLE[key]) {
+          delete SAMPLE[key];
+          cell.classList.remove('has-item');
+          cell.innerHTML = '';
+          updateStats();
+        } else {
+          BT.toast(`Cell (${c}, ${r}) selected`, '');
+        }
+      });
+      board.appendChild(cell);
+    }
+  }
+  updateStats();
+}
+
+function updateStats() {
+  const items = Object.keys(SAMPLE).length;
+  document.getElementById('itemCount').textContent = items;
+  document.getElementById('emptyCount').textContent = (COLS * ROWS) - items;
+}
+
+// Tool selection
+document.querySelectorAll('.board-toolbar .tbtn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.board-toolbar .tbtn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentTool = b.dataset.tool;
+  });
+});
+
+// Tile palette
+document.querySelectorAll('#tilePalette .tile').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('#tilePalette .tile').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    currentTile = t.dataset.tile;
+    BT.toast('Tile: ' + currentTile);
+  });
+});
+
+// Step nav
+document.querySelectorAll('.step').forEach(s => {
+  s.addEventListener('click', () => {
+    if (s.classList.contains('done')) return;
+    document.querySelectorAll('.step').forEach(x => x.classList.remove('active'));
+    s.classList.add('active');
+    BT.toast('Step: ' + s.textContent.trim());
+  });
+});
+
+// Make palette items draggable
+document.querySelectorAll('#itemPalette .palette-item').forEach(el => {
+  BT.draggable(el);
+});
+
+renderBoard();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Merge Item & Chain Builder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div style="padding: 24px; height: 100vh; display: flex; flex-direction: column;">
+  <div class="app-window" style="flex: 1;">
+
+    <!-- Titlebar -->
+    <div class="app-titlebar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="title">Merge Item & Chain Builder — chain-tree.json</div>
+    </div>
+
+    <div class="app-body">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <a href="../index.html" class="nav-btn" title="Home">
+          🏠<span class="tip">Home</span>
+        </a>
+        <button class="nav-btn active" title="Chains">
+          🧩<span class="tip">Chains</span>
+        </button>
+        <button class="nav-btn" title="Items">
+          📦<span class="tip">Items</span>
+        </button>
+        <button class="nav-btn" title="Generators">
+          ⚙️<span class="tip">Generators</span>
+        </button>
+        <button class="nav-btn" title="Chests">
+          🎁<span class="tip">Chests</span>
+        </button>
+        <div class="spacer"></div>
+        <button class="nav-btn" title="Settings">⚙️</button>
+      </aside>
+
+      <!-- Main -->
+      <main class="main">
+
+        <!-- 3-step header -->
+        <div class="step-header">
+          <h1 class="page-title"><span class="puzzle-icon">🧩</span>Merge Item & Chain Builder</h1>
+        </div>
+
+        <div class="step-header" style="padding-top: 0;">
+          <div class="step active" data-step="1"><span class="num">1</span>💬 Create / Manage</div>
+          <span class="arrow">→</span>
+          <div class="step active" data-step="2"><span class="num">2</span>🔗 Build Chain Flow</div>
+          <span class="arrow">→</span>
+          <div class="step" data-step="3"><span class="num">3</span>👁 Preview &amp; Test</div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="group">
+            <span style="font-size: 12px; color: var(--text-3); font-weight: 600;">CHAIN</span>
+            <select class="select" id="chainSelect">
+              <option>Tree (8 tiers)</option>
+              <option>Flower (10 tiers)</option>
+              <option>Coin (5 tiers)</option>
+              <option>Chest (6 tiers)</option>
+              <option>Lantern (8 tiers)</option>
+              <option>Fruit (7 tiers)</option>
+            </select>
+            <button class="btn">+ New Chain</button>
+          </div>
+          <div class="group">
+            <button class="btn">Import JSON</button>
+            <button class="btn">Export JSON</button>
+          </div>
+          <div class="grow"></div>
+          <div class="group">
+            <button class="btn ghost">↶ Undo</button>
+            <button class="btn ghost">↷ Redo</button>
+            <button class="btn primary">💾 Save</button>
+          </div>
+        </div>
+
+        <!-- Workspace -->
+        <div class="workspace">
+
+          <!-- Left palette: items -->
+          <div class="panel" style="width: 220px;">
+            <div class="panel-header">Item Library</div>
+            <div class="panel-body">
+              <input class="input" placeholder="🔍 Search items..." style="width: 100%; margin-bottom: 12px;">
+              <div class="palette-grid" id="itemPalette">
+                <!-- items injected -->
+              </div>
+              <button class="btn" style="width: 100%; justify-content: center; margin-top: 12px;">+ Add Item</button>
+            </div>
+          </div>
+
+          <!-- Center: chain tree canvas -->
+          <div class="canvas-area">
+            <div class="chain-tree" id="chainTree">
+              <!-- tiers injected -->
+            </div>
+          </div>
+
+          <!-- Right: properties -->
+          <div class="panel right" style="width: 280px;">
+            <div class="panel-header">Properties</div>
+            <div class="panel-body">
+              <div class="property-field">
+                <label>Chain Name</label>
+                <input class="input" value="Tree" style="width: 100%;">
+              </div>
+              <div class="property-field">
+                <label>Category</label>
+                <select class="select" style="width: 100%;">
+                  <option>Nature</option>
+                  <option>Craft</option>
+                  <option>Cuisine</option>
+                  <option>Decoration</option>
+                </select>
+              </div>
+              <div class="property-field">
+                <label>Total Tiers</label>
+                <input class="input" type="number" value="8" style="width: 100%;">
+              </div>
+              <div class="property-field">
+                <label>Max Tier</label>
+                <input class="input" type="number" value="10" style="width: 100%;">
+              </div>
+              <div class="property-field">
+                <label>Generator Source?</label>
+                <select class="select" style="width: 100%;">
+                  <option>No</option>
+                  <option>Yes (T1)</option>
+                </select>
+              </div>
+              <div class="property-field">
+                <label>Visual Theme</label>
+                <div style="display: flex; gap: 6px;">
+                  <div style="width: 28px; height: 28px; border-radius: 6px; background: #86EFAC; border: 2px solid var(--purple-600);"></div>
+                  <div style="width: 28px; height: 28px; border-radius: 6px; background: #93C5FD;"></div>
+                  <div style="width: 28px; height: 28px; border-radius: 6px; background: #FDE68A;"></div>
+                  <div style="width: 28px; height: 28px; border-radius: 6px; background: #FECACA;"></div>
+                </div>
+              </div>
+              <hr style="border: none; border-top: 1px solid var(--line); margin: 16px 0;">
+              <div class="property-field">
+                <label>Drop Location</label>
+                <select class="select" style="width: 100%;">
+                  <option>Area 1 — Old Fabric Shop</option>
+                  <option>Area 2 — Canal Garden</option>
+                  <option>Area 3 — Spirits' Home</option>
+                </select>
+              </div>
+              <button class="btn primary" style="width: 100%; justify-content: center; margin-top: 8px;">Apply Changes</button>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+</div>
+
+<script src="../assets/app.js"></script>
+<script>
+const ITEMS = [
+  { icon: '🌱', name: 'Sprout',  tier: 1 },
+  { icon: '🌿', name: 'Herb',    tier: 1 },
+  { icon: '🌳', name: 'Tree',    tier: 2 },
+  { icon: '🍎', name: 'Fruit',   tier: 3 },
+  { icon: '🍯', name: 'Honey',   tier: 4 },
+  { icon: '💎', name: 'Crystal', tier: 5 },
+];
+
+const CHAIN_TIERS = [
+  { tier: 1, items: [{ icon: '🌱', name: 'Sprout' }] },
+  { tier: 2, items: [{ icon: '🌿', name: 'Herb' }, { icon: '🌳', name: 'Tree' }] },
+  { tier: 3, items: [{ icon: '🍎', name: 'Fruit' }, { icon: '🌸', name: 'Flower' }] },
+  { tier: 4, items: [{ icon: '🍯', name: 'Honey' }, { icon: '🪵', name: 'Log' }] },
+  { tier: 5, items: [{ icon: '💎', name: 'Crystal' }, { icon: '🏺', name: 'Vase' }] },
+  { tier: 6, items: [{ icon: '👑', name: 'Crown' }] },
+];
+
+// Render item palette
+const palette = document.getElementById('itemPalette');
+ITEMS.forEach(it => {
+  const el = document.createElement('div');
+  el.className = `palette-item tier-${it.tier}`;
+  el.dataset.payload = JSON.stringify(it);
+  el.innerHTML = `${it.icon}<div class="lbl">${it.name}</div>`;
+  BT.draggable(el);
+  palette.appendChild(el);
+});
+
+// Render chain tree
+const tree = document.getElementById('chainTree');
+CHAIN_TIERS.forEach((row, i) => {
+  const rowEl = document.createElement('div');
+  rowEl.className = 'chain-tier-row';
+  row.items.forEach(it => {
+    const node = document.createElement('div');
+    node.className = `chain-node tier-${row.tier}`;
+    node.innerHTML = `<div class="icon">${it.icon}</div><div>${it.name}</div><div class="tier">T${row.tier}</div>`;
+    node.addEventListener('click', () => BT.toast(`${it.name} T${row.tier} selected`, 'success'));
+    rowEl.appendChild(node);
+  });
+  tree.appendChild(rowEl);
+  if (i < CHAIN_TIERS.length - 1) {
+    const conn = document.createElement('div');
+    conn.className = 'chain-connector';
+    tree.appendChild(conn);
+  }
+});
+
+// Step navigation
+document.querySelectorAll('.step').forEach(s => {
+  s.addEventListener('click', () => {
+    if (s.classList.contains('active') || s.classList.contains('done')) return;
+    document.querySelectorAll('.step').forEach(x => x.classList.remove('active'));
+    s.classList.add('active');
+    BT.toast('Switched to: ' + s.textContent.trim());
+  });
+});
+
+// Save button
+document.querySelector('.btn.primary').addEventListener('click', () => {
+  BT.toast('Chain saved to chain-tree.json', 'success');
+});
+</script>
+
+</body>
+</html>

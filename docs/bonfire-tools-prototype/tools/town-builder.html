@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Town / Scene Builder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .scene-bg {
+    background: #86EFAC;
+    background-image:
+      linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+    border-radius: var(--radius);
+    width: 560px;
+    height: 420px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .scene-bg.night {
+    background: #1E3A8A;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  }
+  .scene-bg.sunset {
+    background: linear-gradient(180deg, #FB923C 0%, #F472B6 50%, #7C3AED 100%);
+  }
+  .scene-bg.rain {
+    background: #475569;
+  }
+  .scene-cell {
+    position: absolute;
+    width: 32px; height: 32px;
+    background: transparent;
+    border: 1px dashed rgba(0,0,0,.15);
+    cursor: pointer;
+    transition: background .1s;
+  }
+  .scene-cell:hover { background: rgba(255,255,255,.3); }
+  .scene-cell.occupied { border-color: transparent; }
+  .scene-prop {
+    position: absolute;
+    width: 32px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: move;
+    user-select: none;
+  }
+  .water-tile {
+    position: absolute;
+    background: #93C5FD;
+    width: 128px; height: 96px;
+    border-radius: 4px;
+  }
+  .path-tile {
+    position: absolute;
+    background: #FDE68A;
+    width: 32px; height: 32px;
+  }
+  .preview-scene {
+    width: 360px; height: 480px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+  }
+  .preview-scene .play-bar {
+    position: absolute;
+    bottom: 16px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 8px;
+    background: rgba(0,0,0,.4);
+    padding: 6px;
+    border-radius: 8px;
+  }
+  .preview-scene .play-bar button {
+    width: 36px; height: 36px;
+    border: none;
+    background: rgba(255,255,255,.15);
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .preview-scene .play-bar button.active { background: var(--purple-600); }
+  .device-selector {
+    display: flex; gap: 6px;
+    margin-top: 12px; justify-content: center;
+  }
+  .device-selector button {
+    padding: 6px 12px;
+    background: var(--canvas-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 12px;
+  }
+  .device-selector button.active { background: var(--purple-600); color: white; border-color: var(--purple-600); }
+  .env-group {
+    margin-bottom: 16px;
+  }
+  .env-group .lbl {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-3);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .env-options {
+    display: flex; gap: 6px;
+    flex-wrap: wrap;
+  }
+  .env-option {
+    width: 36px; height: 36px;
+    background: var(--canvas);
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .env-option:hover { border-color: var(--purple-400); }
+  .env-option.active { border-color: var(--purple-600); background: var(--purple-50); }
+</style>
+</head>
+<body>
+
+<div style="padding: 24px; height: 100vh; display: flex; flex-direction: column;">
+  <div class="app-window" style="flex: 1;">
+
+    <div class="app-titlebar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="title">Town / Scene Builder — area_1_shop.json</div>
+    </div>
+
+    <div class="app-body">
+
+      <aside class="sidebar">
+        <a href="../index.html" class="nav-btn" title="Home">🏠<span class="tip">Home</span></a>
+        <button class="nav-btn active" title="Scenes">🗺️<span class="tip">Scenes</span></button>
+        <button class="nav-btn" title="Areas">🏘️<span class="tip">Areas</span></button>
+        <button class="nav-btn" title="Props">📦<span class="tip">Props</span></button>
+        <button class="nav-btn" title="NPCs">👥<span class="tip">NPCs</span></button>
+        <button class="nav-btn" title="Weather">🌤<span class="tip">Weather</span></button>
+        <button class="nav-btn" title="Audio">🔊<span class="tip">Audio</span></button>
+        <div class="spacer"></div>
+        <button class="nav-btn" title="Settings">⚙️</button>
+      </aside>
+
+      <main class="main">
+
+        <div class="step-header">
+          <h1 class="page-title"><span class="puzzle-icon">🏘️</span>Town / Scene Builder</h1>
+        </div>
+
+        <div class="step-header" style="padding-top: 0;">
+          <div class="step active" data-step="1"><span class="num">1</span>🏙 Design Layout</div>
+          <span class="arrow">→</span>
+          <div class="step active" data-step="2"><span class="num">2</span>🎨 Set Environment</div>
+          <span class="arrow">→</span>
+          <div class="step" data-step="3"><span class="num">3</span>👁 Preview &amp; Test</div>
+        </div>
+
+        <div class="toolbar">
+          <div class="group">
+            <span style="font-size: 12px; color: var(--text-3); font-weight: 600;">SCENE</span>
+            <select class="select">
+              <option>Area 1 — Old Fabric Shop</option>
+              <option>Area 2 — Canal Garden</option>
+              <option>Area 3 — Spirits' Home</option>
+            </select>
+            <button class="btn">+ Scene</button>
+          </div>
+          <div class="group">
+            <button class="btn">Undo</button>
+            <button class="btn">Redo</button>
+          </div>
+          <div class="grow"></div>
+          <div class="group">
+            <button class="btn">Validate</button>
+            <button class="btn primary">💾 Save Scene</button>
+          </div>
+        </div>
+
+        <div class="workspace">
+
+          <div class="panel" style="width: 200px;">
+            <div class="panel-header">Tile Palette</div>
+            <div class="panel-body">
+              <div class="tile-palette">
+                <div class="tile grass active" data-tile="grass">Grass</div>
+                <div class="tile sand" data-tile="sand">Sand</div>
+                <div class="tile water" data-tile="water">Water</div>
+                <div class="tile stone" data-tile="stone">Stone</div>
+                <div class="tile wood" data-tile="wood">Wood</div>
+                <div class="tile" style="border-style: dashed;">+ Add</div>
+              </div>
+              <hr style="border: none; border-top: 1px solid var(--line); margin: 16px 0;">
+              <div class="panel-header" style="padding: 0; margin-bottom: 8px;">Decoration</div>
+              <div class="palette-grid" id="propPalette">
+                <div class="palette-item" draggable="true" data-prop="🌳" style="font-size: 22px; aspect-ratio: 1;">🌳<div class="lbl">Tree</div></div>
+                <div class="palette-item" draggable="true" data-prop="🏮" style="font-size: 22px; aspect-ratio: 1;">🏮<div class="lbl">Lamp</div></div>
+                <div class="palette-item" draggable="true" data-prop="🏠" style="font-size: 22px; aspect-ratio: 1;">🏠<div class="lbl">House</div></div>
+                <div class="palette-item" draggable="true" data-prop="🌹" style="font-size: 22px; aspect-ratio: 1;">🌹<div class="lbl">Rose</div></div>
+                <div class="palette-item" draggable="true" data-prop="🪵" style="font-size: 22px; aspect-ratio: 1;">🪵<div class="lbl">Fence</div></div>
+                <div class="palette-item" draggable="true" data-prop="⛲" style="font-size: 22px; aspect-ratio: 1;">⛲<div class="lbl">Fountain</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="canvas-area">
+            <div>
+              <div class="board-toolbar">
+                <button class="tbtn active">🖌️</button>
+                <button class="tbtn">🧹</button>
+                <button class="tbtn">🪣</button>
+              </div>
+              <div class="scene-bg" id="scene">
+                <!-- water feature -->
+                <div class="water-tile" style="left: 256px; top: 192px;"></div>
+                <!-- path -->
+                <div class="path-tile" style="left: 256px; top: 96px;"></div>
+                <div class="path-tile" style="left: 256px; top: 128px;"></div>
+                <div class="path-tile" style="left: 256px; top: 160px;"></div>
+                <div class="path-tile" style="left: 256px; top: 288px;"></div>
+                <div class="path-tile" style="left: 256px; top: 320px;"></div>
+                <!-- props -->
+                <div class="scene-prop" style="left: 220px; top: 130px;">⛲</div>
+                <div class="scene-prop" style="left: 130px; top: 60px;">🏠</div>
+                <div class="scene-prop" style="left: 380px; top: 80px;">🏠</div>
+                <div class="scene-prop" style="left: 60px; top: 200px;">🌳</div>
+                <div class="scene-prop" style="left: 460px; top: 220px;">🌳</div>
+                <div class="scene-prop" style="left: 100px; top: 350px;">🌹</div>
+                <div class="scene-prop" style="left: 400px; top: 350px;">🌹</div>
+                <div class="scene-prop" style="left: 280px; top: 30px;">🏮</div>
+                <div class="scene-prop" style="left: 280px; top: 360px;">🏮</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel right" style="width: 260px;">
+            <div class="panel-header">Environment</div>
+            <div class="panel-body">
+
+              <div class="env-group">
+                <div class="lbl">Time of Day</div>
+                <div class="env-options">
+                  <div class="env-option" data-time="dawn">🌅</div>
+                  <div class="env-option active" data-time="day">☀️</div>
+                  <div class="env-option" data-time="sunset">🌇</div>
+                  <div class="env-option" data-time="night">🌙</div>
+                </div>
+              </div>
+
+              <div class="env-group">
+                <div class="lbl">Weather</div>
+                <div class="env-options">
+                  <div class="env-option active" data-weather="clear">☀️</div>
+                  <div class="env-option" data-weather="cloudy">☁️</div>
+                  <div class="env-option" data-weather="rain">🌧️</div>
+                  <div class="env-option" data-weather="snow">❄️</div>
+                </div>
+              </div>
+
+              <div class="env-group">
+                <div class="lbl">Season</div>
+                <div class="env-options">
+                  <div class="env-option" data-season="spring">🌷</div>
+                  <div class="env-option active" data-season="summer">☀️</div>
+                  <div class="env-option" data-season="autumn">🍂</div>
+                  <div class="env-option" data-season="winter">❄️</div>
+                </div>
+              </div>
+
+              <div class="slider-row">
+                <label>Lighting</label>
+                <input type="range" min="0" max="100" value="70">
+                <span class="val">70%</span>
+              </div>
+              <div class="slider-row">
+                <label>Ambient</label>
+                <input type="range" min="0" max="100" value="50">
+                <span class="val">50%</span>
+              </div>
+              <div class="slider-row">
+                <label>Fog</label>
+                <input type="range" min="0" max="100" value="10">
+                <span class="val">10%</span>
+              </div>
+
+              <hr style="border: none; border-top: 1px solid var(--line); margin: 16px 0;">
+
+              <div class="env-group">
+                <div class="lbl">Audio Layer</div>
+                <select class="select" style="width: 100%;">
+                  <option>Canal-side (morning)</option>
+                  <option>Old shop (creaks)</option>
+                  <option>Garden (birds)</option>
+                  <option>Spirits (whisper)</option>
+                </select>
+              </div>
+
+              <div class="env-group">
+                <div class="lbl">Decoration Star</div>
+                <div style="display: flex; gap: 4px; font-size: 20px;">
+                  <span style="color: var(--yellow);">★</span>
+                  <span style="color: var(--yellow);">★</span>
+                  <span style="color: var(--yellow);">★</span>
+                  <span style="color: var(--line-2);">★</span>
+                  <span style="color: var(--line-2);">★</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+</div>
+
+<script src="../assets/app.js"></script>
+<script>
+// Tile palette active state
+document.querySelectorAll('.tile-palette .tile').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tile-palette .tile').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    BT.toast('Tile: ' + t.dataset.tile);
+  });
+});
+
+// Env option selection
+document.querySelectorAll('.env-option').forEach(o => {
+  o.addEventListener('click', () => {
+    const group = o.parentElement;
+    group.querySelectorAll('.env-option').forEach(x => x.classList.remove('active'));
+    o.classList.add('active');
+    BT.toast('Updated: ' + Object.keys(o.dataset).map(k => k + '=' + o.dataset[k]).join(' '));
+  });
+});
+
+// Drag props onto scene
+const scene = document.getElementById('scene');
+document.querySelectorAll('#propPalette .palette-item').forEach(el => {
+  BT.draggable(el);
+});
+
+scene.addEventListener('dragover', e => e.preventDefault());
+scene.addEventListener('drop', e => {
+  e.preventDefault();
+  const rect = scene.getBoundingClientRect();
+  const prop = document.createElement('div');
+  prop.className = 'scene-prop';
+  prop.textContent = e.dataTransfer.getData('text/plain');
+  prop.style.left = (e.clientX - rect.left - 16) + 'px';
+  prop.style.top  = (e.clientY - rect.top - 16) + 'px';
+  scene.appendChild(prop);
+  BT.toast('Decoration placed', 'success');
+});
+
+// Make existing props draggable
+document.querySelectorAll('.scene-prop').forEach(p => {
+  p.style.cursor = 'move';
+  let dragging = false, sx, sy, ox, oy;
+  p.addEventListener('mousedown', e => {
+    dragging = true;
+    sx = e.clientX; sy = e.clientY;
+    ox = p.offsetLeft; oy = p.offsetTop;
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    p.style.left = (ox + e.clientX - sx) + 'px';
+    p.style.top  = (oy + e.clientY - sy) + 'px';
+  });
+  document.addEventListener('mouseup', () => dragging = false);
+});
+
+// Step nav
+document.querySelectorAll('.step').forEach(s => {
+  s.addEventListener('click', () => {
+    if (s.classList.contains('done')) return;
+    document.querySelectorAll('.step').forEach(x => x.classList.remove('active'));
+    s.classList.add('active');
+    BT.toast('Step: ' + s.textContent.trim());
+  });
+});
+</script>
+
+</body>
+</html>

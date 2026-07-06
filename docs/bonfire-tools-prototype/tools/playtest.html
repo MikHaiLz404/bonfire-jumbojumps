@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Playtest Accelerator + QC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .scenario-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .scenario {
+    background: var(--canvas);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    cursor: pointer;
+    transition: all .12s;
+  }
+  .scenario:hover { border-color: var(--purple-400); background: var(--purple-50); }
+  .scenario .name { font-weight: 600; font-size: 13px; }
+  .scenario .meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .cheat-btn {
+    padding: 10px 12px;
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cheat-btn:hover { background: var(--purple-50); border-color: var(--purple-400); }
+  .cheat-btn .ic { font-size: 18px; }
+  .qa-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .qa-list li {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .qa-list li:hover { background: var(--purple-50); }
+  .qa-list li input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--purple-600);
+  }
+  .qa-list li.done { color: var(--text-3); text-decoration: line-through; }
+  .qa-list li .priority {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .qa-list li .priority.high { background: var(--red-bg); color: var(--red); }
+  .qa-list li .priority.med  { background: var(--yellow-bg); color: #92400E; }
+  .qa-list li .priority.low  { background: var(--green-bg); color: #065F46; }
+  .progress-bar {
+    height: 8px;
+    background: var(--canvas);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 12px 0;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple-500), var(--purple-700));
+    transition: width .3s;
+  }
+</style>
+</head>
+<body>
+
+<div style="padding: 24px; height: 100vh; display: flex; flex-direction: column;">
+  <div class="app-window" style="flex: 1;">
+
+    <div class="app-titlebar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="title">Playtest Accelerator + QC — build v2.4.1-rc3</div>
+    </div>
+
+    <div class="app-body">
+
+      <aside class="sidebar">
+        <a href="../index.html" class="nav-btn" title="Home">🏠<span class="tip">Home</span></a>
+        <button class="nav-btn active" title="Cheats">🧪<span class="tip">Cheats</span></button>
+        <button class="nav-btn" title="Scenarios">🎬<span class="tip">Scenarios</span></button>
+        <button class="nav-btn" title="QA">✅<span class="tip">QA</span></button>
+        <button class="nav-btn" title="Bugs">🐛<span class="tip">Bugs</span></button>
+        <button class="nav-btn" title="Logs">📜<span class="tip">Logs</span></button>
+        <button class="nav-btn" title="Devices">📱<span class="tip">Devices</span></button>
+        <div class="spacer"></div>
+        <button class="nav-btn" title="Settings">⚙️</button>
+      </aside>
+
+      <main class="main">
+
+        <div class="step-header">
+          <h1 class="page-title"><span class="puzzle-icon">🧪</span>Playtest Accelerator + QC</h1>
+        </div>
+
+        <div class="step-header" style="padding-top: 0;">
+          <div class="step active"><span class="num">1</span>⚡ Fast-Forward</div>
+          <span class="arrow">→</span>
+          <div class="step active"><span class="num">2</span>🎬 Launch Scenario</div>
+          <span class="arrow">→</span>
+          <div class="step"><span class="num">3</span>✅ Run QC</div>
+        </div>
+
+        <div class="toolbar">
+          <div class="group">
+            <span style="font-size: 12px; color: var(--text-3); font-weight: 600;">DEVICE</span>
+            <select class="select">
+              <option>iPhone 14 (iOS 17)</option>
+              <option>Samsung S23 (Android 14)</option>
+              <option>Pixel 8 (Android 14)</option>
+              <option>iPad Mini</option>
+              <option>Editor (Desktop)</option>
+            </select>
+          </div>
+          <div class="group">
+            <span style="font-size: 12px; color: var(--text-3); font-weight: 600;">BUILD</span>
+            <select class="select">
+              <option>v2.4.1-rc3 (current)</option>
+              <option>v2.4.0 (last release)</option>
+              <option>v2.5.0-alpha</option>
+            </select>
+          </div>
+          <div class="group">
+            <button class="btn">⏵ Run</button>
+            <button class="btn">⏸ Pause</button>
+            <button class="btn">⏹ Stop</button>
+          </div>
+          <div class="grow"></div>
+          <div class="group">
+            <button class="btn">📸 Screenshot</button>
+            <button class="btn">📹 Record 30s</button>
+            <button class="btn primary">🔄 Reset</button>
+          </div>
+        </div>
+
+        <div class="workspace" style="overflow-y: auto;">
+
+          <div style="padding: 24px; width: 100%;">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+
+              <div class="card">
+                <h3 style="margin: 0 0 12px; font-size: 15px;">⚡ Cheat Menu — Player State</h3>
+                <div class="sub" style="font-size: 12px; color: var(--text-3); margin-bottom: 12px;">Inject state directly into the running build.</div>
+
+                <div class="property-field">
+                  <label>Player Level</label>
+                  <div style="display: flex; gap: 6px;">
+                    <input class="input" type="number" value="42" style="flex: 1;">
+                    <button class="btn">Set</button>
+                  </div>
+                </div>
+                <div class="property-field">
+                  <label>Energy</label>
+                  <div style="display: flex; gap: 6px;">
+                    <input class="input" type="number" value="100" style="flex: 1;">
+                    <button class="btn primary">⚡ Max Energy</button>
+                  </div>
+                </div>
+                <div class="property-field">
+                  <label>Coins</label>
+                  <div style="display: flex; gap: 6px;">
+                    <input class="input" type="number" value="12500" style="flex: 1;">
+                    <button class="btn success">+10,000</button>
+                  </div>
+                </div>
+                <div class="property-field">
+                  <label>Gems</label>
+                  <div style="display: flex; gap: 6px;">
+                    <input class="input" type="number" value="240" style="flex: 1;">
+                    <button class="btn success">+500</button>
+                  </div>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--line); margin: 16px 0;">
+
+                <div class="cheat-grid">
+                  <button class="cheat-btn"><span class="ic">⏩</span> Skip tutorial</button>
+                  <button class="cheat-btn"><span class="ic">⏰</span> Fast time +24h</button>
+                  <button class="cheat-btn"><span class="ic">⏰</span> Fast time +7d</button>
+                  <button class="cheat-btn"><span class="ic">🎁</span> Unlock all chests</button>
+                  <button class="cheat-btn"><span class="ic">🏆</span> Complete all quests</button>
+                  <button class="cheat-btn"><span class="ic">💎</span> Unlock VIP pass</button>
+                  <button class="cheat-btn"><span class="ic">🎪</span> Force start event</button>
+                  <button class="cheat-btn"><span class="ic">🚫</span> Trigger offline 1h</button>
+                  <button class="cheat-btn"><span class="ic">🌐</span> Simulate lag (500ms)</button>
+                  <button class="cheat-btn"><span class="ic">📵</span> Simulate offline</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3 style="margin: 0 0 12px; font-size: 15px;">🎬 Scenario Launcher</h3>
+                <div class="sub" style="font-size: 12px; color: var(--text-3); margin-bottom: 12px;">Jump straight into a pre-configured scenario.</div>
+
+                <div class="scenario-list">
+                  <div class="scenario" data-scenario="new-player-d1">
+                    <div class="name">🌱 New Player · Day 1</div>
+                    <div class="meta">Fresh install · tutorial · first 10 min</div>
+                  </div>
+                  <div class="scenario" data-scenario="returning-d7">
+                    <div class="name">🌙 Returning · Day 7</div>
+                    <div class="meta">Player returning after 3d offline</div>
+                  </div>
+                  <div class="scenario" data-scenario="mid-game-chapter2">
+                    <div class="name">📖 Mid · Chapter 2</div>
+                    <div class="meta">Player at chapter transition</div>
+                  </div>
+                  <div class="scenario" data-scenario="endgame-chapter5">
+                    <div class="name">👑 Endgame · Chapter 5</div>
+                    <div class="meta">Level 50 · maxed chains</div>
+                  </div>
+                  <div class="scenario" data-scenario="energy-depleted">
+                    <div class="name">⚡ Energy = 0</div>
+                    <div class="meta">Player at empty energy state</div>
+                  </div>
+                  <div class="scenario" data-scenario="full-inventory">
+                    <div class="name">📦 Full Inventory</div>
+                    <div class="meta">All storage slots occupied</div>
+                  </div>
+                  <div class="scenario" data-scenario="event-active">
+                    <div class="name">🎪 During Live Event</div>
+                    <div class="meta">Coin Rush active · D1 of 3</div>
+                  </div>
+                  <div class="scenario" data-scenario="vip-pass-active">
+                    <div class="name">⭐ VIP Active</div>
+                    <div class="meta">Premium pass · cooldown bonus</div>
+                  </div>
+                  <div class="scenario" data-scenario="first-purchase">
+                    <div class="name">💳 First IAP</div>
+                    <div class="meta">Starter pack purchase flow</div>
+                  </div>
+                  <div class="scenario" data-scenario="paywall">
+                    <div class="name">🚧 Energy Paywall</div>
+                    <div class="meta">Forced to wait or pay</div>
+                  </div>
+                </div>
+
+                <button class="btn primary" style="width: 100%; justify-content: center; margin-top: 12px;">▶ Launch Scenario</button>
+              </div>
+
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+
+              <div class="card">
+                <h3 style="margin: 0 0 4px; font-size: 15px;">✅ QA Checklist — Build v2.4.1-rc3</h3>
+                <div class="sub" style="font-size: 12px; color: var(--text-3);">Pre-release regression for MVP launch gates.</div>
+
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                  <span style="font-size: 12px; color: var(--text-2);"><b>14 / 22</b> complete</span>
+                  <div class="progress-bar" style="flex: 1;"><div class="fill" style="width: 64%;"></div></div>
+                  <span style="font-size: 12px; color: var(--purple-700); font-weight: 700;">64%</span>
+                </div>
+
+                <ul class="qa-list">
+                  <li class="done"><input type="checkbox" checked> Merge mechanic works for all 20 chains<span class="priority high">High</span></li>
+                  <li class="done"><input type="checkbox" checked> Generator tap cost 1 energy correctly deducted<span class="priority high">High</span></li>
+                  <li class="done"><input type="checkbox" checked> Scissors splitter returns 2× tier N-1<span class="priority high">High</span></li>
+                  <li class="done"><input type="checkbox" checked> Order fulfillment rewards match spec<span class="priority high">High</span></li>
+                  <li class="done"><input type="checkbox" checked> Chapter 1 story triggers correctly<span class="priority high">High</span></li>
+                  <li class="done"><input type="checkbox" checked> Energy regen pauses at cap<span class="priority med">Med</span></li>
+                  <li class="done"><input type="checkbox" checked> Storage 20 slots enforced<span class="priority med">Med</span></li>
+                  <li class="done"><input type="checkbox" checked> Daily reset at 04:00 UTC<span class="priority med">Med</span></li>
+                  <li class="done"><input type="checkbox" checked> NPC relationship XP gain correct<span class="priority med">Med</span></li>
+                  <li class="done"><input type="checkbox" checked> Decoration star awarded on order done<span class="priority med">Med</span></li>
+                  <li class="done"><input type="checkbox" checked> TH localization renders correctly<span class="priority high">High</span></li>
+                  <li class="done"><input type="checkbox" checked> EN localization renders correctly<span class="priority high">High</span></li>
+                  <li class="done"><input type="checkbox" checked> IAP receipt validation passes<span class="priority high">High</span></li>
+                  <li class="done"><input type="checkbox" checked> Cloud save round-trip works<span class="priority high">High</span></li>
+                  <li><input type="checkbox"> No-ads gate at MVP (paid only)<span class="priority high">High</span></li>
+                  <li><input type="checkbox"> Energy refill IAP grants 50/200/500<span class="priority high">High</span></li>
+                  <li><input type="checkbox"> Offline session logic grants correct rewards<span class="priority med">Med</span></li>
+                  <li><input type="checkbox"> Force-close mid-merge recovers safely<span class="priority med">Med</span></li>
+                  <li><input type="checkbox"> Audio plays on iOS silent mode<span class="priority low">Low</span></li>
+                  <li><input type="checkbox"> iOS in-app review prompt triggers<span class="priority low">Low</span></li>
+                  <li><input type="checkbox"> Tablet portrait layout (iPad)<span class="priority low">Low</span></li>
+                  <li><input type="checkbox"> Dark mode (planned post-launch)<span class="priority low">Low</span></li>
+                </ul>
+              </div>
+
+              <div class="card">
+                <h3 style="margin: 0 0 12px; font-size: 15px;">🐛 Bug Tracker</h3>
+                <div class="sub" style="font-size: 12px; color: var(--text-3); margin-bottom: 12px;">Found in current build.</div>
+
+                <div style="background: var(--red-bg); border: 1px solid var(--red); border-radius: 8px; padding: 10px; margin-bottom: 8px;">
+                  <b style="color: var(--red); font-size: 12px;">BUG-231 · High</b>
+                  <div style="font-size: 13px; margin-top: 4px;">Merging 2× T5 chest on full board crashes client</div>
+                  <div style="font-size: 11px; color: var(--text-3); margin-top: 4px;">@qa-beam · 2h ago</div>
+                </div>
+
+                <div style="background: var(--yellow-bg); border: 1px solid var(--yellow); border-radius: 8px; padding: 10px; margin-bottom: 8px;">
+                  <b style="color: #92400E; font-size: 12px;">BUG-228 · Med</b>
+                  <div style="font-size: 13px; margin-top: 4px;">Thai text overflows on iPhone SE</div>
+                  <div style="font-size: 11px; color: var(--text-3); margin-top: 4px;">@qa-fah · 5h ago</div>
+                </div>
+
+                <div style="background: var(--yellow-bg); border: 1px solid var(--yellow); border-radius: 8px; padding: 10px; margin-bottom: 8px;">
+                  <b style="color: #92400E; font-size: 12px;">BUG-225 · Med</b>
+                  <div style="font-size: 13px; margin-top: 4px;">NPC dialog audio plays twice on rapid tap</div>
+                  <div style="font-size: 11px; color: var(--text-3); margin-top: 4px;">@qa-beam · Yesterday</div>
+                </div>
+
+                <div style="background: var(--green-bg); border: 1px solid var(--green); border-radius: 8px; padding: 10px; margin-bottom: 8px;">
+                  <b style="color: #065F46; font-size: 12px;">BUG-220 · Low</b>
+                  <div style="font-size: 13px; margin-top: 4px;">Tutorial arrow slightly off-center on tablet</div>
+                  <div style="font-size: 11px; color: var(--text-3); margin-top: 4px;">@qa-fah · 2d ago</div>
+                </div>
+
+                <button class="btn" style="width: 100%; justify-content: center; margin-top: 12px;">+ Report new bug</button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+</div>
+
+<script src="../assets/app.js"></script>
+<script>
+document.querySelectorAll('.cheat-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    BT.toast('Cheat applied: ' + b.textContent.trim(), 'success');
+  });
+});
+
+document.querySelectorAll('.scenario').forEach(s => {
+  s.addEventListener('click', () => {
+    document.querySelectorAll('.scenario').forEach(x => x.style.borderColor = '');
+    s.style.borderColor = 'var(--purple-600)';
+    s.style.background = 'var(--purple-50)';
+    BT.toast('Selected: ' + s.querySelector('.name').textContent.trim());
+  });
+});
+
+document.querySelector('.qa-list').addEventListener('change', e => {
+  if (e.target.type !== 'checkbox') return;
+  const li = e.target.closest('li');
+  li.classList.toggle('done', e.target.checked);
+  const total = document.querySelectorAll('.qa-list li').length;
+  const done = document.querySelectorAll('.qa-list li.done').length;
+  document.querySelector('.progress-bar .fill').style.width = (done / total * 100) + '%';
+  document.querySelector('.qa-list').parentElement.querySelector('span b').textContent = `${done} / ${total}`;
+  document.querySelector('.progress-bar + span').textContent = Math.round(done / total * 100) + '%';
+});
+</script>
+
+</body>
+</html>

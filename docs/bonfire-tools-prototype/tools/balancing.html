@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Live Balancing Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .balance-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .balance-card {
+    background: var(--canvas-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .balance-card h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .balance-card .sub {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-bottom: 16px;
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--canvas);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+  }
+  .stat-card .lbl {
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .stat-card .val {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--purple-700);
+  }
+  .stat-card .delta {
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .stat-card .delta.up { color: var(--green); }
+  .stat-card .delta.down { color: var(--red); }
+  .preview-before, .preview-after {
+    background: var(--canvas);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .preview-before { border-left: 4px solid var(--text-3); }
+  .preview-after  { border-left: 4px solid var(--green); }
+  .diff-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .diff-row:last-child { border-bottom: none; }
+  .diff-row .key { color: var(--text-3); }
+  .diff-row .old { color: var(--red); text-decoration: line-through; }
+  .diff-row .new { color: var(--green); font-weight: 600; }
+  .env-banner {
+    background: linear-gradient(90deg, var(--green-bg), var(--blue-bg));
+    border: 1px solid var(--green);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+  .env-banner .dot {
+    width: 10px; height: 10px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(16,185,129,.2);
+  }
+</style>
+</head>
+<body>
+
+<div style="padding: 24px; height: 100vh; display: flex; flex-direction: column;">
+  <div class="app-window" style="flex: 1;">
+
+    <div class="app-titlebar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="title">Live Balancing Console — live · v2.4.1</div>
+    </div>
+
+    <div class="app-body">
+
+      <aside class="sidebar">
+        <a href="../index.html" class="nav-btn" title="Home">🏠<span class="tip">Home</span></a>
+        <button class="nav-btn active" title="Economy">💰<span class="tip">Economy</span></button>
+        <button class="nav-btn" title="Difficulty">⚔️<span class="tip">Difficulty</span></button>
+        <button class="nav-btn" title="Rewards">🎁<span class="tip">Rewards</span></button>
+        <button class="nav-btn" title="Drop Tables">🎲<span class="tip">Drop Tables</span></button>
+        <button class="nav-btn" title="Energy">⚡<span class="tip">Energy</span></button>
+        <button class="nav-btn" title="NPC">👥<span class="tip">NPC</span></button>
+        <button class="nav-btn" title="A/B Tests">🧪<span class="tip">A/B Tests</span></button>
+        <div class="spacer"></div>
+        <button class="nav-btn" title="History">📜</button>
+        <button class="nav-btn" title="Settings">⚙️</button>
+      </aside>
+
+      <main class="main">
+
+        <div class="step-header">
+          <h1 class="page-title"><span class="puzzle-icon">⚖️</span>Live Balancing Console</h1>
+        </div>
+
+        <div class="step-header" style="padding-top: 0;">
+          <div class="step active"><span class="num">1</span>📊 View Current</div>
+          <span class="arrow">→</span>
+          <div class="step active"><span class="num">2</span>🎚 Adjust Values</div>
+          <span class="arrow">→</span>
+          <div class="step"><span class="num">3</span>👁 Preview &amp; Push Live</div>
+        </div>
+
+        <div class="toolbar">
+          <div class="group">
+            <span style="font-size: 12px; color: var(--text-3); font-weight: 600;">SCOPE</span>
+            <select class="select">
+              <option>Global (all players)</option>
+              <option>Segment: New (D1-D7)</option>
+              <option>Segment: VIP</option>
+              <option>Region: SEA</option>
+              <option>A/B Test: Variant A</option>
+            </select>
+          </div>
+          <div class="group">
+            <button class="btn">Compare Versions</button>
+            <button class="btn">📥 Snapshot</button>
+          </div>
+          <div class="grow"></div>
+          <div class="group">
+            <span class="badge-pill draft">2 unsaved</span>
+            <button class="btn ghost">↶ Revert</button>
+            <button class="btn">💾 Save Draft</button>
+            <button class="btn success">🚀 Push to Live</button>
+          </div>
+        </div>
+
+        <div class="workspace" style="overflow-y: auto;">
+
+          <div style="padding: 24px; width: 100%;">
+
+            <div class="env-banner">
+              <div class="dot"></div>
+              <div style="flex: 1;">
+                <b>Connected to Production · v2.4.1</b> · Changes push instantly · Players see updates within 60 seconds · No app update required.
+              </div>
+              <span style="color: var(--text-3); font-size: 11px;">Last push: 14 min ago</span>
+            </div>
+
+            <h2 style="margin: 0 0 12px; font-size: 16px;">📈 Live KPIs (last 24h)</h2>
+            <div class="stat-grid" style="grid-template-columns: repeat(5, 1fr);">
+              <div class="stat-card">
+                <div class="lbl">DAU</div>
+                <div class="val">42,318</div>
+                <div class="delta up">▲ 3.2% vs yesterday</div>
+              </div>
+              <div class="stat-card">
+                <div class="lbl">Avg Session</div>
+                <div class="val">18m</div>
+                <div class="delta up">▲ 1.5m</div>
+              </div>
+              <div class="stat-card">
+                <div class="lbl">D1 Retention</div>
+                <div class="val">42%</div>
+                <div class="delta down">▼ 0.8%</div>
+              </div>
+              <div class="stat-card">
+                <div class="lbl">Coin Velocity</div>
+                <div class="val">1.2×</div>
+                <div class="delta up">▲ 0.1×</div>
+              </div>
+              <div class="stat-card">
+                <div class="lbl">Energy Use</div>
+                <div class="val">78%</div>
+                <div class="delta down">▼ 4%</div>
+              </div>
+            </div>
+
+            <h2 style="margin: 0 0 12px; font-size: 16px;">💰 Economy Tuning</h2>
+            <div class="balance-grid" style="margin-bottom: 24px;">
+
+              <div class="balance-card">
+                <h3>🪙 Coins &amp; Soft Currency</h3>
+                <div class="sub">Soft currency earned per action</div>
+                <div class="slider-row">
+                  <label>Generator tap</label>
+                  <input type="range" min="0" max="50" value="12">
+                  <span class="val">12c</span>
+                </div>
+                <div class="slider-row">
+                  <label>Merge reward</label>
+                  <input type="range" min="0" max="100" value="25">
+                  <span class="val">25c</span>
+                </div>
+                <div class="slider-row">
+                  <label>Order complete</label>
+                  <input type="range" min="0" max="500" value="150">
+                  <span class="val">150c</span>
+                </div>
+                <div class="slider-row">
+                  <label>Daily login</label>
+                  <input type="range" min="0" max="200" value="50">
+                  <span class="val">50c</span>
+                </div>
+              </div>
+
+              <div class="balance-card">
+                <h3>💎 Gems &amp; Hard Currency</h3>
+                <div class="sub">Hard currency for premium actions</div>
+                <div class="slider-row">
+                  <label>Energy refill</label>
+                  <input type="range" min="0" max="50" value="20">
+                  <span class="val">20g</span>
+                </div>
+                <div class="slider-row">
+                  <label>Board expansion</label>
+                  <input type="range" min="0" max="200" value="80">
+                  <span class="val">80g</span>
+                </div>
+                <div class="slider-row">
+                  <label>Scissors x1</label>
+                  <input type="range" min="0" max="50" value="15">
+                  <span class="val">15g</span>
+                </div>
+                <div class="slider-row">
+                  <label>Instant recharge</label>
+                  <input type="range" min="0" max="100" value="40">
+                  <span class="val">40g</span>
+                </div>
+              </div>
+
+              <div class="balance-card">
+                <h3>⚡ Energy System</h3>
+                <div class="sub">Energy cap, cost, and regen</div>
+                <div class="slider-row">
+                  <label>Energy cap</label>
+                  <input type="range" min="50" max="200" value="100">
+                  <span class="val">100</span>
+                </div>
+                <div class="slider-row">
+                  <label>Cost per tap</label>
+                  <input type="range" min="0" max="5" value="1">
+                  <span class="val">1</span>
+                </div>
+                <div class="slider-row">
+                  <label>Regen (sec/tick)</label>
+                  <input type="range" min="30" max="300" value="120">
+                  <span class="val">120s</span>
+                </div>
+                <div class="slider-row">
+                  <label>VIP bonus</label>
+                  <input type="range" min="0" max="50" value="20">
+                  <span class="val">20%</span>
+                </div>
+              </div>
+
+              <div class="balance-card">
+                <h3>⚔️ Order Difficulty</h3>
+                <div class="sub">Tier scaling per game phase</div>
+                <div class="slider-row">
+                  <label>Early orders (T)</label>
+                  <input type="range" min="1" max="5" value="2">
+                  <span class="val">T2</span>
+                </div>
+                <div class="slider-row">
+                  <label>Mid orders (T)</label>
+                  <input type="range" min="3" max="10" value="6">
+                  <span class="val">T6</span>
+                </div>
+                <div class="slider-row">
+                  <label>Late orders (T)</label>
+                  <input type="range" min="8" max="20" value="13">
+                  <span class="val">T13</span>
+                </div>
+                <div class="slider-row">
+                  <label>Time limit</label>
+                  <input type="range" min="60" max="600" value="300">
+                  <span class="val">5m</span>
+                </div>
+              </div>
+
+            </div>
+
+            <h2 style="margin: 0 0 12px; font-size: 16px;">👁 Preview: Before vs After</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+
+              <div class="preview-before">
+                <b>Current (v2.4.1)</b>
+                <div class="diff-row"><span class="key">Generator tap</span><span class="old">10 coins</span></div>
+                <div class="diff-row"><span class="key">Merge reward</span><span class="old">20 coins</span></div>
+                <div class="diff-row"><span class="key">Order complete</span><span class="old">120 coins</span></div>
+                <div class="diff-row"><span class="key">Energy cost</span><span class="old">2 per tap</span></div>
+                <div class="diff-row"><span class="key">Energy regen</span><span class="old">150s/tick</span></div>
+              </div>
+
+              <div class="preview-after">
+                <b>Pending changes</b>
+                <div class="diff-row"><span class="key">Generator tap</span><span class="new">12 coins</span></div>
+                <div class="diff-row"><span class="key">Merge reward</span><span class="new">25 coins</span></div>
+                <div class="diff-row"><span class="key">Order complete</span><span class="new">150 coins</span></div>
+                <div class="diff-row"><span class="key">Energy cost</span><span class="new">1 per tap</span></div>
+                <div class="diff-row"><span class="key">Energy regen</span><span class="new">120s/tick</span></div>
+              </div>
+
+            </div>
+
+            <h2 style="margin: 0 0 12px; font-size: 16px;">📜 Recent Changes</h2>
+            <table class="tbl">
+              <thead>
+                <tr><th>When</th><th>Who</th><th>What</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>14 min ago</td><td>PM@jojo</td><td>Energy regen 150→120s</td><td><span class="badge-pill live">Live</span></td></tr>
+                <tr><td>2h ago</td><td>QA@beam</td><td>Order difficulty mid 5→6</td><td><span class="badge-pill live">Live</span></td></tr>
+                <tr><td>Yesterday</td><td>Designer@noon</td><td>Coin Rush multiplier 1.5→2.0</td><td><span class="badge-pill live">Live</span></td></tr>
+                <tr><td>2d ago</td><td>PM@jojo</td><td>VIP cooldown 25→20%</td><td><span class="badge-pill live">Live</span></td></tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+</div>
+
+<script src="../assets/app.js"></script>
+<script>
+document.querySelectorAll('input[type="range"]').forEach(r => {
+  r.addEventListener('input', () => {
+    const val = r.nextElementSibling;
+    if (val && val.classList.contains('val')) val.textContent = r.value;
+  });
+});
+
+document.querySelector('.btn.success').addEventListener('click', () => {
+  BT.toast('Pushed to Production · Live in 60s', 'success');
+});
+</script>
+
+</body>
+</html>

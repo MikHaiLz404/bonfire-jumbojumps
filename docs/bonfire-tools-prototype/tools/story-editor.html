@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Narrative / Story Editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .story-wrap {
+    background: var(--canvas-2);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    height: 520px;
+    display: flex;
+    flex-direction: column;
+  }
+  .preview-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .preview-modal.show { display: flex; }
+  .preview-modal .dialog {
+    background: var(--canvas-2);
+    border-radius: var(--radius-lg);
+    width: 500px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .preview-modal .scene {
+    height: 280px;
+    background: linear-gradient(180deg, #87CEEB 0%, #98D8C8 100%);
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .preview-modal .character {
+    width: 120px;
+    height: 200px;
+    background: linear-gradient(180deg, #4F46E5 0%, #312E81 100%);
+    clip-path: polygon(50% 0%, 80% 30%, 100% 100%, 0% 100%, 20% 30%);
+  }
+  .preview-modal .dialog-text {
+    padding: 20px 24px;
+    background: var(--navy-800);
+    color: var(--text-on-dark);
+    line-height: 1.6;
+  }
+  .preview-modal .dialog-text .speaker {
+    font-weight: 700;
+    color: var(--purple-400);
+    margin-bottom: 6px;
+  }
+  .preview-modal .choices {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .preview-modal .choices button {
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--canvas);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+  }
+  .preview-modal .choices button:hover { background: var(--purple-50); border-color: var(--purple-400); }
+  .preview-modal .footer {
+    padding: 12px 16px;
+    background: var(--canvas);
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+</style>
+</head>
+<body>
+
+<div style="padding: 24px; height: 100vh; display: flex; flex-direction: column;">
+  <div class="app-window" style="flex: 1;">
+
+    <div class="app-titlebar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="title">Narrative / Story Editor — chapter_1.json</div>
+    </div>
+
+    <div class="app-body">
+
+      <aside class="sidebar">
+        <a href="../index.html" class="nav-btn" title="Home">🏠<span class="tip">Home</span></a>
+        <button class="nav-btn active" title="Story">📖<span class="tip">Story</span></button>
+        <button class="nav-btn" title="Chapters">📚<span class="tip">Chapters</span></button>
+        <button class="nav-btn" title="NPCs">👥<span class="tip">NPCs</span></button>
+        <button class="nav-btn" title="Dialogs">💬<span class="tip">Dialogs</span></button>
+        <button class="nav-btn" title="Variables">🔢<span class="tip">Variables</span></button>
+        <button class="nav-btn" title="Localization">🌐<span class="tip">Localization</span></button>
+        <div class="spacer"></div>
+        <button class="nav-btn" title="Settings">⚙️</button>
+      </aside>
+
+      <main class="main">
+
+        <div class="step-header">
+          <h1 class="page-title"><span class="puzzle-icon">📖</span>Narrative / Story Editor</h1>
+        </div>
+
+        <div class="step-header" style="padding-top: 0;">
+          <div class="step active" data-step="1"><span class="num">1</span>💬 Create / Manage Nodes</div>
+          <span class="arrow">→</span>
+          <div class="step active" data-step="2"><span class="num">2</span>🔗 Build Story Flow</div>
+          <span class="arrow">→</span>
+          <div class="step" data-step="3" id="previewStep"><span class="num">3</span>👁 Preview &amp; Test</div>
+        </div>
+
+        <div class="toolbar">
+          <div class="group">
+            <span style="font-size: 12px; color: var(--text-3); font-weight: 600;">CHAPTER</span>
+            <select class="select">
+              <option>Chapter 1 — Coming Home</option>
+              <option>Chapter 2 — Secret of Old Fabric</option>
+              <option>Chapter 3 — What the Canal Says</option>
+            </select>
+            <button class="btn">+ Scene</button>
+          </div>
+          <div class="grow"></div>
+          <div class="group">
+            <button class="btn">Import</button>
+            <button class="btn">Export</button>
+            <button class="btn primary" id="previewBtn">▶ Preview</button>
+            <button class="btn success">💾 Save</button>
+          </div>
+        </div>
+
+        <div class="workspace">
+
+          <div class="panel" style="width: 200px;">
+            <div class="panel-header">Node Types</div>
+            <div class="panel-body">
+              <div class="palette-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="palette-item dialog" draggable="true" data-node="dialog" style="font-size: 22px; aspect-ratio: 1;">💬<div class="lbl">Dialog</div></div>
+                <div class="palette-item choice" draggable="true" data-node="choice" style="font-size: 22px; aspect-ratio: 1;">🔀<div class="lbl">Choice</div></div>
+                <div class="palette-item flag" draggable="true" data-node="flag" style="font-size: 22px; aspect-ratio: 1;">🚩<div class="lbl">Flag</div></div>
+                <div class="palette-item quest" draggable="true" data-node="quest" style="font-size: 22px; aspect-ratio: 1;">📜<div class="lbl">Quest</div></div>
+                <div class="palette-item battle" draggable="true" data-node="battle" style="font-size: 22px; aspect-ratio: 1;">⚔️<div class="lbl">Battle</div></div>
+                <div class="palette-item item" draggable="true" data-node="item" style="font-size: 22px; aspect-ratio: 1;">🎁<div class="lbl">Reward</div></div>
+                <div class="palette-item ending" draggable="true" data-node="ending" style="font-size: 22px; aspect-ratio: 1;">🏁<div class="lbl">Ending</div></div>
+              </div>
+              <p style="font-size: 11px; color: var(--text-3); margin-top: 12px;">
+                Drag a node type onto the canvas to add it.
+              </p>
+            </div>
+          </div>
+
+          <div class="canvas-area" style="padding: 16px;">
+            <div class="story-wrap">
+              <div class="story-canvas" id="storyCanvas" style="min-height: 480px;">
+                <svg id="connections" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></svg>
+
+                <div class="story-node dialog" style="left: 60px; top: 40px;" data-id="n1">
+                  <span class="icon">💬</span>Welcome to Shop
+                </div>
+                <div class="story-node quest" style="left: 320px; top: 40px;" data-id="n2">
+                  <span class="icon">📜</span>Find 3 Threads
+                </div>
+                <div class="story-node flag" style="left: 580px; top: 40px;" data-id="n3">
+                  <span class="icon">🚩</span>Flag: met_aunt
+                </div>
+                <div class="story-node choice" style="left: 320px; top: 200px;" data-id="n4">
+                  <span class="icon">🔀</span>Help Pin?
+                </div>
+                <div class="story-node battle" style="left: 60px; top: 200px;" data-id="n5">
+                  <span class="icon">⚔️</span>Train with Daeng
+                </div>
+                <div class="story-node item" style="left: 580px; top: 200px;" data-id="n6">
+                  <span class="icon">🎁</span>Reward: Lantern
+                </div>
+                <div class="story-node dialog" style="left: 320px; top: 360px;" data-id="n7">
+                  <span class="icon">💬</span>Continue journey
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel right" style="width: 280px;">
+            <div class="panel-header">Node Properties</div>
+            <div class="panel-body">
+              <div class="property-field">
+                <label>Selected Node</label>
+                <input class="input" value="Find 3 Threads (Quest)" readonly style="width: 100%; background: var(--canvas);">
+              </div>
+              <div class="property-field">
+                <label>Title</label>
+                <input class="input" value="Find 3 Threads" style="width: 100%;">
+              </div>
+              <div class="property-field">
+                <label>Speaker / NPC</label>
+                <select class="select" style="width: 100%;">
+                  <option>Aunt Mali</option>
+                  <option>Daeng</option>
+                  <option>Pin</option>
+                  <option>Uncle Somchai</option>
+                  <option>Nai Vilai</option>
+                  <option>Phi Eua</option>
+                </select>
+              </div>
+              <div class="property-field">
+                <label>Body</label>
+                <textarea class="input" rows="4" style="width: 100%; resize: vertical; font-family: inherit;">"Can you find 3 threads of the old fabric for me? They might be in the storage room upstairs."</textarea>
+              </div>
+              <div class="property-field">
+                <label>Quest Objective</label>
+                <input class="input" value="Collect 3× Old Thread" style="width: 100%;">
+              </div>
+              <div class="property-field">
+                <label>On Complete →</label>
+                <select class="select" style="width: 100%;">
+                  <option>→ Reward: Lantern (n6)</option>
+                  <option>→ Continue journey (n7)</option>
+                  <option>→ Choice: Help Pin?</option>
+                </select>
+              </div>
+              <hr style="border: none; border-top: 1px solid var(--line); margin: 16px 0;">
+              <div class="property-field">
+                <label>Validations</label>
+                <div style="font-size: 12px; color: var(--text-2); line-height: 1.8;">
+                  ✓ Has speaker<br>
+                  ✓ Has body text<br>
+                  ✓ Has next node<br>
+                  ✓ Localized (en, th)
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="preview-modal" id="previewModal">
+  <div class="dialog">
+    <div class="scene">
+      <div class="character"></div>
+    </div>
+    <div class="dialog-text">
+      <div class="speaker">Aunt Mali</div>
+      "Welcome back, dear. The shop has been so quiet without you. Can you help me find 3 threads of the old fabric?"
+    </div>
+    <div class="choices">
+      <button onclick="closePreview()">Of course, Auntie. Where should I look?</button>
+      <button onclick="closePreview()">I'm a bit tired... can it wait?</button>
+    </div>
+    <div class="footer">
+      <span>Scene 1 / 12 · Chapter 1</span>
+      <button class="btn ghost" onclick="closePreview()">✕ Close preview</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/app.js"></script>
+<script>
+// Draw connections between story nodes
+function drawConnections() {
+  const svg = document.getElementById('connections');
+  const canvas = document.getElementById('storyCanvas');
+  svg.innerHTML = '';
+  svg.setAttribute('width', canvas.scrollWidth);
+  svg.setAttribute('height', canvas.scrollHeight);
+
+  const edges = [
+    ['n1', 'n2'], ['n2', 'n3'], ['n1', 'n5'],
+    ['n2', 'n4'], ['n4', 'n7'], ['n3', 'n6'], ['n6', 'n7'],
+  ];
+
+  edges.forEach(([from, to]) => {
+    const a = canvas.querySelector(`[data-id="${from}"]`);
+    const b = canvas.querySelector(`[data-id="${to}"]`);
+    if (!a || !b) return;
+    const ax = a.offsetLeft + a.offsetWidth / 2;
+    const ay = a.offsetTop + a.offsetHeight;
+    const bx = b.offsetLeft + b.offsetWidth / 2;
+    const by = b.offsetTop;
+
+    // bezier curve
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const midY = (ay + by) / 2;
+    path.setAttribute('d', `M ${ax} ${ay} C ${ax} ${midY}, ${bx} ${midY}, ${bx} ${by}`);
+    path.setAttribute('stroke', '#A78BFA');
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke-dasharray', '5,5');
+    svg.appendChild(path);
+
+    // arrowhead
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    arrow.setAttribute('points', `${bx-5},${by-8} ${bx+5},${by-8} ${bx},${by-2}`);
+    arrow.setAttribute('fill', '#A78BFA');
+    svg.appendChild(arrow);
+  });
+}
+
+// Make nodes draggable + add new ones
+const canvas = document.getElementById('storyCanvas');
+document.querySelectorAll('.story-node').forEach(n => BT.freeDrag(n));
+
+document.querySelectorAll('.palette-item[data-node]').forEach(el => {
+  BT.draggable(el);
+});
+
+const NODES = { dialog: '💬', choice: '🔀', flag: '🚩', quest: '📜', battle: '⚔️', item: '🎁', ending: '🏁' };
+const NAMES = { dialog: 'New Dialog', choice: 'New Choice', flag: 'New Flag', quest: 'New Quest', battle: 'New Battle', item: 'New Reward', ending: 'New Ending' };
+
+canvas.addEventListener('dragover', e => e.preventDefault());
+canvas.addEventListener('drop', e => {
+  e.preventDefault();
+  const type = e.dataTransfer.getData('text/plain');
+  if (!NODES[type]) return;
+  const rect = canvas.getBoundingClientRect();
+  const node = document.createElement('div');
+  node.className = `story-node ${type}`;
+  node.style.left = (e.clientX - rect.left - 60) + 'px';
+  node.style.top  = (e.clientY - rect.top - 25) + 'px';
+  node.innerHTML = `<span class="icon">${NODES[type]}</span>${NAMES[type]}`;
+  canvas.appendChild(node);
+  BT.freeDrag(node);
+  BT.toast(`Added ${NAMES[type]}`, 'success');
+});
+
+// Step nav
+document.querySelectorAll('.step').forEach(s => {
+  s.addEventListener('click', () => {
+    if (s.id === 'previewStep') {
+      document.getElementById('previewModal').classList.add('show');
+      return;
+    }
+    document.querySelectorAll('.step').forEach(x => x.classList.remove('active'));
+    s.classList.add('active');
+    BT.toast('Step: ' + s.textContent.trim());
+  });
+});
+
+document.getElementById('previewBtn').addEventListener('click', () => {
+  document.getElementById('previewModal').classList.add('show');
+});
+
+function closePreview() {
+  document.getElementById('previewModal').classList.remove('show');
+}
+
+setTimeout(drawConnections, 100);
+window.addEventListener('resize', drawConnections);
+</script>
+
+</body>
+</html>
